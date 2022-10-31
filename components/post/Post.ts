@@ -1,4 +1,4 @@
-import { PostStatus } from './PostStatusEnums';
+import { PostStatus } from './internalModels/PostStatusEnums';
 
 const mongoose = require('mongoose');
 

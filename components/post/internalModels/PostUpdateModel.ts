@@ -1,6 +1,6 @@
 import { PostStatus } from './PostStatusEnums';
 
-export interface PostReturnModel {
+export interface PostUpdateModel {
 	creatorId: string;
 	description: string;
 	mediaUrl: string;

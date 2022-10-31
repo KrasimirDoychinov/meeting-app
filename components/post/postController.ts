@@ -1,10 +1,11 @@
+import { PostUpdateModel } from './internalModels/PostUpdateModel';
 import { PostServices } from './postServices';
 
 export const createPost = async (req: any, res: any) => {
-	const { id } = res.user;
-	const { description, mediaUri } = req.body;
+	const userId = res.user.id;
+	const { description, mediaUri, status } = req.body;
 
-	const post = await PostServices.create(id, description, mediaUri);
+	const post = await PostServices.create(userId, description, mediaUri, status);
 	res.status(201).json(post);
 };
 
@@ -19,6 +20,14 @@ export const likePost = async (req: any, res: any) => {
 export const deletePost = async (req: any, res: any) => {
 	const postId = req.params.id;
 
-	await PostServices.delete(postId);
-	res.status(202).json({ msg: 'Post deleted' });
+	const deleted = await PostServices.delete(postId);
+	res.status(202).json({ deleted });
+};
+
+export const updatePost = async (req: any, res: any) => {
+	const postId = req.params.id;
+	const newPost: PostUpdateModel = req.body;
+
+	const updated = await PostServices.update(postId, newPost);
+	res.status(202).json({ updated });
 };

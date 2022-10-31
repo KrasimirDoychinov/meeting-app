@@ -1,7 +1,7 @@
 import { CustomError } from '../errors/customError';
 import { Post } from './Post';
-import { PostReturnModel } from './postModels';
-import { PostStatus } from './PostStatusEnums';
+import { PostStatus } from './internalModels/PostStatusEnums';
+import { PostUpdateModel } from './internalModels/PostUpdateModel';
 
 export class PostServices {
 	static async create(
@@ -9,7 +9,7 @@ export class PostServices {
 		description: string,
 		mediaUrl?: string,
 		status: PostStatus = 0
-	): Promise<PostReturnModel> {
+	): Promise<PostUpdateModel> {
 		if (!creatorId || !description) {
 			throw new CustomError('CreatorId and description are required.', 400);
 		}
@@ -44,11 +44,38 @@ export class PostServices {
 		return post.likes;
 	}
 
-	static async delete(postId: string): Promise<void> {
+	static async delete(postId: string): Promise<boolean> {
 		if (!postId) {
 			throw new CustomError('PostId is missing', 400);
 		}
 
-		await Post.deleteOne({ _id: postId });
+		const result = await Post.deleteOne({ _id: postId });
+		return result.acknowledged;
+	}
+
+	static async update(
+		postId: string,
+		newPost: PostUpdateModel
+	): Promise<boolean> {
+		if (!postId) {
+			throw new CustomError('PostId is missing', 400);
+		}
+
+		console.log(newPost);
+		if (Object.keys(newPost).length === 0) {
+			throw new CustomError('New post details is missing', 400);
+		}
+
+		const result = await Post.updateOne(
+			{ _id: postId },
+			{
+				description: newPost.description,
+				mediaUrl: newPost.mediaUrl,
+				status: newPost.status,
+			},
+			{ upsert: false }
+		);
+
+		return result.acknowledged;
 	}
 }
