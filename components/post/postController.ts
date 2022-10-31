@@ -9,6 +9,13 @@ export const createPost = async (req: any, res: any) => {
 	res.status(201).json(post);
 };
 
+export const allByCreator = async (req: any, res: any) => {
+	const creatorId = res.user.id;
+
+	const posts = await PostServices.allByCreator(creatorId);
+	res.status(200).json(posts);
+};
+
 export const likePost = async (req: any, res: any) => {
 	const creatorId = res.user.id;
 	const postId = req.params.id;

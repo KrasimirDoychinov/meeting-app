@@ -2,6 +2,7 @@ import { CustomError } from '../errors/customError';
 import { Post } from './Post';
 import { PostStatus } from './internalModels/PostStatusEnums';
 import { PostUpdateModel } from './internalModels/PostUpdateModel';
+import { PostReturnModel } from './internalModels/PostReturnModel';
 
 export class PostServices {
 	static async create(
@@ -22,6 +23,25 @@ export class PostServices {
 		});
 
 		return post;
+	}
+
+	static async allByCreator(creatorId: string): Promise<PostReturnModel[]> {
+		if (!creatorId) {
+			throw new CustomError('CreatorId is missing', 400);
+		}
+
+		const posts = await Post.find({ creatorId });
+		const result = posts.map((x: any) => {
+			const model: PostReturnModel = {
+				description: x.description,
+				mediaUrl: x.mediaUrl,
+				status: x.status,
+				likes: x.likes,
+			};
+			return model;
+		});
+
+		return result;
 	}
 
 	static async like(postId: string, creatorId: string): Promise<number> {
