@@ -43,4 +43,12 @@ export class PostServices {
 		await post.save();
 		return post.likes;
 	}
+
+	static async delete(postId: string): Promise<void> {
+		if (!postId) {
+			throw new CustomError('PostId is missing', 400);
+		}
+
+		await Post.deleteOne({ _id: postId });
+	}
 }

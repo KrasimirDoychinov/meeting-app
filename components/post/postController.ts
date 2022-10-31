@@ -15,3 +15,10 @@ export const likePost = async (req: any, res: any) => {
 	const likes = await PostServices.like(postId, creatorId);
 	res.status(200).json({ likes });
 };
+
+export const deletePost = async (req: any, res: any) => {
+	const postId = req.params.id;
+
+	await PostServices.delete(postId);
+	res.status(202).json({ msg: 'Post deleted' });
+};
