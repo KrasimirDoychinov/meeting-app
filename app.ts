@@ -3,6 +3,7 @@ require('express-async-errors');
 
 import { authRouter } from './components/auth/authRoutes';
 import { errorHandler } from './components/middlewares/errorHandler';
+import { postRouter } from './components/post/postRoutes';
 import { connectDB } from './connectDB';
 
 const bp = require('body-parser');
@@ -14,6 +15,7 @@ app.use(bp.json());
 
 // routes
 app.use('/api/auth', authRouter);
+app.use('/api/post', postRouter);
 
 // middlewares
 

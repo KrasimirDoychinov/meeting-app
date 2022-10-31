@@ -13,6 +13,7 @@ require('dotenv').config();
 require('express-async-errors');
 const authRoutes_1 = require("./components/auth/authRoutes");
 const errorHandler_1 = require("./components/middlewares/errorHandler");
+const postRoutes_1 = require("./components/post/postRoutes");
 const connectDB_1 = require("./connectDB");
 const bp = require('body-parser');
 const express = require('express');
@@ -21,6 +22,7 @@ app.use(bp.urlencoded({ extended: true }));
 app.use(bp.json());
 // routes
 app.use('/api/auth', authRoutes_1.authRouter);
+app.use('/api/post', postRoutes_1.postRouter);
 // middlewares
 app.use(errorHandler_1.errorHandler);
 // app start
