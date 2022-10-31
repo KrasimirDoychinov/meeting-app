@@ -1,3 +1,4 @@
+import { authorize } from '../middlewares/authorization';
 import { login, register } from './authController';
 
 const express = require('express');

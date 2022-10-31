@@ -1,18 +1,11 @@
 import { CustomError } from '../errors/customError';
+import { JWTUserModel } from '../user/jwtUserModel';
 import { User } from '../user/User';
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-interface JWTUserModel {
-	id: string;
-	name: string;
-	email: string;
-}
-
 export class AuthServices {
-	// TODO: Register, login, verifyJWT, createJWT
-
 	static async register(
 		name: string,
 		email: string,
@@ -61,6 +54,10 @@ export class AuthServices {
 		const token = this.signJWT(jwtUserModel);
 
 		return token;
+	}
+
+	static veritfyJWT(token: string): JWTUserModel {
+		return jwt.verify(token, process.env.JWT_SECRET);
 	}
 
 	private static signJWT(user: JWTUserModel): string {
