@@ -1,9 +1,7 @@
-import { CustomError } from '../errors/customError';
+import { login, register } from './authController';
 
 const express = require('express');
 export const authRouter = express.Router();
 
-authRouter.post('/register', () => {
-	throw new CustomError('Test', 400);
-});
-authRouter.post('/login');
+authRouter.post('/register', register);
+authRouter.post('/login', login);

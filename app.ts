@@ -1,9 +1,10 @@
+require('dotenv').config();
+require('express-async-errors');
+
 import { authRouter } from './components/auth/authRoutes';
 import { errorHandler } from './components/middlewares/errorHandler';
 import { connectDB } from './connectDB';
 
-require('dotenv').config();
-require('express-async-errors');
 const bp = require('body-parser');
 const express = require('express');
 const app = express();
