@@ -8,5 +8,8 @@ export const register = async (req: any, res: any) => {
 };
 
 export const login = async (req: any, res: any) => {
-	// TODO: Login user
+	const { email, password } = req.body;
+	const token = await AuthServices.login(email, password);
+
+	res.status(200).json({ token });
 };

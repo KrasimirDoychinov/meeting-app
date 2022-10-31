@@ -1,10 +1,11 @@
 import { CustomError } from '../errors/customError';
 import { User } from '../user/User';
 
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 interface JWTUserModel {
+	id: string;
 	name: string;
 	email: string;
 }
@@ -18,23 +19,6 @@ export class AuthServices {
 		password: string,
 		compare: string
 	): Promise<string> {
-		this.verifyCreds(name, email, password, compare);
-		const user = await User.create({ name, email, password });
-
-		const jwtUserModel: JWTUserModel = {
-			name: user.name,
-			email: user.email,
-		};
-		const token = this.signJWT(jwtUserModel);
-		return token;
-	}
-
-	private static verifyCreds(
-		name: string,
-		email: string,
-		password: string,
-		compare: string
-	) {
 		if (!name || !email || !password || !compare) {
 			throw new CustomError('All fields are required!', 400);
 		}
@@ -42,18 +26,53 @@ export class AuthServices {
 		if (password !== compare) {
 			throw new CustomError('Both passwords must match!', 400);
 		}
+
+		const user = await User.create({ name, email, password });
+
+		const jwtUserModel: JWTUserModel = {
+			id: user.id,
+			name: user.name,
+			email: user.email,
+		};
+		const token = this.signJWT(jwtUserModel);
+		return token;
 	}
 
-	private static signJWT(user: JWTUserModel) {
+	static async login(email: string, password: string): Promise<string> {
+		if (!email || !password) {
+			throw new CustomError('All fields are required', 400);
+		}
+
+		const user = await User.findOne({ email });
+		if (!user) {
+			throw new CustomError('No user found with this email', 400);
+		}
+
+		const passwordsMatch = await this.comparePassword(password, user.password);
+		if (!passwordsMatch) {
+			throw new CustomError("Passwords don't match", 400);
+		}
+
+		const jwtUserModel: JWTUserModel = {
+			id: user.id,
+			name: user.name,
+			email: user.email,
+		};
+		const token = this.signJWT(jwtUserModel);
+
+		return token;
+	}
+
+	private static signJWT(user: JWTUserModel): string {
 		return jwt.sign(user, process.env.JWT_SECRET, {
 			expiresIn: process.env.JWT_LIFETIME,
 		});
 	}
 
 	private static async comparePassword(
-		canditatePassword: string,
-		password: string
-	) {
-		return await bcrypt.compare(canditatePassword, password);
+		password: string,
+		hash: string
+	): Promise<boolean> {
+		return await bcrypt.compare(password, hash);
 	}
 }
