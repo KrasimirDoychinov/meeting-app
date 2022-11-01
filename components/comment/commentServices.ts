@@ -19,6 +19,4 @@ export class CommentServices {
 		const comments = await Comment.find({ postId });
 		return comments;
 	}
-
-  
 }
