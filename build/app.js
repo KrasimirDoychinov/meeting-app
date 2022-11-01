@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require('dotenv').config();
 require('express-async-errors');
 const authRoutes_1 = require("./components/auth/authRoutes");
+const commentRoutes_1 = require("./components/comment/commentRoutes");
 const errorHandler_1 = require("./components/middlewares/errorHandler");
 const postRoutes_1 = require("./components/post/postRoutes");
 const connectDB_1 = require("./connectDB");
@@ -23,6 +24,7 @@ app.use(bp.json());
 // routes
 app.use('/api/auth', authRoutes_1.authRouter);
 app.use('/api/post', postRoutes_1.postRouter);
+app.use('/api/comment', commentRoutes_1.commentRouter);
 // middlewares
 app.use(errorHandler_1.errorHandler);
 // app start

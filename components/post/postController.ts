@@ -1,4 +1,4 @@
-import { PostUpdateModel } from './internalModels/PostUpdateModel';
+import { PostUpdateModel } from './models/PostUpdateModel';
 import { PostServices } from './postServices';
 
 export const createPost = async (req: any, res: any) => {

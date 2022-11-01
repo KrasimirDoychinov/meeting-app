@@ -2,6 +2,7 @@ require('dotenv').config();
 require('express-async-errors');
 
 import { authRouter } from './components/auth/authRoutes';
+import { commentRouter } from './components/comment/commentRoutes';
 import { errorHandler } from './components/middlewares/errorHandler';
 import { postRouter } from './components/post/postRoutes';
 import { connectDB } from './connectDB';
@@ -16,6 +17,7 @@ app.use(bp.json());
 // routes
 app.use('/api/auth', authRouter);
 app.use('/api/post', postRouter);
+app.use('/api/comment', commentRouter);
 
 // middlewares
 

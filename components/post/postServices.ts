@@ -1,8 +1,8 @@
 import { CustomError } from '../errors/customError';
-import { Post } from './Post';
-import { PostStatus } from './internalModels/PostStatusEnums';
-import { PostUpdateModel } from './internalModels/PostUpdateModel';
-import { PostReturnModel } from './internalModels/PostReturnModel';
+import { Post } from './models/Post';
+import { PostStatus } from './models/PostStatusEnums';
+import { PostUpdateModel } from './models/PostUpdateModel';
+import { PostReturnModel } from './models/PostReturnModel';
 
 export class PostServices {
 	static async create(
@@ -42,6 +42,10 @@ export class PostServices {
 		});
 
 		return result;
+	}
+
+	static async byId(id: string) {
+		return await Post.findById(id);
 	}
 
 	static async like(postId: string, creatorId: string): Promise<number> {
