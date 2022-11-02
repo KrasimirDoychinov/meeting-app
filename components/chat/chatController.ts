@@ -14,3 +14,10 @@ export const chatById = async (req: any, res: any) => {
 	const chat = await ChatServices.byId(id);
 	res.status(200).json(chat);
 };
+
+export const changeAnon = async (req: any, res: any) => {
+	const id = req.params.id;
+
+	const chat = await ChatServices.changeAnon(id);
+	res.status(200).json(chat);
+};

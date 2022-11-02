@@ -44,4 +44,17 @@ export class ChatServices {
 
 		return model;
 	}
+
+	static async changeAnon(id: string): Promise<ChatRealData> {
+		const chat = await Chat.findById(id);
+
+		chat.isAnon = false;
+		await chat.save();
+
+		const model: ChatRealData = {
+			personA: chat.personA,
+			personB: chat.personB,
+		};
+		return model;
+	}
 }
