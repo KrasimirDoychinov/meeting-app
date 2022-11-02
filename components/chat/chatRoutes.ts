@@ -4,6 +4,7 @@ import {
 	changeAnonAgree,
 	chatById,
 	createChat,
+	createMessage,
 } from './chatController';
 
 const express = require('express');
@@ -11,5 +12,6 @@ export const chatRouter = express.Router();
 
 chatRouter.get('/:id', authorize, chatById);
 chatRouter.post('/create/:personId', authorize, createChat);
+chatRouter.post('/message/:id', authorize, createMessage);
 chatRouter.patch('/changeAnon/:id', authorize, changeAnon);
 chatRouter.patch('/changeAnon/agree/:id', authorize, changeAnonAgree);

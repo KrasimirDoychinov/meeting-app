@@ -18,6 +18,26 @@ export class ChatServices {
 		return chat;
 	}
 
+	static async createMessage(
+		chatId: string,
+		userId: string,
+		content: string
+	): Promise<string> {
+		const chat = await Chat.findById(chatId);
+		if (!this.isPersonInChat(chat, userId)) {
+			throw new CustomError("This user doesn't belong to this chat", 400);
+		}
+
+		if (chat.personA.id === userId) {
+			chat.personA.messages.push(content);
+		} else if (chat.personB.id === userId) {
+			chat.personB.messages.push(content);
+	}
+
+		await chat.save();
+		return `Message: ${content} send succesfully from ${userId}`;
+	}
+
 	static async byId(id: string): Promise<ChatAnonData | ChatRealData> {
 		const chat = await Chat.findById(id);
 
@@ -51,7 +71,9 @@ export class ChatServices {
 	): Promise<ChatAnonData> {
 		const chat = await Chat.findById(chatId);
 
-		console.log(chatId, userId, chat);
+		if (!this.isPersonInChat(chat, userId)) {
+			throw new CustomError("This user doesn't belong to this chat", 400);
+		}
 
 		if (chat.personA.id === userId) {
 			chat.personA.changeAnonAgree = true;
@@ -60,7 +82,6 @@ export class ChatServices {
 		}
 
 		await chat.save();
-
 		const model: ChatAnonData = {
 			personA: {
 				id: chat.personA.id,
@@ -108,5 +129,9 @@ export class ChatServices {
 		personBAgree: boolean
 	): boolean {
 		return personAAgree && personBAgree;
+	}
+
+	private static isPersonInChat(chat: typeof Chat, personId: string): boolean {
+		return chat.personA.id === personId || chat.personB.id === personId;
 	}
 }

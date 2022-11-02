@@ -4,7 +4,6 @@ require('express-async-errors');
 import { authRouter } from './components/auth/authRoutes';
 import { chatRouter } from './components/chat/chatRoutes';
 import { commentRouter } from './components/comment/commentRoutes';
-import { messageRouter } from './components/message/messageRoutes';
 import { errorHandler } from './components/middlewares/errorHandler';
 import { postRouter } from './components/post/postRoutes';
 import { connectDB } from './connectDB';
@@ -21,7 +20,6 @@ app.use('/api/auth', authRouter);
 app.use('/api/post', postRouter);
 app.use('/api/comment', commentRouter);
 app.use('/api/chat', chatRouter);
-app.use('/api/message', messageRouter);
 // middlewares
 
 app.use(errorHandler);

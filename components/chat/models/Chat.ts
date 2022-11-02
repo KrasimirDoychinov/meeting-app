@@ -1,7 +1,4 @@
-import { Message } from '../../message/models/Message';
-
 const mongoose = require('mongoose');
-
 const ChatSchema = new mongoose.Schema(
 	{
 		personA: {
@@ -26,6 +23,11 @@ const ChatSchema = new mongoose.Schema(
 				type: Boolean,
 				default: false,
 			},
+			messages: {
+				type: [String],
+				required: false,
+				maxLength: 300,
+			},
 		},
 		personB: {
 			id: {
@@ -49,12 +51,17 @@ const ChatSchema = new mongoose.Schema(
 				type: Boolean,
 				default: false,
 			},
+			messages: {
+				type: [String],
+				required: false,
+				maxLength: 300,
+				minLength: 1,
+			},
 		},
 		isAnon: {
 			type: Boolean,
 			default: true,
 		},
-		messages: [typeof Message],
 	},
 	{ collection: 'chat' }
 );
