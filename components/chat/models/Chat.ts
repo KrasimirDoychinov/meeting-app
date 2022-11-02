@@ -22,6 +22,10 @@ const ChatSchema = new mongoose.Schema(
 				lastName: String,
 				imageUrl: String,
 			},
+			changeAnonAgree: {
+				type: Boolean,
+				default: false,
+			},
 		},
 		personB: {
 			id: {
@@ -40,6 +44,10 @@ const ChatSchema = new mongoose.Schema(
 				firstName: String,
 				lastName: String,
 				imageUrl: String,
+			},
+			changeAnonAgree: {
+				type: Boolean,
+				default: false,
 			},
 		},
 		isAnon: {

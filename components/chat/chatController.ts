@@ -15,6 +15,15 @@ export const chatById = async (req: any, res: any) => {
 	res.status(200).json(chat);
 };
 
+export const changeAnonAgree = async (req: any, res: any) => {
+	const chatId = req.params.id;
+	const userId = res.user.id;
+
+	const chat = await ChatServices.changeAnonAgree(chatId, userId);
+
+	res.status(200).json(chat);
+};
+
 export const changeAnon = async (req: any, res: any) => {
 	const id = req.params.id;
 
