@@ -1,6 +1,7 @@
 import { CustomError } from '../errors/customError';
-import { JWTUserModel } from '../user/jwtUserModel';
-import { User } from '../user/User';
+import { JWTUserModel } from '../user/models/jwtUserModel';
+import { User } from '../user/models/User';
+import { UserRealData } from '../user/models/UserRealData';
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -20,12 +21,25 @@ export class AuthServices {
 			throw new CustomError('Both passwords must match!', 400);
 		}
 
-		const user = await User.create({ name, email, password });
+		// TODO: Hard coded for now
+		const realData: UserRealData = {
+			firstName: 'Krasimir',
+			lastName: 'Doychinov',
+			imageUrl: 'Image url',
+		};
+
+		const user = await User.create({
+			name,
+			email,
+			password,
+			realData,
+		});
 
 		const jwtUserModel: JWTUserModel = {
 			id: user.id,
 			name: user.name,
 			email: user.email,
+			realData,
 		};
 		const token = this.signJWT(jwtUserModel);
 		return token;
@@ -50,6 +64,7 @@ export class AuthServices {
 			id: user.id,
 			name: user.name,
 			email: user.email,
+			realData: user.realData,
 		};
 		const token = this.signJWT(jwtUserModel);
 

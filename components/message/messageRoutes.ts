@@ -5,4 +5,4 @@ const express = require('express');
 export const messageRouter = express.Router();
 
 messageRouter.post('/create/:chatId', authorize, createMessage);
-messageRouter.get('/:chatId', authorize, allByChat);
+messageRouter.get('/all/:chatId', authorize, allByChat);

@@ -5,12 +5,46 @@ const mongoose = require('mongoose');
 const ChatSchema = new mongoose.Schema(
 	{
 		personA: {
-			type: String,
-			required: true,
+			id: {
+				type: String,
+				required: true,
+			},
+			avatarUrl: {
+				type: String,
+				required: true,
+			},
+			name: {
+				type: String,
+				required: true,
+			},
+			realData: {
+				firstName: String,
+				lastName: String,
+				imageUrl: String,
+			},
 		},
 		personB: {
-			type: String,
-			required: true,
+			id: {
+				type: String,
+				required: true,
+			},
+			avatarUrl: {
+				type: String,
+				required: true,
+			},
+			name: {
+				type: String,
+				required: true,
+			},
+			realData: {
+				firstName: String,
+				lastName: String,
+				imageUrl: String,
+			},
+		},
+		isAnon: {
+			type: Boolean,
+			default: true,
 		},
 		messages: [typeof Message],
 	},

@@ -22,6 +22,25 @@ const UserSchema = new mongoose.Schema({
 		required: [true, 'Please provide password'],
 		minlength: 6,
 	},
+	realData: {
+		firstName: {
+			type: String,
+			required: false,
+		},
+		lastName: {
+			type: String,
+			required: false,
+		},
+		imageUrl: {
+			type: String,
+			required: false,
+		},
+	},
+	avatarUrl: {
+		type: String,
+		default: 'Test url',
+	},
+	tags: [String],
 });
 
 UserSchema.pre('save', async function () {
