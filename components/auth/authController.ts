@@ -9,6 +9,7 @@ export const register = async (req: any, res: any) => {
 
 export const login = async (req: any, res: any) => {
 	const { email, password } = req.body;
+	console.log(req.body);
 	const token = await AuthServices.login(email, password);
 
 	res.status(200).json({ token });
