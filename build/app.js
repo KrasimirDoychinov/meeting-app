@@ -17,9 +17,11 @@ const commentRoutes_1 = require("./components/comment/commentRoutes");
 const errorHandler_1 = require("./components/middlewares/errorHandler");
 const postRoutes_1 = require("./components/post/postRoutes");
 const connectDB_1 = require("./connectDB");
+const cors = require('cors');
 const bp = require('body-parser');
 const express = require('express');
 const app = express();
+app.use(cors());
 app.use(bp.urlencoded({ extended: true }));
 app.use(bp.json());
 // routes

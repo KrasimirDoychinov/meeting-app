@@ -13,6 +13,7 @@ export class UserServices {
 				lastName: user.realData.lastName,
 				imageUrl: user.realData.imageUrl,
 			},
+			messages: user.messages,
 		};
 		return model;
 	}

@@ -8,10 +8,12 @@ import { errorHandler } from './components/middlewares/errorHandler';
 import { postRouter } from './components/post/postRoutes';
 import { connectDB } from './connectDB';
 
+const cors = require('cors');
 const bp = require('body-parser');
 const express = require('express');
 const app = express();
 
+app.use(cors());
 app.use(bp.urlencoded({ extended: true }));
 app.use(bp.json());
 

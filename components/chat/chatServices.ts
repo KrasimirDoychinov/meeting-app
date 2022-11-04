@@ -32,7 +32,7 @@ export class ChatServices {
 			chat.personA.messages.push(content);
 		} else if (chat.personB.id === userId) {
 			chat.personB.messages.push(content);
-	}
+		}
 
 		await chat.save();
 		return `Message: ${content} send succesfully from ${userId}`;
@@ -48,11 +48,13 @@ export class ChatServices {
 					id: chat.personA.id,
 					name: chat.personA.name,
 					avatarUrl: chat.personA.avatarUrl,
+					messages: chat.personA.messages,
 				},
 				personB: {
-					id: chat.personA.id,
-					name: chat.personA.name,
-					avatarUrl: chat.personA.avatarUrl,
+					id: chat.personB.id,
+					name: chat.personB.name,
+					avatarUrl: chat.personB.avatarUrl,
+					messages: chat.personB.messages,
 				},
 			};
 		} else {
@@ -87,11 +89,13 @@ export class ChatServices {
 				id: chat.personA.id,
 				name: chat.personA.name,
 				avatarUrl: chat.personA.avatarUrl,
+				messages: chat.personA.messages,
 			},
 			personB: {
-				id: chat.personA.id,
-				name: chat.personA.name,
-				avatarUrl: chat.personA.avatarUrl,
+				id: chat.personB.id,
+				name: chat.personB.name,
+				avatarUrl: chat.personB.avatarUrl,
+				messages: chat.personB.messages,
 			},
 		};
 
