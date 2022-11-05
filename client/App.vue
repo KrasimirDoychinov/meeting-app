@@ -1,12 +1,16 @@
 <template>
-	<header></header>
+	<router-view name="header"></router-view>
 	<main>
 		<router-view></router-view>
 	</main>
 	<footer></footer>
 </template>
 
-<script setup></script>
+<script setup>
+import { onMounted } from '@vue/runtime-core';
+import { ref } from 'vue';
+import store from './store/index';
+</script>
 
 <style lang="scss">
 @import './scss/variables';
@@ -18,7 +22,7 @@
 
 html,
 body {
-	color: $white;
+	color: $dark;
 	scroll-behavior: smooth;
 }
 
@@ -40,13 +44,9 @@ body {
 	background: $white;
 	font-family: 'Cascadia Mono', sans-serif;
 	font-size: 12px;
-	padding: 1em;
+	padding: 0.3em;
 }
 
-header {
-	height: 10vh;
-	grid-area: header;
-}
 
 main {
 	height: 78vh;
