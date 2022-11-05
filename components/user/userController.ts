@@ -32,10 +32,10 @@ export const acceptFriendRequest = async (req: any, res: any) => {
 	res.status(200).json({ result });
 };
 
-export const friendNotificationsByUser = async (req: any, res: any) => {
+export const friendNRequestsByUser = async (req: any, res: any) => {
 	const id = res.user.id;
 
-	const notifications = await UserServices.allFriendNotifications(id);
+	const notifications = await UserServices.allFriendRequests(id);
 
 	res.status(200).json({ notifications, count: notifications.length });
 };

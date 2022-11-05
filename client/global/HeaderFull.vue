@@ -39,7 +39,7 @@ const router = useRouter();
 // props
 const notificationCount = ref(0);
 onBeforeMount(async () => {
-	const response = await store.dispatch('friendNotificationsByUser');
+	const response = await store.dispatch('friendRequestsByUser');
 	notificationCount.value = response.count;
 });
 // methods
@@ -61,12 +61,12 @@ const logout = async () => {
 header {
 	position: fixed;
 	top: 0;
-	font-size: 2em;
+	font-size: 1.6em;
 	padding: 0em 1em;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	width: 95vw;
+	width: 93vw;
 	color: $white;
 	height: 10vh;
 	background: linear-gradient($purple, $light-purple);

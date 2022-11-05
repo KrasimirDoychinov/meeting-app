@@ -62,8 +62,7 @@ export class UserServices {
 		return true;
 	}
 
-	// Notifications
-	static async allFriendNotifications(id: string): Promise<string[]> {
+	static async allFriendRequests(id: string): Promise<string[]> {
 		const result = await User.findById(id);
 
 		return result.friendNotifications;

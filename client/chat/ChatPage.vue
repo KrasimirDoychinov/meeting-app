@@ -22,7 +22,7 @@ const addFriend = async (id) => {
 	store.dispatch('addFriend', { id });
 	alert('Friend request sent!');
 };
-//
+
 onBeforeMount(async () => {
 	users.value = ref(await store.dispatch('allUsers'));
 });

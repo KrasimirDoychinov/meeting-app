@@ -48,13 +48,10 @@ export default createStore({
 			});
 			return response.data;
 		},
-		async friendNotificationsByUser({ state, getters }) {
-			const response = await axios.get(
-				state.host + `/user/notifications/friend`,
-				{
-					headers: getters.getHeaders,
-				}
-			);
+		async friendRequestsByUser({ state, getters }) {
+			const response = await axios.get(state.host + `/user/requests/friend`, {
+				headers: getters.getHeaders,
+			});
 			return response.data;
 		},
 		async addFriend({ state, getters, commit }, { id }) {
