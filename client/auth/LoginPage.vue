@@ -28,8 +28,6 @@ import router from '../router.js';
 import axios from 'axios';
 
 // non ref props
-const loginEndpoint = '/auth/login';
-const host = store.state.host;
 
 // ref props
 const email = ref('');
@@ -39,11 +37,11 @@ const invalidMsg = ref('');
 // methods
 const login = async () => {
 	try {
-		const response = await axios.post(host + loginEndpoint, {
+		await store.dispatch('login', {
 			email: email.value,
 			password: password.value,
+			invalidMsg,
 		});
-		store.commit('setToken', response.data.token);
 		router.push('/');
 	} catch (error) {
 		invalidMsg.value = error.response.data.msg;

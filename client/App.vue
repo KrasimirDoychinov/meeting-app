@@ -5,14 +5,14 @@
 			<router-view></router-view>
 		</div>
 	</main>
-	<footer></footer>
+	<!-- <footer>
+		<ul>
+			<i class="insta fa-brands fa-instagram"></i>
+		</ul>
+	</footer> -->
 </template>
 
-<script setup>
-import { onMounted } from '@vue/runtime-core';
-import { ref } from 'vue';
-import store from './store/index';
-</script>
+<script setup></script>
 
 <style lang="scss">
 @import './scss/variables';
@@ -53,10 +53,28 @@ main {
 	justify-content: center;
 	align-items: center;
 	div {
+		width: 100%;
 		display: flex;
 		flex-flow: column;
 		justify-content: center;
 		align-items: center;
+	}
+}
+
+footer {
+	display: flex;
+	align-items: center;
+	padding: 0em 1em;
+	height: 10vh;
+	background: linear-gradient($light-purple, $purple);
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
+
+	ul {
+		.insta {
+			font-size: 5em;
+			color: $white;
+		}
 	}
 }
 
@@ -65,6 +83,10 @@ main {
 		div {
 			width: 500px;
 		}
+	}
+
+	footer {
+		width: 750px;
 	}
 }
 </style>

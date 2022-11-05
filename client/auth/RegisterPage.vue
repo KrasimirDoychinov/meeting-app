@@ -34,11 +34,6 @@
 import { ref } from 'vue';
 import store from '../store/index.js';
 import router from '../router.js';
-import axios from 'axios';
-
-// no ref props
-const registerEndpoint = '/auth/register';
-const host = store.state.host;
 
 // ref props
 const name = ref('');
@@ -50,17 +45,15 @@ const invalidMsg = ref('');
 // methods
 const register = async () => {
 	try {
-		const response = await axios.post(host + registerEndpoint, {
+		await store.dispatch('register', {
 			name: name.value,
 			email: email.value,
 			password: password.value,
 			compare: compare.value,
+			invalidMsg,
 		});
-
-		store.commit('setToken', response.data.token);
 		router.push('/');
 	} catch (error) {
-		console.log(error.response.data);
 		invalidMsg.value = error.response.data.msg;
 	}
 };

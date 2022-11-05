@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import HomePage from './home/HomePage.vue';
 import LoginPage from './auth/LoginPage.vue';
 import RegisterPage from './auth/RegisterPage.vue';
@@ -6,7 +6,7 @@ import HeaderFull from './global/HeaderFull.vue';
 import store from './store';
 
 export default createRouter({
-	history: createWebHashHistory(),
+	history: createWebHistory(),
 	routes: [
 		{
 			path: '/login',
