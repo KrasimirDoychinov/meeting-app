@@ -1,3 +1,5 @@
+import { Gender } from '../enums/genderEnums';
+
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
@@ -36,11 +38,12 @@ const UserSchema = new mongoose.Schema({
 			required: false,
 		},
 	},
-	avatarUrl: {
+	gender: {
 		type: String,
-		default: 'Test url',
+		enum: [Gender.Male, Gender.Female],
 	},
 	tags: [String],
+	friends: [String],
 });
 
 UserSchema.pre('save', async function () {

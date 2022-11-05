@@ -1,6 +1,8 @@
+import { Gender } from '../enums/genderEnums';
+
 export interface UserAnonData {
 	id: string;
 	name: string;
-	avatarUrl: string;
+	gender: Gender;
 	messages: string[];
 }

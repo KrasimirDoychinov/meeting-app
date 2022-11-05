@@ -3,7 +3,8 @@
 		<div class="users">
 			<div v-for="(user, index) in users.value" :key="index" class="user-box">
 				{{ user.name }}
-				<img src="../user (2).png" alt="" />
+				{{ user.id }}
+				<img @click="addFriend(user.id)" src="../user (2).png" alt="" />
 			</div>
 		</div>
 	</div>
@@ -13,7 +14,14 @@
 import { onBeforeMount, onMounted, ref } from '@vue/runtime-core';
 import store from '../store/index.js';
 
+// props
 const users = ref([]);
+
+// methods
+const addFriend = async (id) => {
+	store.dispatch('addFriend', { id });
+};
+//
 onBeforeMount(async () => {
 	users.value = ref(await store.dispatch('allUsers'));
 });

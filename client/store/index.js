@@ -19,8 +19,8 @@ export default createStore({
 		isLoggedIn(state) {
 			return state.token.length === 0 ? false : true;
 		},
-		getBearer(state) {
-			return `Bearer ${state.token}`;
+		getHeaders(state) {
+			return { Authorization: `Bearer ${state.token}` };
 		},
 	},
 	actions: {
@@ -42,10 +42,18 @@ export default createStore({
 		},
 		async allUsers({ state, getters, commit }) {
 			const response = await axios.get(state.host + '/user', {
-				headers: {
-					Authorization: getters.getBearer,
-				},
+				headers: getters.getHeaders,
 			});
+			return response.data;
+		},
+		async addFriend({ state, getters, commit }, { id }) {
+			const response = await axios.post(
+				state.host + `/user/friend/${id}`,
+				{},
+				{
+					headers: getters.getHeaders,
+				}
+			);
 			return response.data;
 		},
 	},
