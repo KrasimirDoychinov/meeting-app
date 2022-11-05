@@ -47,5 +47,9 @@ export default createRouter({
 				}
 			},
 		},
+		{
+			path: '/logout',
+			name: 'Logout',
+		},
 	],
 });

@@ -44,11 +44,10 @@ body {
 	background: $white;
 	font-family: 'Cascadia Mono', sans-serif;
 	font-size: 12px;
-	padding: 0.3em;
 }
 
-
 main {
+	padding: 0.3em;
 	height: 78vh;
 	display: flex;
 	justify-content: center;
