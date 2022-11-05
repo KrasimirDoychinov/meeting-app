@@ -6,6 +6,7 @@ import { chatRouter } from './components/chat/chatRoutes';
 import { commentRouter } from './components/comment/commentRoutes';
 import { errorHandler } from './components/middlewares/errorHandler';
 import { postRouter } from './components/post/postRoutes';
+import { userRouter } from './components/user/userRoutes';
 import { connectDB } from './connectDB';
 
 const cors = require('cors');
@@ -22,6 +23,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/post', postRouter);
 app.use('/api/comment', commentRouter);
 app.use('/api/chat', chatRouter);
+app.use('/api/user', userRouter);
 // middlewares
 
 app.use(errorHandler);

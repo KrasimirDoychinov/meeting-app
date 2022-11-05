@@ -1,9 +1,7 @@
 <template>
 	<router-view name="header"></router-view>
 	<main>
-		<div>
-			<router-view></router-view>
-		</div>
+		<router-view></router-view>
 	</main>
 	<!-- <footer>
 		<ul>
@@ -48,7 +46,8 @@ body {
 
 main {
 	padding: 0.3em;
-	height: 89vh;
+	padding-top: 11vh;
+	height: 88vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -81,7 +80,7 @@ footer {
 @media screen and (min-width: 750px) {
 	main {
 		div {
-			width: 500px;
+			width: 650px;
 		}
 	}
 

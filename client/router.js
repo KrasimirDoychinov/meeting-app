@@ -3,6 +3,8 @@ import HomePage from './home/HomePage.vue';
 import LoginPage from './auth/LoginPage.vue';
 import RegisterPage from './auth/RegisterPage.vue';
 import HeaderFull from './global/HeaderFull.vue';
+import ChatPage from './chat/ChatPage.vue';
+
 import store from './store';
 
 export default createRouter({
@@ -34,13 +36,28 @@ export default createRouter({
 				} else {
 					next();
 				}
-			},
+    },
 		},
 		{
 			path: '/',
 			name: 'Home',
 			components: {
 				default: HomePage,
+				header: HeaderFull,
+			},
+			beforeEnter: (to, from, next) => {
+				if (!store.state.token) {
+					next('/login');
+				} else {
+					next();
+				}
+			},
+		},
+		{
+			path: '/chat',
+			name: 'Chat',
+			components: {
+				default: ChatPage,
 				header: HeaderFull,
 			},
 			beforeEnter: (to, from, next) => {

@@ -16,6 +16,7 @@ const chatRoutes_1 = require("./components/chat/chatRoutes");
 const commentRoutes_1 = require("./components/comment/commentRoutes");
 const errorHandler_1 = require("./components/middlewares/errorHandler");
 const postRoutes_1 = require("./components/post/postRoutes");
+const userRoutes_1 = require("./components/user/userRoutes");
 const connectDB_1 = require("./connectDB");
 const cors = require('cors');
 const bp = require('body-parser');
@@ -29,6 +30,7 @@ app.use('/api/auth', authRoutes_1.authRouter);
 app.use('/api/post', postRoutes_1.postRouter);
 app.use('/api/comment', commentRoutes_1.commentRouter);
 app.use('/api/chat', chatRoutes_1.chatRouter);
+app.use('/api/user', userRoutes_1.userRouter);
 // middlewares
 app.use(errorHandler_1.errorHandler);
 // app start

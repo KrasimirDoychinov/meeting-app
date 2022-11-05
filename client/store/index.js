@@ -19,6 +19,9 @@ export default createStore({
 		isLoggedIn(state) {
 			return state.token.length === 0 ? false : true;
 		},
+		getBearer(state) {
+			return `Bearer ${state.token}`;
+		},
 	},
 	actions: {
 		async login({ state, commit }, { email, password }) {
@@ -36,6 +39,14 @@ export default createStore({
 				compare,
 			});
 			commit('setToken', response.data.token);
+		},
+		async allUsers({ state, getters, commit }) {
+			const response = await axios.get(state.host + '/user', {
+				headers: {
+					Authorization: getters.getBearer,
+				},
+			});
+			return response.data;
 		},
 	},
 });

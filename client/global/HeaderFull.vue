@@ -4,11 +4,13 @@
 			<i class="logo fa-brands fa-js"></i>
 			<div class="search">
 				<i class="fa-solid fa-magnifying-glass"></i>
-				<input type="text" v-model="search" />
+				<input type="text" v-model="search" placeholder="Search" />
 			</div>
 			<ul>
 				<li>
-					<i class="fa-solid fa-message"></i>
+					<router-link to="/chat">
+						<i class="fa-solid fa-message"></i>
+					</router-link>
 				</li>
 				<li>
 					<i @click="logout" class="fa-solid fa-right-from-bracket"></i>
@@ -41,12 +43,14 @@ const logout = async () => {
 }
 
 header {
+	position: fixed;
+	top: 0;
 	font-size: 18px;
 	padding: 0em 1em;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	width: 100%;
+	width: 95vw;
 	color: $white;
 	height: 10vh;
 	background: linear-gradient($purple, $light-purple);
@@ -55,7 +59,7 @@ header {
 	border-bottom-right-radius: 20px;
 
 	.logo {
-		font-size: 2.5em;
+		font-size: 2em;
 	}
 
 	.search {
@@ -63,6 +67,7 @@ header {
 		gap: 0.5em;
 
 		input {
+			padding-left: 1em;
 			height: 1.5em;
 			border-radius: 10px;
 			border: 0px solid;
@@ -70,7 +75,7 @@ header {
 	}
 
 	ul {
-		font-size: 1.4em;
+		font-size: 1em;
 		display: flex;
 		gap: 0.8em;
 		.messages {
