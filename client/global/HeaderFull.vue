@@ -1,14 +1,28 @@
 <template>
 	<div class="header">
 		<header>
-			<a @click="logout">Logout</a>
+			<i class="logo fa-brands fa-js"></i>
+			<div class="search">
+				<i class="fa-solid fa-magnifying-glass"></i>
+				<input type="text" v-model="search" />
+			</div>
+			<ul>
+				<li>
+					<i class="fa-solid fa-message"></i>
+				</li>
+				<li>
+					<i @click="logout" class="fa-solid fa-right-from-bracket"></i>
+				</li>
+			</ul>
 		</header>
 	</div>
 </template>
 
 <script setup>
 import store from '../store/index';
-import router from '../router';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 // methods
 const logout = async () => {
@@ -27,9 +41,10 @@ const logout = async () => {
 }
 
 header {
+	font-size: 18px;
 	padding: 0em 1em;
 	display: flex;
-	align-items: flex-start;
+	justify-content: space-between;
 	align-items: center;
 	width: 100%;
 	color: $white;
@@ -38,6 +53,32 @@ header {
 	grid-area: header;
 	border-bottom-left-radius: 20px;
 	border-bottom-right-radius: 20px;
+
+	.logo {
+		font-size: 2.5em;
+	}
+
+	.search {
+		display: flex;
+		gap: 0.5em;
+
+		input {
+			height: 1.5em;
+			border-radius: 10px;
+			border: 0px solid;
+		}
+	}
+
+	ul {
+		font-size: 1.4em;
+		display: flex;
+		gap: 0.8em;
+		.messages {
+			color: $white;
+			width: 1em;
+			height: 1em;
+		}
+	}
 }
 
 @media screen and (min-width: 750px) {

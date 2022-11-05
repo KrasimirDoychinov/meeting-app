@@ -32,9 +32,10 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import store from '../store/index.js';
-import router from '../router.js';
 
+const router = useRouter();
 // ref props
 const name = ref('');
 const email = ref('');

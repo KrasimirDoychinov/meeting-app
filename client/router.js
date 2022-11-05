@@ -11,7 +11,9 @@ export default createRouter({
 		{
 			path: '/login',
 			name: 'Login',
-			component: LoginPage,
+			components: {
+				default: LoginPage,
+			},
 			beforeEnter: (to, from, next) => {
 				if (store.state.token) {
 					next('/');
@@ -23,7 +25,9 @@ export default createRouter({
 		{
 			path: '/register',
 			name: 'Register',
-			component: RegisterPage,
+			components: {
+				default: RegisterPage,
+			},
 			beforeEnter: (to, from, next) => {
 				if (store.state.token) {
 					next('/');
@@ -46,10 +50,6 @@ export default createRouter({
 					next();
 				}
 			},
-		},
-		{
-			path: '/logout',
-			name: 'Logout',
 		},
 	],
 });

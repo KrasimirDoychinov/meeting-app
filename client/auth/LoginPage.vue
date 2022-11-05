@@ -22,13 +22,10 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import store from '../store/index';
-import router from '../router.js';
 
-import axios from 'axios';
-
-// non ref props
-
+const router = useRouter();
 // ref props
 const email = ref('');
 const password = ref('');
