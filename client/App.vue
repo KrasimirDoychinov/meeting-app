@@ -1,7 +1,9 @@
 <template>
 	<router-view name="header"></router-view>
 	<main>
-		<router-view></router-view>
+		<div>
+			<router-view></router-view>
+		</div>
 	</main>
 	<footer></footer>
 </template>
@@ -36,11 +38,9 @@ ul {
 }
 
 body {
-	display: grid;
-	grid-template-areas:
-		'header'
-		'main  '
-		'footer';
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	background: $white;
 	font-family: 'Cascadia Mono', sans-serif;
 	font-size: 12px;
@@ -48,14 +48,23 @@ body {
 
 main {
 	padding: 0.3em;
-	height: 78vh;
+	height: 89vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	grid-area: main;
+	div {
+		display: flex;
+		flex-flow: column;
+		justify-content: center;
+		align-items: center;
+	}
 }
 
-footer {
-	height: 10vh;
+@media screen and (min-width: 750px) {
+	main {
+		div {
+			width: 500px;
+		}
+	}
 }
 </style>
