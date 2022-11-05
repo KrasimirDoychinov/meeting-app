@@ -2,7 +2,6 @@ import { AuthServices } from '../auth/authServices';
 import { CustomError } from '../errors/customError';
 
 export const authorize = (req: any, res: any, next: any) => {
-	console.log(req.headers);
 	const header = req.headers.authorization;
 	if (!header) {
 		throw new CustomError('Authorization header is missing', 401);

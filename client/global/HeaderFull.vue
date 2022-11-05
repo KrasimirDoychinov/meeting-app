@@ -1,12 +1,22 @@
 <template>
 	<div class="header">
 		<header>
-			<i class="logo fa-brands fa-js"></i>
+			<router-link to="/">
+				<i class="logo fa-brands fa-js"></i>
+			</router-link>
 			<div class="search">
 				<i class="fa-solid fa-magnifying-glass"></i>
 				<input type="text" v-model="search" placeholder="Search" />
 			</div>
 			<ul>
+				<li>
+					<i
+						v-if="notificationCount"
+						class="notifications fa-solid fa-envelope"
+						:count="notificationCount"
+					></i>
+					<i v-else class="fa-solid fa-envelope"></i>
+				</li>
 				<li>
 					<router-link to="/chat">
 						<i class="fa-solid fa-message"></i>
@@ -23,9 +33,15 @@
 <script setup>
 import store from '../store/index';
 import { useRouter } from 'vue-router';
+import { onBeforeMount, ref } from '@vue/runtime-core';
 
 const router = useRouter();
-
+// props
+const notificationCount = ref(0);
+onBeforeMount(async () => {
+	const response = await store.dispatch('friendNotificationsByUser');
+	notificationCount.value = response.count;
+});
 // methods
 const logout = async () => {
 	store.commit('removeToken');
@@ -45,7 +61,7 @@ const logout = async () => {
 header {
 	position: fixed;
 	top: 0;
-	font-size: 18px;
+	font-size: 2em;
 	padding: 0em 1em;
 	display: flex;
 	justify-content: space-between;
@@ -71,6 +87,27 @@ header {
 			height: 1.5em;
 			border-radius: 10px;
 			border: 0px solid;
+		}
+	}
+
+	.notifications {
+		position: relative;
+		&::after {
+			position: absolute;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			content: attr(count);
+			color: $white;
+			background: $red;
+			width: 10px;
+			height: 10px;
+			font-size: 0.6em;
+			padding: 0.4em;
+			border-radius: 50px;
+			top: 0;
+			margin-left: 1em;
+			margin-top: 1em;
 		}
 	}
 

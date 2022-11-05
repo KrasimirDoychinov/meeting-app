@@ -12,8 +12,6 @@ export class ChatServices {
 		const personA = await UserServices.byId(personAId);
 		const personB = await UserServices.byId(personBId);
 
-		console.log(personA);
-		console.log(personB);
 		const chat = await Chat.create({ personA, personB });
 		return chat;
 	}

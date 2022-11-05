@@ -24,6 +24,7 @@ export default createStore({
 		},
 	},
 	actions: {
+		// auth
 		async login({ state, commit }, { email, password }) {
 			const response = await axios.post(state.host + '/auth/login', {
 				email,
@@ -40,10 +41,20 @@ export default createStore({
 			});
 			commit('setToken', response.data.token);
 		},
+		// user
 		async allUsers({ state, getters, commit }) {
 			const response = await axios.get(state.host + '/user', {
 				headers: getters.getHeaders,
 			});
+			return response.data;
+		},
+		async friendNotificationsByUser({ state, getters }) {
+			const response = await axios.get(
+				state.host + `/user/notifications/friend`,
+				{
+					headers: getters.getHeaders,
+				}
+			);
 			return response.data;
 		},
 		async addFriend({ state, getters, commit }, { id }) {

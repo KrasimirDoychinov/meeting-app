@@ -20,6 +20,7 @@ const users = ref([]);
 // methods
 const addFriend = async (id) => {
 	store.dispatch('addFriend', { id });
+	alert('Friend request sent!');
 };
 //
 onBeforeMount(async () => {

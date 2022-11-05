@@ -28,6 +28,9 @@ export class AuthServices {
 			imageUrl: 'Image url',
 		};
 
+		const salt = await bcrypt.genSalt(10);
+		password = await bcrypt.hash(password, salt);
+
 		const user = await User.create({
 			name,
 			email,

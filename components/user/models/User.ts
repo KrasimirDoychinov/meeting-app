@@ -39,16 +39,12 @@ const UserSchema = new mongoose.Schema({
 		},
 	},
 	gender: {
-		type: String,
+		type: Number,
 		enum: [Gender.Male, Gender.Female],
 	},
 	tags: [String],
 	friends: [String],
-});
-
-UserSchema.pre('save', async function () {
-	const salt = await bcrypt.genSalt(10);
-	this.password = await bcrypt.hash(this.password, salt);
+	friendNotifications: [String],
 });
 
 export const User = mongoose.model('User', UserSchema);
