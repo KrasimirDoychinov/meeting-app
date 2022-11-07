@@ -59,10 +59,16 @@ export class UserServices {
 
 		const currentUser = await User.findById(currentUserId);
 		const friendUser = await User.findById(userToFriendId);
-		const friendRequestSend = friendUser.friendNotifications.some(
+		const friendRequestSend = currentUser.friendNotifications.some(
 			(x: any) => x.id === userToFriendId
 		);
-		if (friendRequestSend) {
+
+		const alreadyFriends =
+			friendUser.friends.includes(currentUserId) &&
+			currentUser.friends.includes(userToFriendId);
+		console.log(alreadyFriends);
+		console.log(friendRequestSend);
+		if (alreadyFriends || !friendRequestSend) {
 			throw new CustomError("User hasn't send friend request", 400);
 		}
 

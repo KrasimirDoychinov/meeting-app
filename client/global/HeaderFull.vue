@@ -42,6 +42,7 @@ import { onBeforeMount, ref } from '@vue/runtime-core';
 const router = useRouter();
 // props
 const notificationCount = ref(0);
+console.log(store.state.notificationCount);
 onBeforeMount(async () => {
 	const response = await store.dispatch('friendRequestsByUser');
 	notificationCount.value = response.count;

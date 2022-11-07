@@ -5,6 +5,7 @@ export default createStore({
 	state: {
 		host: 'http://localhost:3000/api',
 		token: '',
+		notificationCount: 0,
 	},
 	mutations: {
 		setToken(state, token) {
@@ -13,6 +14,12 @@ export default createStore({
 		},
 		removeToken(state) {
 			state.token = '';
+		},
+		addNotificationCount(state, value) {
+			state.notificationCount = value;
+		},
+		removeOneNotification(state) {
+			state.notificationCount--;
 		},
 	},
 	getters: {
@@ -48,13 +55,14 @@ export default createStore({
 			});
 			return response.data;
 		},
-		async friendRequestsByUser({ state, getters }) {
+		async friendRequestsByUser({ state, getters, commit }) {
 			const response = await axios.get(state.host + `/user/requests/friend`, {
 				headers: getters.getHeaders,
 			});
+			commit('addNotificationCount', response.data.count);
 			return response.data;
 		},
-		async addFriend({ state, getters }, { id }) {
+		async addFriend({ state, getters, commit }, { id }) {
 			const response = await axios.post(
 				state.host + `/user/friend/${id}`,
 				{},
@@ -62,6 +70,7 @@ export default createStore({
 					headers: getters.getHeaders,
 				}
 			);
+			commit('removeOneNotification');
 			return response.data;
 		},
 		async acceptFriendRequest({ state, getters }, { id }) {

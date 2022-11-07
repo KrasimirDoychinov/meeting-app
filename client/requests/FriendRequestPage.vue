@@ -28,7 +28,7 @@ const requests = ref([]);
 // methods
 const acceptFriendRequest = async (id) => {
 	const response = await store.dispatch('acceptFriendRequest', { id });
-	console.log(response.data);
+	await store.commit('removeOneNotification');
 };
 
 onBeforeMount(async () => {
