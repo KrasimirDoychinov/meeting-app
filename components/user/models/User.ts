@@ -44,7 +44,22 @@ const UserSchema = new mongoose.Schema({
 	},
 	tags: [String],
 	friends: [String],
-	friendNotifications: [String],
+	friendNotifications: [
+		{
+			id: {
+				type: String,
+				required: true,
+			},
+			name: {
+				type: String,
+				required: true,
+			},
+			gender: {
+				type: Number,
+				enum: [Gender.Male, Gender.Female],
+			},
+		},
+	],
 });
 
 export const User = mongoose.model('User', UserSchema);

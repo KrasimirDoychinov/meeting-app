@@ -42,7 +42,7 @@ export default createStore({
 			commit('setToken', response.data.token);
 		},
 		// user
-		async allUsers({ state, getters, commit }) {
+		async allUsers({ state, getters }) {
 			const response = await axios.get(state.host + '/user', {
 				headers: getters.getHeaders,
 			});
@@ -54,7 +54,7 @@ export default createStore({
 			});
 			return response.data;
 		},
-		async addFriend({ state, getters, commit }, { id }) {
+		async addFriend({ state, getters }, { id }) {
 			const response = await axios.post(
 				state.host + `/user/friend/${id}`,
 				{},
@@ -64,10 +64,14 @@ export default createStore({
 			);
 			return response.data;
 		},
-		async allFriendRequests({ state, getters }) {
-			const response = await axios.get(state.host + '/requests/friend', {
-				headers: getters.getHeaders,
-			});
+		async acceptFriendRequest({ state, getters }, { id }) {
+			const response = await axios.post(
+				state.host + `/user/friend/accept/${id}`,
+				{},
+				{
+					headers: getters.getHeaders,
+				}
+			);
 			return response.data;
 		},
 	},

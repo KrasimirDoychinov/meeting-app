@@ -12,8 +12,8 @@
 
 <script setup>
 import { onBeforeMount, ref } from '@vue/runtime-core';
+import store from '../store/index.js';
 
-const store = useStore();
 // props
 const users = ref([]);
 

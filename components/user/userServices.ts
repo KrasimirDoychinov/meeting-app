@@ -2,6 +2,7 @@ import { CustomError } from '../errors/customError';
 import { User } from './models/User';
 import { UserAnonData } from './models/UserAnonData';
 import { UserFullData } from './models/UserFullData';
+import { addToFriend } from './userController';
 
 export class UserServices {
 	static async byId(id: string): Promise<UserFullData> {
@@ -22,6 +23,7 @@ export class UserServices {
 
 	// Friend requests
 
+	// currentUser sends request to userToFriend
 	static async sendFriendRequest(
 		userToFriendId: string,
 		currentUserId: string
@@ -35,12 +37,18 @@ export class UserServices {
 			throw new CustomError('Friend request already send', 400);
 		}
 
-		userToFriend.friendNotifications.push(currentUserId);
+		const currentUser = await User.findById(currentUserId);
+		userToFriend.friendNotifications.push({
+			id: currentUser.id,
+			name: currentUser.name,
+			gender: currentUser.gender,
+		});
 		await userToFriend.save();
 
 		return true;
 	}
 
+	// currentUser accepts userToFriend and they become friends
 	static async acceptFriendRequest(
 		userToFriendId: string,
 		currentUserId: string
@@ -50,16 +58,21 @@ export class UserServices {
 		}
 
 		const currentUser = await User.findById(currentUserId);
-		if (currentUser.friendNotifications.includes(userToFriendId)) {
+		const friendUser = await User.findById(userToFriendId);
+		const friendRequestSend = friendUser.friendNotifications.some(
+			(x: any) => x.id === userToFriendId
+		);
+		if (friendRequestSend) {
 			throw new CustomError("User hasn't send friend request", 400);
 		}
 
 		currentUser.friendNotifications = currentUser.friendNotifications.filter(
-			(x: string) => x !== userToFriendId
+			(x: any) => x.id !== userToFriendId
 		);
 
+		const result = await this.addFriends(currentUser, friendUser);
 		await currentUser.save();
-		return true;
+		return result;
 	}
 
 	static async allFriendRequests(id: string): Promise<string[]> {
@@ -83,5 +96,21 @@ export class UserServices {
 		});
 
 		return result;
+	}
+
+	private static async addFriends(
+		userA: typeof User,
+		userB: typeof User
+	): Promise<boolean> {
+		if (userA === userB) {
+			throw new CustomError('Cannot friend youself', 400);
+		}
+
+		userA.friends.push(userB.id);
+		userB.friends.push(userA.id);
+
+		await userA.save();
+		await userB.save();
+		return true;
 	}
 }
