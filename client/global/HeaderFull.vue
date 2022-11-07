@@ -9,13 +9,17 @@
 				<input type="text" v-model="search" placeholder="Search" />
 			</div>
 			<ul>
-				<li>
-					<i
-						v-if="notificationCount"
-						class="notifications fa-solid fa-envelope"
-						:count="notificationCount"
-					></i>
-					<i v-else class="fa-solid fa-envelope"></i>
+				<li v-if="notificationCount">
+					<router-link to="/requests/friend">
+						<i
+							v-if="notificationCount"
+							class="notifications fa-solid fa-envelope"
+							:count="notificationCount"
+						></i>
+					</router-link>
+				</li>
+				<li v-else>
+					<i class="fa-solid fa-envelope"></i>
 				</li>
 				<li>
 					<router-link to="/chat">
@@ -42,6 +46,7 @@ onBeforeMount(async () => {
 	const response = await store.dispatch('friendRequestsByUser');
 	notificationCount.value = response.count;
 });
+
 // methods
 const logout = async () => {
 	store.commit('removeToken');

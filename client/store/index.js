@@ -64,5 +64,11 @@ export default createStore({
 			);
 			return response.data;
 		},
+		async allFriendRequests({ state, getters }) {
+			const response = await axios.get(state.host + '/requests/friend', {
+				headers: getters.getHeaders,
+			});
+			return response.data;
+		},
 	},
 });

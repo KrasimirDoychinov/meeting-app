@@ -11,9 +11,9 @@
 </template>
 
 <script setup>
-import { onBeforeMount, onMounted, ref } from '@vue/runtime-core';
-import store from '../store/index.js';
+import { onBeforeMount, ref } from '@vue/runtime-core';
 
+const store = useStore();
 // props
 const users = ref([]);
 

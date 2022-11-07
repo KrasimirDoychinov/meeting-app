@@ -4,6 +4,7 @@ import LoginPage from './auth/LoginPage.vue';
 import RegisterPage from './auth/RegisterPage.vue';
 import HeaderFull from './global/HeaderFull.vue';
 import ChatPage from './chat/ChatPage.vue';
+import FriendRequestPage from './requests/FriendRequestPage.vue';
 
 import store from './store';
 
@@ -36,7 +37,7 @@ export default createRouter({
 				} else {
 					next();
 				}
-    },
+			},
 		},
 		{
 			path: '/',
@@ -63,6 +64,21 @@ export default createRouter({
 			beforeEnter: (to, from, next) => {
 				if (!store.state.token) {
 					next('/login');
+				} else {
+					next();
+				}
+			},
+		},
+		{
+			path: '/requests/friend',
+			name: 'Friend Requests',
+			components: {
+				default: FriendRequestPage,
+				header: HeaderFull,
+			},
+			beforeEnter: (to, from, next) => {
+				if (!store.state.token) {
+					next('/requests/friend');
 				} else {
 					next();
 				}

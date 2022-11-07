@@ -45,13 +45,13 @@ export class ChatServices {
 				personA: {
 					id: chat.personA.id,
 					name: chat.personA.name,
-					avatarUrl: chat.personA.avatarUrl,
+					gender: chat.personA.gender,
 					messages: chat.personA.messages,
 				},
 				personB: {
 					id: chat.personB.id,
 					name: chat.personB.name,
-					avatarUrl: chat.personB.avatarUrl,
+					gender: chat.personB.gender,
 					messages: chat.personB.messages,
 				},
 			};
@@ -86,13 +86,13 @@ export class ChatServices {
 			personA: {
 				id: chat.personA.id,
 				name: chat.personA.name,
-				avatarUrl: chat.personA.avatarUrl,
+				gender: chat.personA.gender,
 				messages: chat.personA.messages,
 			},
 			personB: {
 				id: chat.personB.id,
 				name: chat.personB.name,
-				avatarUrl: chat.personB.avatarUrl,
+				gender: chat.personB.gender,
 				messages: chat.personB.messages,
 			},
 		};
