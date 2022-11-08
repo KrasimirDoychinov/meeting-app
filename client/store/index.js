@@ -24,6 +24,9 @@ export default createStore({
 		setTags(state, value) {
 			state.tags = value;
 		},
+		removeTags(state) {
+			state.tags = [];
+		},
 		setNotificationCount(state, value) {
 			state.notificationCount = value;
 		},
@@ -37,6 +40,9 @@ export default createStore({
 		},
 		getHeaders(state) {
 			return { Authorization: `Bearer ${state.token}` };
+		},
+		hasTags(state) {
+			return state.tags.length >= 3;
 		},
 	},
 	actions: {
@@ -101,7 +107,7 @@ export default createStore({
 		// tag
 		async setTags({ state, getters, commit }, { tags }) {
 			const response = await axios.post(
-				state.host + '/tags',
+				state.host + '/tag',
 				{
 					tags,
 				},
@@ -109,8 +115,9 @@ export default createStore({
 					headers: getters.getHeaders,
 				}
 			);
+			console.log(response.data);
 			await commit('setTags', tags);
-			console.log(state.tags);
+			console.log('STATE TAGS \r\n' + state.tags);
 			return response.data;
 		},
 	},

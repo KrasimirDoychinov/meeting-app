@@ -38,13 +38,16 @@
 				</div>
 			</div>
 		</div>
-		<button @click="saveTags" class="accept-btn">Save</button>
+		<button @click="setTags" class="accept-btn">Save</button>
 	</div>
 </template>
 
 <script setup>
 import { ref } from '@vue/reactivity';
+import { useRouter } from 'vue-router';
+import store from '../store/index';
 
+const router = useRouter();
 // props
 const tagsInitial = ref([
 	'History',
@@ -62,7 +65,6 @@ const tagsInitial = ref([
 	'Mongo',
 	'GraphQL',
 ]);
-
 const selectedTags = ref([]);
 
 // methods
@@ -74,11 +76,13 @@ const toggleTag = (tag) => {
 	}
 };
 
-const saveTags = async () => {
+const setTags = async () => {
 	if (selectedTags.value.length < 3) {
-		alert('Please select at least 3 tags');
+		return alert('Please select at least 3 tags');
 	}
-	console.log(selectedTags.value);
+
+	const result = await store.dispatch('setTags', { tags: selectedTags.value });
+	router.push('/');
 };
 </script>
 

@@ -29,10 +29,12 @@ export class AuthServices {
 			imageUrl: 'Image url',
 		};
 
+		const salt = await bcrypt.genSalt(10);
+		const hash = await bcrypt.hash(password, salt);
 		const user = await User.create({
 			name,
 			email,
-			password,
+			password: hash,
 			realData,
 		});
 
@@ -81,7 +83,7 @@ export class AuthServices {
 
 	private static signJWT(user: JWTUserModel): string {
 		return jwt.sign(user, process.env.JWT_SECRET, {
-			expiresIn: '5s',
+			expiresIn: process.env.JWT_LIFETIME,
 		});
 	}
 

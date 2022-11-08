@@ -46,7 +46,12 @@ export default createRouter({
 				default: TagsInitialPage,
 			},
 			beforeEnter: async (to, from, next) => {
-				isAuthorized(store.state.token, store.state.exp, next);
+				if (store.getters.hasTags) {
+					isAuthorized(store.state.token, store.state.exp, next, '/');
+				} else {
+					console.log('doesnt have tags');
+					isAuthorized(store.state.token, store.state.exp, next);
+				}
 			},
 		},
 		{
@@ -85,9 +90,9 @@ export default createRouter({
 	],
 });
 
-const isAuthorized = (token, exp, next) => {
+const isAuthorized = (token, exp, next, to) => {
 	if (isJwtValid(token, exp)) {
-		next();
+		next(to);
 	} else {
 		next('/login');
 	}
