@@ -1,5 +1,5 @@
 <template>
-	<div class="header">
+	<div class="header" key="{{props.key}}">
 		<header>
 			<router-link to="/">
 				<i class="logo fa-brands fa-js"></i>
@@ -41,8 +41,12 @@ import { onBeforeMount, ref } from '@vue/runtime-core';
 
 const router = useRouter();
 // props
+const props = defineProps({
+	key: {
+		type: Number,
+	},
+});
 const notificationCount = ref(0);
-console.log(store.state.notificationCount);
 onBeforeMount(async () => {
 	const response = await store.dispatch('friendRequestsByUser');
 	notificationCount.value = response.count;

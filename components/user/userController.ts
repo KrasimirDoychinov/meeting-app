@@ -8,7 +8,7 @@ export const all = async (req: any, res: any) => {
 	res.status(200).json(users);
 };
 
-export const addToFriend = async (req: any, res: any) => {
+export const sendFriendRequest = async (req: any, res: any) => {
 	const userToFriendId = req.params.id;
 	const currentUserId = res.user.id;
 

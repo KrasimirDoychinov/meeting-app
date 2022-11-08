@@ -3,7 +3,6 @@
 		<div class="users">
 			<div v-for="(user, index) in users.value" :key="index" class="user-box">
 				{{ user.name }}
-				{{ user.id }}
 				<img @click="addFriend(user.id)" src="../user (2).png" alt="" />
 			</div>
 		</div>
@@ -19,8 +18,12 @@ const users = ref([]);
 
 // methods
 const addFriend = async (id) => {
-	store.dispatch('addFriend', { id });
-	alert('Friend request sent!');
+	try {
+		await store.dispatch('addFriend', { id });
+		alert('Friend request sent!');
+	} catch (error) {
+		alert(`ERROR: ${error.response.data.msg}`);
+	}
 };
 
 onBeforeMount(async () => {

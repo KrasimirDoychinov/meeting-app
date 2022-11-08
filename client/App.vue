@@ -1,7 +1,7 @@
 <template>
-	<router-view name="header"></router-view>
+	<router-view :key="headerKey" name="header"></router-view>
 	<main>
-		<router-view></router-view>
+		<router-view @forceRerenderHeader="forceRerenderHeader"></router-view>
 	</main>
 	<!-- <footer>
 		<ul>
@@ -10,7 +10,16 @@
 	</footer> -->
 </template>
 
-<script setup></script>
+<script setup>
+import { ref } from '@vue/reactivity';
+
+const headerKey = ref(0);
+
+const forceRerenderHeader = () => {
+	console.log('force rerender header');
+	headerKey.value++;
+};
+</script>
 
 <style lang="scss">
 @import './scss/variables';

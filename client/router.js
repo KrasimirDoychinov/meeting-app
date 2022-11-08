@@ -78,7 +78,7 @@ export default createRouter({
 			},
 			beforeEnter: (to, from, next) => {
 				if (!store.state.token) {
-					next('/requests/friend');
+					next('/login');
 				} else {
 					next();
 				}

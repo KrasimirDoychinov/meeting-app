@@ -2,7 +2,6 @@ import { CustomError } from '../errors/customError';
 import { User } from './models/User';
 import { UserAnonData } from './models/UserAnonData';
 import { UserFullData } from './models/UserFullData';
-import { addToFriend } from './userController';
 
 export class UserServices {
 	static async byId(id: string): Promise<UserFullData> {
@@ -33,11 +32,22 @@ export class UserServices {
 		}
 
 		const userToFriend = await User.findById(userToFriendId);
-		if (userToFriend.friendNotifications.includes(currentUserId)) {
+
+		const friendRequestSend = userToFriend.friendNotifications.some(
+			(x: any) => x.id === currentUserId
+		);
+		if (friendRequestSend) {
 			throw new CustomError('Friend request already send', 400);
 		}
 
 		const currentUser = await User.findById(currentUserId);
+		const usersAreFriends =
+			userToFriend.friends.includes(currentUserId) &&
+			currentUser.friends.includes(userToFriendId);
+		if (usersAreFriends) {
+			throw new CustomError('Users are already friends', 400);
+		}
+
 		userToFriend.friendNotifications.push({
 			id: currentUser.id,
 			name: currentUser.name,
@@ -59,17 +69,19 @@ export class UserServices {
 
 		const currentUser = await User.findById(currentUserId);
 		const friendUser = await User.findById(userToFriendId);
+
 		const friendRequestSend = currentUser.friendNotifications.some(
 			(x: any) => x.id === userToFriendId
 		);
+		if (!friendRequestSend) {
+			throw new CustomError("User hasn't send friend request", 400);
+		}
 
 		const alreadyFriends =
 			friendUser.friends.includes(currentUserId) &&
 			currentUser.friends.includes(userToFriendId);
-		console.log(alreadyFriends);
-		console.log(friendRequestSend);
-		if (alreadyFriends || !friendRequestSend) {
-			throw new CustomError("User hasn't send friend request", 400);
+		if (alreadyFriends) {
+			throw new CustomError('Users are already friends', 400);
 		}
 
 		currentUser.friendNotifications = currentUser.friendNotifications.filter(
