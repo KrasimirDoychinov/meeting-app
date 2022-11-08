@@ -89,9 +89,7 @@ footer {
 
 @media screen and (min-width: 750px) {
 	main {
-		div {
-			width: 650px;
-		}
+		width: 650px;
 	}
 
 	footer {
