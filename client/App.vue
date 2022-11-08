@@ -10,6 +10,7 @@
 	</footer> -->
 </template>
 
+// TODO: All alerts are placeholders for now
 <script setup>
 import { ref } from '@vue/reactivity';
 

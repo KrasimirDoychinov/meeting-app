@@ -3,3 +3,41 @@
 .red-color {
 	color: $red;
 }
+
+.accept-btn {
+	color: $white;
+	border: 0px solid;
+	border-radius: 15px;
+	font-size: 15px;
+	padding: 0.5em 1em;
+	background: linear-gradient($light-green, $green);
+	font-weight: bold;
+	transition: 0.5s;
+
+	&:hover {
+		color: $white;
+		background: $purple;
+		transition: 0.5s;
+	}
+}
+
+::-webkit-scrollbar {
+	width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	border-radius: 20px;
+	background: #cbc9c9;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: $purple;
+	border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: #555;
+}

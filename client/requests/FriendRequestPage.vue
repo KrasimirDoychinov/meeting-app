@@ -7,13 +7,84 @@
 				:key="index"
 				class="user-box"
 			>
-				{{ notification.id }}
+				<img src="../user (2).png" alt="" />
 				{{ notification.name }}
-				<img
+				<button
+					class="accept-btn"
 					@click="acceptFriendRequest(notification.id)"
-					src="../user (2).png"
-					alt=""
-				/>
+				>
+					Accept
+				</button>
+			</div>
+			<div
+				v-for="(notification, index) in requests.notifications"
+				:key="index"
+				class="user-box"
+			>
+				<img src="../user (2).png" alt="" />
+				{{ notification.name }}
+				<button
+					class="accept-btn"
+					@click="acceptFriendRequest(notification.id)"
+				>
+					Accept
+				</button>
+			</div>
+			<div
+				v-for="(notification, index) in requests.notifications"
+				:key="index"
+				class="user-box"
+			>
+				<img src="../user (2).png" alt="" />
+				{{ notification.name }}
+				<button
+					class="accept-btn"
+					@click="acceptFriendRequest(notification.id)"
+				>
+					Accept
+				</button>
+			</div>
+			<div
+				v-for="(notification, index) in requests.notifications"
+				:key="index"
+				class="user-box"
+			>
+				<img src="../user (2).png" alt="" />
+				{{ notification.name }}
+				<button
+					class="accept-btn"
+					@click="acceptFriendRequest(notification.id)"
+				>
+					Accept
+				</button>
+			</div>
+			<div
+				v-for="(notification, index) in requests.notifications"
+				:key="index"
+				class="user-box"
+			>
+				<img src="../user (2).png" alt="" />
+				{{ notification.name }}
+				<button
+					class="accept-btn"
+					@click="acceptFriendRequest(notification.id)"
+				>
+					Accept
+				</button>
+			</div>
+			<div
+				v-for="(notification, index) in requests.notifications"
+				:key="index"
+				class="user-box"
+			>
+				<img src="../user (2).png" alt="" />
+				{{ notification.name }}
+				<button
+					class="accept-btn"
+					@click="acceptFriendRequest(notification.id)"
+				>
+					Accept
+				</button>
 			</div>
 		</div>
 	</div>
@@ -36,6 +107,7 @@ const acceptFriendRequest = async (id) => {
 		requests.value.notifications = requests.value.notifications.filter(
 			(x) => x.id !== id
 		);
+		alert('Friend request accepted!');
 	} catch (error) {
 		alert(`ERROR: ${error.response.data.msg}`);
 	}
@@ -48,19 +120,28 @@ onBeforeMount(async () => {
 
 <style lang="scss" scoped>
 @import '../scss/variables';
+@import '../scss/globals';
 
 .main-chat {
 	align-self: flex-start;
 	width: 98vw;
-
 	h2 {
 		margin: 0em 0em 1em 0em;
 	}
 
 	.users {
 		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
 		flex-flow: row;
+		gap: 2em;
 		color: $dark;
+		overflow-y: hidden;
+		overflow-x: auto;
+		padding-bottom: 1em;
+		.accept-btn {
+			margin-top: 0.5em;
+		}
 	}
 }
 
