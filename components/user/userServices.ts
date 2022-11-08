@@ -87,6 +87,9 @@ export class UserServices {
 		currentUser.friendNotifications = currentUser.friendNotifications.filter(
 			(x: any) => x.id !== userToFriendId
 		);
+		friendUser.friendNotifications = friendUser.friendNotifications.filter(
+			(x: any) => x.id !== currentUserId
+		);
 
 		const result = await this.addFriends(currentUser, friendUser);
 		await currentUser.save();
@@ -118,10 +121,15 @@ export class UserServices {
 
 	static async allWithTags(
 		tags: string,
-		email: string
+		email: string,
+		userId: string
 	): Promise<UserAnonData[]> {
 		const users = await User.find({
-			$and: [{ tags: { $regex: tags } }, { email: { $not: { $eq: email } } }],
+			$and: [
+				{ tags: { $regex: tags } },
+				{ email: { $not: { $eq: email } } },
+				{ friends: { $not: { $regex: userId } } },
+			],
 		});
 		const result: UserAnonData[] = users.map((x: typeof User) => {
 			const model: UserAnonData = {
@@ -129,6 +137,9 @@ export class UserServices {
 				name: x.name,
 				tags: x.tags,
 				gender: x.gender,
+				friendRequestSent:
+					x.friendNotifications.some((x: any) => x.id === userId) ||
+					x.friends.some((x: string) => x === userId),
 				messages: [],
 			};
 			return model;

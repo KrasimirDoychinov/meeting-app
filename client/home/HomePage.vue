@@ -1,12 +1,20 @@
 <template>
-	<div class="home-container">
+	<div class="home-container" key="{{counter}}">
 		<div v-if="users.length > 0" class="people-might-know">
 			<h2>People you might know!</h2>
 			<div class="users">
 				<div v-for="(user, index) in users" :key="index" class="user-box">
 					<img src="../user (2).png" alt="" />
 					{{ user.name }}
-					<button class="accept-btn" @click="addFriend(user.id)">Friend</button>
+
+					<button
+						v-if="!user.friendRequestSent"
+						class="btn accept-btn"
+						@click="addFriend(user.id)"
+					>
+						Send request
+					</button>
+					<button v-else class="btn disabled-btn">Pending</button>
 				</div>
 			</div>
 		</div>
@@ -24,6 +32,7 @@ const users = ref([]);
 const addFriend = async (id) => {
 	try {
 		await store.dispatch('addFriend', { id });
+		users.value = users.value.filter((x) => x.id !== id);
 		alert('Friend request sent!');
 	} catch (error) {
 		alert(`ERROR: ${error.response.data.msg}`);
@@ -34,6 +43,7 @@ onBeforeMount(async () => {
 	users.value = await store.dispatch('allUsersByTag', {
 		tags: store.state.tags,
 	});
+	console.log(users.value[0]);
 });
 </script>
 

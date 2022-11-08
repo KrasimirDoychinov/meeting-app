@@ -4,23 +4,36 @@
 	color: $red;
 }
 
-.accept-btn {
-	color: $white;
+// buttons
+.btn {
 	border: 0px solid;
 	border-radius: 15px;
 	font-size: 15px;
 	padding: 0.5em 1em;
-	background: $background-gradient-green;
 	font-weight: bold;
 	transition: 0.5s;
 
 	&:hover {
-		color: $white;
-		background: $purple;
 		transition: 0.5s;
 	}
 }
 
+.accept-btn {
+	color: $white;
+	background: $background-gradient-green;
+
+	&:hover {
+		color: $white;
+		background: $purple;
+	}
+}
+
+.disabled-btn {
+	color: purple;
+	background: $dark-gray;
+}
+
+// scrollbar
 ::-webkit-scrollbar {
 	width: 10px;
 }

@@ -3,9 +3,10 @@ import { UserServices } from './userServices';
 
 export const allWithTags = async (req: any, res: any) => {
 	const tags = req.query.tags;
+	const userId = res.user.id;
 	const email = res.user.email;
 
-	const result = await UserServices.allWithTags(tags, email);
+	const result = await UserServices.allWithTags(tags, email, userId);
 
 	res.status(200).json(result);
 };

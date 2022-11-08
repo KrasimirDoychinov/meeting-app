@@ -10,49 +10,7 @@
 				<img src="../user (2).png" alt="" />
 				{{ notification.name }}
 				<button
-					class="accept-btn"
-					@click="acceptFriendRequest(notification.id)"
-				>
-					Accept
-				</button>
-			</div>
-			<div
-				v-for="(notification, index) in requests.notifications"
-				:key="index"
-				class="user-box"
-			>
-				<img src="../user (2).png" alt="" />
-				{{ notification.name }}
-				<button
-					class="accept-btn"
-					@click="acceptFriendRequest(notification.id)"
-				>
-					Accept
-				</button>
-			</div>
-			<div
-				v-for="(notification, index) in requests.notifications"
-				:key="index"
-				class="user-box"
-			>
-				<img src="../user (2).png" alt="" />
-				{{ notification.name }}
-				<button
-					class="accept-btn"
-					@click="acceptFriendRequest(notification.id)"
-				>
-					Accept
-				</button>
-			</div>
-			<div
-				v-for="(notification, index) in requests.notifications"
-				:key="index"
-				class="user-box"
-			>
-				<img src="../user (2).png" alt="" />
-				{{ notification.name }}
-				<button
-					class="accept-btn"
+					class="btn accept-btn"
 					@click="acceptFriendRequest(notification.id)"
 				>
 					Accept

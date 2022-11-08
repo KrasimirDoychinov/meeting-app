@@ -6,4 +6,5 @@ export interface UserAnonData {
 	gender: Gender;
 	messages: string[];
 	tags?: string[];
+	friendRequestSent?: boolean;
 }
