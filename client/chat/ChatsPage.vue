@@ -13,19 +13,52 @@
 					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
 				</div>
 				<div class="message user">
-					<p>
-						Hi how are youHi how are youHi how are youHi how are youHi how are
-						youHi how are youHi how are you?
-					</p>
+					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
+				</div>
+				<div class="message user">
+					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
+				</div>
+				<div class="message user">
+					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
+				</div>
+				<div class="message user">
+					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
+				</div>
+				<div class="message friend">
+					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
+				</div>
+				<div class="message user">
+					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
+				</div>
+				<div class="message user">
+					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
+				</div>
+				<div class="message user">
+					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
+				</div>
+				<div class="message user">
+					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
+				</div>
+				<div class="message friend">
+					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
+				</div>
+
+				<div class="message friend">
+					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
+				</div>
+				<div class="message friend">
+					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
+				</div>
+				<div class="message user">
+					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
 				</div>
 			</div>
-			<textarea name="" id="" cols="30" rows="10"></textarea>
 		</div>
 	</div>
 </template>
 
 <script setup>
-import { onBeforeMount, ref } from '@vue/runtime-core';
+import { onBeforeMount, onBeforeUnmount, ref } from '@vue/runtime-core';
 import store from '../store/index.js';
 
 // props
@@ -41,6 +74,10 @@ const hideChat = () => {
 };
 onBeforeMount(async () => {
 	users.value = ref(await store.dispatch('allFriends'));
+});
+
+onBeforeUnmount(() => {
+	chatIsOpen.value = false;
 });
 </script>
 
@@ -59,12 +96,12 @@ onBeforeMount(async () => {
 
 .chat {
 	display: flex;
-	flex-flow: row;
+	flex-flow: column;
 	background: $gray;
 	border-top-left-radius: 20px;
 	border-top-right-radius: 20px;
 	margin-top: 5em;
-	height: 81vh;
+	height: 83vh;
 	transform: translateY(200px);
 	opacity: 0;
 	transition: 1s;
@@ -90,14 +127,18 @@ onBeforeMount(async () => {
 		align-self: flex-end;
 		justify-content: flex-start;
 		background: $dark-gray;
-		height: 90%;
-		gap: 1em;
+		overflow-y: auto;
+		overflow-x: hidden;
+		padding-bottom: 3em;
+		border-top-right-radius: 20px;
+		border-top-left-radius: 20px;
 	}
 
 	.message {
 		padding-top: 1em;
 		justify-content: flex-start;
 		color: $purple;
+
 		p {
 			padding: 1em;
 			width: 50%;
