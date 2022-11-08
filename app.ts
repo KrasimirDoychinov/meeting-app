@@ -43,3 +43,6 @@ const start = async () => {
 };
 
 start();
+
+// TODO: Refactor the recommendation logic BE and FE
+// TODO: Refactor the BE models

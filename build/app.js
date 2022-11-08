@@ -48,3 +48,5 @@ const start = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 start();
+// TODO: Refactor the recommendation logic BE and FE
+// TODO: Refactor the BE models
