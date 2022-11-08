@@ -10,3 +10,13 @@ $light-purple: #80489c;
 $purple: #432c7a;
 $light-green: #82cd47;
 $green: #54b435;
+
+$background-gradient-purple: linear-gradient($light-purple, $purple);
+$background-gradient-green: linear-gradient($light-green, $green);
+
+$background-pill-unselected: linear-gradient(to right, #e2e2e2, #c9d6ff);
+$background-pill-selected: linear-gradient(
+	to right,
+	#fc466b,
+	#3f5efb
+) !important;
