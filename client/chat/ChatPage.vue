@@ -2,8 +2,8 @@
 	<div class="main-chat">
 		<div class="users">
 			<div v-for="(user, index) in users.value" :key="index" class="user-box">
-				{{ user.name }}
 				<img @click="addFriend(user.id)" src="../user (2).png" alt="" />
+				{{ user.name }}
 			</div>
 		</div>
 	</div>
@@ -27,7 +27,8 @@ const addFriend = async (id) => {
 };
 
 onBeforeMount(async () => {
-	users.value = ref(await store.dispatch('allUsers'));
+	users.value = ref(await store.dispatch('allFriends'));
+	console.log(users.value);
 });
 </script>
 

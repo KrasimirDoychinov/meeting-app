@@ -148,6 +148,22 @@ export class UserServices {
 		return result;
 	}
 
+	static async allFriends(userId: string): Promise<UserAnonData[]> {
+		const users = await User.find({ friends: { $regex: userId } });
+		const result = users.map((x: typeof User) => {
+			const model: UserAnonData = {
+				id: x._id,
+				name: x.name,
+				tags: x.tags,
+				gender: x.gender,
+				messages: [],
+			};
+			return model;
+		});
+
+		return result;
+	}
+
 	private static async addFriends(
 		userA: typeof User,
 		userB: typeof User

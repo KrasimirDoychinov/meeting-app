@@ -1,4 +1,3 @@
-import { User } from './models/User';
 import { UserServices } from './userServices';
 
 export const allWithTags = async (req: any, res: any) => {
@@ -7,6 +6,14 @@ export const allWithTags = async (req: any, res: any) => {
 	const email = res.user.email;
 
 	const result = await UserServices.allWithTags(tags, email, userId);
+
+	res.status(200).json(result);
+};
+
+export const allFriends = async (req: any, res: any) => {
+	const userId = res.user.id;
+
+	const result = await UserServices.allFriends(userId);
 
 	res.status(200).json(result);
 };

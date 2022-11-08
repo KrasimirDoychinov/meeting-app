@@ -107,6 +107,12 @@ export default createStore({
 			);
 			return response.data;
 		},
+		async allFriends({ state, getters }) {
+			const response = await axios.get(state.host + '/user/friends', {
+				headers: getters.getHeaders,
+			});
+			return response.data;
+		},
 		// tag
 		async setTags({ state, getters, commit }, { tags }) {
 			const response = await axios.post(
