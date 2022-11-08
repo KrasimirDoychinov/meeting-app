@@ -102,7 +102,7 @@ export class UserServices {
 	// Other
 	static async all(userEmail: string): Promise<UserAnonData[]> {
 		const users = await User.find({ email: { $not: { $eq: userEmail } } });
-		const result = users.map((x: typeof User) => {
+		const result: UserAnonData[] = users.map((x: typeof User) => {
 			const model: UserAnonData = {
 				id: x._id,
 				name: x.name,
@@ -110,6 +110,27 @@ export class UserServices {
 				messages: [],
 			};
 
+			return model;
+		});
+
+		return result;
+	}
+
+	static async allWithTags(
+		tags: string,
+		email: string
+	): Promise<UserAnonData[]> {
+		const users = await User.find({
+			$and: [{ tags: { $regex: tags } }, { email: { $not: { $eq: email } } }],
+		});
+		const result: UserAnonData[] = users.map((x: typeof User) => {
+			const model: UserAnonData = {
+				id: x._id,
+				name: x.name,
+				tags: x.tags,
+				gender: x.gender,
+				messages: [],
+			};
 			return model;
 		});
 

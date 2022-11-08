@@ -1,11 +1,13 @@
 import { User } from './models/User';
 import { UserServices } from './userServices';
 
-export const all = async (req: any, res: any) => {
-	const userEmail = res.user.email;
-	const users = await UserServices.all(userEmail);
+export const allWithTags = async (req: any, res: any) => {
+	const tags = req.query.tags;
+	const email = res.user.email;
 
-	res.status(200).json(users);
+	const result = await UserServices.allWithTags(tags, email);
+
+	res.status(200).json(result);
 };
 
 export const sendFriendRequest = async (req: any, res: any) => {

@@ -5,4 +5,5 @@ export interface UserAnonData {
 	name: string;
 	gender: Gender;
 	messages: string[];
+	tags?: string[];
 }

@@ -52,6 +52,7 @@ export default createStore({
 				password,
 			});
 			await commit('setToken', response.data);
+			await commit('setTags', response.data.tags);
 		},
 		async register({ state, commit }, { name, email, password, compare }) {
 			const response = await axios.post(state.host + '/auth/register', {
@@ -69,10 +70,13 @@ export default createStore({
 			return response.data;
 		},
 		// user
-		async allUsers({ state, getters }) {
-			const response = await axios.get(state.host + '/user', {
-				headers: getters.getHeaders,
-			});
+		async allUsersByTag({ state, getters }, { tags }) {
+			const response = await axios.get(
+				state.host + `/user/?tags=${tags.join('|')}`,
+				{
+					headers: getters.getHeaders,
+				}
+			);
 			return response.data;
 		},
 		async friendRequestsByUser({ state, getters, commit }) {

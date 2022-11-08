@@ -1,14 +1,9 @@
 <template>
 	<div class="home-container">
-		<div class="people-might-know">
+		<div v-if="users.length > 0" class="people-might-know">
 			<h2>People you might know!</h2>
 			<div class="users">
-				<div v-for="(user, index) in users.value" :key="index" class="user-box">
-					<img src="../user (2).png" alt="" />
-					{{ user.name }}
-					<button class="accept-btn" @click="addFriend(user.id)">Friend</button>
-				</div>
-				<div v-for="(user, index) in users.value" :key="index" class="user-box">
+				<div v-for="(user, index) in users" :key="index" class="user-box">
 					<img src="../user (2).png" alt="" />
 					{{ user.name }}
 					<button class="accept-btn" @click="addFriend(user.id)">Friend</button>
@@ -36,7 +31,9 @@ const addFriend = async (id) => {
 };
 
 onBeforeMount(async () => {
-	users.value = ref(await store.dispatch('allUsers'));
+	users.value = await store.dispatch('allUsersByTag', {
+		tags: store.state.tags,
+	});
 });
 </script>
 

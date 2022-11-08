@@ -42,6 +42,7 @@ export class AuthServices {
 			id: user.id,
 			name: user.name,
 			email: user.email,
+			tags: user.tags,
 			realData,
 		};
 		const token = this.signJWT(jwtUserModel);
@@ -69,12 +70,13 @@ export class AuthServices {
 			id: user.id,
 			name: user.name,
 			email: user.email,
+			tags: user.tags,
 			realData: user.realData,
 		};
 		const token = this.signJWT(jwtUserModel);
 
 		const result = this.veritfyJWT(token);
-		return { token, iat: result.iat, exp: result.exp };
+		return { token, iat: result.iat, exp: result.exp, tags: user.tags };
 	}
 
 	static veritfyJWT(token: string): JWTUserModel {
