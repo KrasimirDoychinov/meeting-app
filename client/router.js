@@ -3,7 +3,7 @@ import HomePage from './home/HomePage.vue';
 import LoginPage from './auth/LoginPage.vue';
 import RegisterPage from './auth/RegisterPage.vue';
 import HeaderFull from './global/HeaderFull.vue';
-import ChatPage from './chat/ChatPage.vue';
+import ChatsPage from './chat/ChatsPage.vue';
 import TagsInitialPage from './tags/TagsInitialPage.vue';
 import FriendRequestPage from './requests/FriendRequestPage.vue';
 
@@ -68,7 +68,7 @@ export default createRouter({
 			path: '/chat',
 			name: 'Chat',
 			components: {
-				default: ChatPage,
+				default: ChatsPage,
 				header: HeaderFull,
 			},
 			beforeEnter: (to, from, next) => {

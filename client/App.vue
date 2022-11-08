@@ -51,6 +51,7 @@ body {
 	background: $white;
 	font-family: 'Cascadia Mono', sans-serif;
 	font-size: 12px;
+	overflow-x: hidden;
 }
 
 main {
