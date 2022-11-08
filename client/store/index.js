@@ -12,7 +12,6 @@ export default createStore({
 	},
 	mutations: {
 		setToken(state, data) {
-			console.log(data);
 			state.token = data.token;
 			state.exp = data.exp * 1000;
 			console.log(`Token is set to ${data.token}`);
@@ -115,9 +114,7 @@ export default createStore({
 					headers: getters.getHeaders,
 				}
 			);
-			console.log(response.data);
 			await commit('setTags', tags);
-			console.log('STATE TAGS \r\n' + state.tags);
 			return response.data;
 		},
 	},

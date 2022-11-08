@@ -49,7 +49,6 @@ export default createRouter({
 				if (store.getters.hasTags) {
 					isAuthorized(store.state.token, store.state.exp, next, '/');
 				} else {
-					console.log('doesnt have tags');
 					isAuthorized(store.state.token, store.state.exp, next);
 				}
 			},
@@ -97,6 +96,7 @@ const isAuthorized = (token, exp, next, to) => {
 		next('/login');
 	}
 };
+
 const isJwtValid = (token, exp) => {
 	if (token && exp > Date.now()) {
 		return true;

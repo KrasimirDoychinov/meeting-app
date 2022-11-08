@@ -85,7 +85,6 @@ export class PostServices {
 			throw new CustomError('PostId is missing', 400);
 		}
 
-		console.log(newPost);
 		if (Object.keys(newPost).length === 0) {
 			throw new CustomError('New post details is missing', 400);
 		}

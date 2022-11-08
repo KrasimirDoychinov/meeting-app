@@ -58,34 +58,6 @@
 					Accept
 				</button>
 			</div>
-			<div
-				v-for="(notification, index) in requests.notifications"
-				:key="index"
-				class="user-box"
-			>
-				<img src="../user (2).png" alt="" />
-				{{ notification.name }}
-				<button
-					class="accept-btn"
-					@click="acceptFriendRequest(notification.id)"
-				>
-					Accept
-				</button>
-			</div>
-			<div
-				v-for="(notification, index) in requests.notifications"
-				:key="index"
-				class="user-box"
-			>
-				<img src="../user (2).png" alt="" />
-				{{ notification.name }}
-				<button
-					class="accept-btn"
-					@click="acceptFriendRequest(notification.id)"
-				>
-					Accept
-				</button>
-			</div>
 		</div>
 	</div>
 </template>
@@ -139,6 +111,7 @@ onBeforeMount(async () => {
 		overflow-y: hidden;
 		overflow-x: auto;
 		padding-bottom: 1em;
+
 		.accept-btn {
 			margin-top: 0.5em;
 		}

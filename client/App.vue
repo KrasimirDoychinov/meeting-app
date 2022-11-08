@@ -17,7 +17,6 @@ import { ref } from '@vue/reactivity';
 const headerKey = ref(0);
 
 const forceRerenderHeader = () => {
-	console.log('force rerender header');
 	headerKey.value++;
 };
 </script>
