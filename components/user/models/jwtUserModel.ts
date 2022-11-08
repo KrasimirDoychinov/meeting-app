@@ -5,4 +5,6 @@ export interface JWTUserModel {
 	name: string;
 	email: string;
 	realData: UserRealData;
+	iat?: string;
+	exp?: string;
 }

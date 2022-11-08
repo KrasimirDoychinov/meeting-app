@@ -54,7 +54,8 @@ onBeforeMount(async () => {
 
 // methods
 const logout = async () => {
-	store.commit('removeToken');
+	await store.commit('removeToken');
+	await store.commit('removeExpiresIn');
 	router.push('/login');
 };
 </script>

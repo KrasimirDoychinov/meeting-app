@@ -6,6 +6,7 @@ import { chatRouter } from './components/chat/chatRoutes';
 import { commentRouter } from './components/comment/commentRoutes';
 import { errorHandler } from './components/middlewares/errorHandler';
 import { postRouter } from './components/post/postRoutes';
+import { tagRouter } from './components/tag/tagRoutes';
 import { userRouter } from './components/user/userRoutes';
 import { connectDB } from './connectDB';
 
@@ -24,6 +25,7 @@ app.use('/api/post', postRouter);
 app.use('/api/comment', commentRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/user', userRouter);
+app.use('/api/tag', tagRouter);
 // middlewares
 
 app.use(errorHandler);

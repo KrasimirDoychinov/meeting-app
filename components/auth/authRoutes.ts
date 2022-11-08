@@ -1,5 +1,5 @@
 import { authorize } from '../middlewares/authorization';
-import { login, register } from './authController';
+import { checkToken, login, register } from './authController';
 
 const express = require('express');
 export const authRouter = express.Router();

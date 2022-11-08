@@ -2,6 +2,7 @@ import { CustomError } from '../errors/customError';
 import { JWTUserModel } from '../user/models/jwtUserModel';
 import { User } from '../user/models/User';
 import { UserRealData } from '../user/models/UserRealData';
+import { JwtReturnModel } from './models/jwtReturnModel';
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -12,7 +13,7 @@ export class AuthServices {
 		email: string,
 		password: string,
 		compare: string
-	): Promise<string> {
+	): Promise<JwtReturnModel> {
 		if (!name || !email || !password || !compare) {
 			throw new CustomError('All fields are required!', 400);
 		}
@@ -28,9 +29,6 @@ export class AuthServices {
 			imageUrl: 'Image url',
 		};
 
-		const salt = await bcrypt.genSalt(10);
-		password = await bcrypt.hash(password, salt);
-
 		const user = await User.create({
 			name,
 			email,
@@ -45,10 +43,12 @@ export class AuthServices {
 			realData,
 		};
 		const token = this.signJWT(jwtUserModel);
-		return token;
+
+		const result = this.veritfyJWT(token);
+		return { token, iat: result.iat, exp: result.exp };
 	}
 
-	static async login(email: string, password: string): Promise<string> {
+	static async login(email: string, password: string): Promise<JwtReturnModel> {
 		if (!email || !password) {
 			throw new CustomError('All fields are required', 400);
 		}
@@ -71,7 +71,8 @@ export class AuthServices {
 		};
 		const token = this.signJWT(jwtUserModel);
 
-		return token;
+		const result = this.veritfyJWT(token);
+		return { token, iat: result.iat, exp: result.exp };
 	}
 
 	static veritfyJWT(token: string): JWTUserModel {
@@ -80,7 +81,7 @@ export class AuthServices {
 
 	private static signJWT(user: JWTUserModel): string {
 		return jwt.sign(user, process.env.JWT_SECRET, {
-			expiresIn: process.env.JWT_LIFETIME,
+			expiresIn: '5s',
 		});
 	}
 

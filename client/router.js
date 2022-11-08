@@ -19,11 +19,10 @@ export default createRouter({
 				default: LoginPage,
 			},
 			beforeEnter: (to, from, next) => {
-				if (store.state.token) {
+				if (isJwtValid(store.state.token, store.state.exp)) {
 					next('/');
-				} else {
-					next();
 				}
+				next();
 			},
 		},
 		{
@@ -46,12 +45,8 @@ export default createRouter({
 			components: {
 				default: TagsInitialPage,
 			},
-			beforeEnter: (to, from, next) => {
-				if (!store.state.token) {
-					next('/login');
-				} else {
-					next();
-				}
+			beforeEnter: async (to, from, next) => {
+				isAuthorized(store.state.token, store.state.exp, next);
 			},
 		},
 		{
@@ -62,11 +57,7 @@ export default createRouter({
 				header: HeaderFull,
 			},
 			beforeEnter: (to, from, next) => {
-				if (!store.state.token) {
-					next('/login');
-				} else {
-					next();
-				}
+				isAuthorized(store.state.token, store.state.exp, next);
 			},
 		},
 		{
@@ -77,11 +68,7 @@ export default createRouter({
 				header: HeaderFull,
 			},
 			beforeEnter: (to, from, next) => {
-				if (!store.state.token) {
-					next('/login');
-				} else {
-					next();
-				}
+				isAuthorized(store.state.token, store.state.exp, next);
 			},
 		},
 		{
@@ -92,12 +79,23 @@ export default createRouter({
 				header: HeaderFull,
 			},
 			beforeEnter: (to, from, next) => {
-				if (!store.state.token) {
-					next('/login');
-				} else {
-					next();
-				}
+				isAuthorized(store.state.token, store.state.exp, next);
 			},
 		},
 	],
 });
+
+const isAuthorized = (token, exp, next) => {
+	if (isJwtValid(token, exp)) {
+		next();
+	} else {
+		next('/login');
+	}
+};
+const isJwtValid = (token, exp) => {
+	if (token && exp > Date.now()) {
+		return true;
+	}
+
+	return false;
+};

@@ -6,15 +6,23 @@ export default createStore({
 	state: {
 		host: 'http://localhost:3000/api',
 		token: '',
+		tags: [],
+		exp: 0,
 		notificationCount: 0,
 	},
 	mutations: {
-		setToken(state, token) {
-			state.token = token;
-			console.log(`Token is set to ${token}`);
+		setToken(state, data) {
+			console.log(data);
+			state.token = data.token;
+			state.exp = data.exp * 1000;
+			console.log(`Token is set to ${data.token}`);
 		},
 		removeToken(state) {
 			state.token = '';
+			state.exp = 0;
+		},
+		setTags(state, value) {
+			state.tags = value;
 		},
 		setNotificationCount(state, value) {
 			state.notificationCount = value;
@@ -38,7 +46,7 @@ export default createStore({
 				email,
 				password,
 			});
-			commit('setToken', response.data.token);
+			await commit('setToken', response.data);
 		},
 		async register({ state, commit }, { name, email, password, compare }) {
 			const response = await axios.post(state.host + '/auth/register', {
@@ -47,7 +55,13 @@ export default createStore({
 				password,
 				compare,
 			});
-			commit('setToken', response.data.token);
+			await commit('setToken', response.data);
+		},
+		async checkToken({ state, getters }) {
+			const response = await axios.get(state.host + '/auth', {
+				headers: getters.getHeaders,
+			});
+			return response.data;
 		},
 		// user
 		async allUsers({ state, getters }) {
@@ -82,6 +96,21 @@ export default createStore({
 					headers: getters.getHeaders,
 				}
 			);
+			return response.data;
+		},
+		// tag
+		async setTags({ state, getters, commit }, { tags }) {
+			const response = await axios.post(
+				state.host + '/tags',
+				{
+					tags,
+				},
+				{
+					headers: getters.getHeaders,
+				}
+			);
+			await commit('setTags', tags);
+			console.log(state.tags);
 			return response.data;
 		},
 	},

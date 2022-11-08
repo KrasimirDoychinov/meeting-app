@@ -39,6 +39,7 @@ const login = async () => {
 			password: password.value,
 			invalidMsg,
 		});
+		console.log('pushing to home');
 		router.push('/');
 	} catch (error) {
 		invalidMsg.value = error.response.data.msg;
