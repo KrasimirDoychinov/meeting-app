@@ -21,7 +21,7 @@ export class ChatServices {
 		chatId: string,
 		userId: string,
 		content: string
-	): Promise<string> {
+	): Promise<ChatMessage> {
 		const chat = await Chat.findById(chatId);
 		if (!this.isPersonInChat(chat, userId)) {
 			throw new CustomError("This user doesn't belong to this chat", 400);
@@ -31,9 +31,9 @@ export class ChatServices {
 			senderId: userId,
 			content: content,
 		};
-		chat.messages.push(message);
+		chat?.messages.push(message);
 		await chat.save();
-		return `Message: ${content} send succesfully from ${userId}`;
+		return message;
 	}
 
 	static async byId(
@@ -77,7 +77,6 @@ export class ChatServices {
 				personB: chat.personB,
 			};
 		}
-		console.log(model);
 
 		return model;
 	}

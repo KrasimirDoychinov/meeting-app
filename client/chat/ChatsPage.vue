@@ -35,7 +35,12 @@
 </template>
 
 <script setup>
-import { onBeforeMount, onBeforeUnmount, ref } from '@vue/runtime-core';
+import {
+	onBeforeMount,
+	onBeforeUnmount,
+	onMounted,
+	ref,
+} from '@vue/runtime-core';
 import store from '../store/index.js';
 
 // props
@@ -53,6 +58,11 @@ const openChat = async (friendId) => {
 	currentChat.value = chat;
 	chatIsOpen.value = true;
 	const mainChat = document.querySelector('.main-chat');
+
+	await socket.on('create message', (msg) => {
+		console.log(msg);
+		currentChat.value.messages.unshift(msg);
+	});
 };
 
 const hideChat = () => {
@@ -60,12 +70,12 @@ const hideChat = () => {
 };
 
 const sendMessage = async (chatId) => {
-	if (message.value.length > 1) {
-		const response = await store.dispatch('sendMessage', {
-			chatId,
-			content: message.value,
-		});
-	}
+	await socket.emit(
+		'create message',
+		chatId,
+		message.value,
+		store.state.userId
+	);
 };
 onBeforeMount(async () => {
 	users.value = ref(await store.dispatch('allFriends'));

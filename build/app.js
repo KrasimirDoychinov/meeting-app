@@ -13,6 +13,7 @@ require('dotenv').config();
 require('express-async-errors');
 const authRoutes_1 = require("./components/auth/authRoutes");
 const chatRoutes_1 = require("./components/chat/chatRoutes");
+const chatServices_1 = require("./components/chat/chatServices");
 const commentRoutes_1 = require("./components/comment/commentRoutes");
 const errorHandler_1 = require("./components/middlewares/errorHandler");
 const postRoutes_1 = require("./components/post/postRoutes");
@@ -34,7 +35,14 @@ const io = new Server(server, {
 });
 // socket.io
 io.on('connection', (socket) => {
-    console.log('a user connected');
+    console.log('user connected');
+    socket.on('create message', (chatId, content, userId) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log('CREATE MESSAGE FROM ' + userId);
+        if (content.length > 0) {
+            const message = yield chatServices_1.ChatServices.createMessage(chatId, userId, content);
+            io.emit('create message', message);
+        }
+    }));
 });
 app.use(cors());
 app.use(bp.urlencoded({ extended: true }));

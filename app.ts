@@ -3,6 +3,7 @@ require('express-async-errors');
 
 import { authRouter } from './components/auth/authRoutes';
 import { chatRouter } from './components/chat/chatRoutes';
+import { ChatServices } from './components/chat/chatServices';
 import { commentRouter } from './components/comment/commentRoutes';
 import { errorHandler } from './components/middlewares/errorHandler';
 import { postRouter } from './components/post/postRoutes';
@@ -27,7 +28,21 @@ const io = new Server(server, {
 // socket.io
 
 io.on('connection', (socket: any) => {
-	console.log('a user connected');
+	console.log('user connected');
+	socket.on(
+		'create message',
+		async (chatId: string, content: string, userId: string) => {
+			console.log('CREATE MESSAGE FROM ' + userId);
+			if (content.length > 0) {
+				const message = await ChatServices.createMessage(
+					chatId,
+					userId,
+					content
+				);
+				io.emit('create message', message);
+			}
+		}
+	);
 });
 
 app.use(cors());
