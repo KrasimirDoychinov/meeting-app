@@ -6,7 +6,7 @@
 				{{ user.name }}
 			</div>
 		</div>
-		<div class="chat" :class="chatIsOpen ? 'open' : ''">
+		<div class="chat" v-show="chatIsOpen" :class="chatIsOpen ? 'open' : ''">
 			<i @click="hideChat" class="close fa-solid fa-x"></i>
 			<div class="main-chat">
 				<div

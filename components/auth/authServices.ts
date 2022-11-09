@@ -1,8 +1,8 @@
 import { CustomError } from '../errors/customError';
-import { JWTUserModel } from '../user/models/jwtUserModel';
+import { AuthInputModel } from './models/AuthInputModel';
 import { User } from '../user/models/User';
 import { UserRealData } from '../user/models/UserRealData';
-import { JwtReturnModel } from './models/jwtReturnModel';
+import { AuthReturnModel } from './models/AuthReturnModel';
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -13,7 +13,7 @@ export class AuthServices {
 		email: string,
 		password: string,
 		compare: string
-	): Promise<JwtReturnModel> {
+	): Promise<AuthReturnModel> {
 		if (!name || !email || !password || !compare) {
 			throw new CustomError('All fields are required!', 400);
 		}
@@ -38,7 +38,7 @@ export class AuthServices {
 			realData,
 		});
 
-		const jwtUserModel: JWTUserModel = {
+		const jwtUserModel: AuthInputModel = {
 			id: user.id,
 			name: user.name,
 			email: user.email,
@@ -51,7 +51,10 @@ export class AuthServices {
 		return { token, iat: result.iat, exp: result.exp, id: user.id };
 	}
 
-	static async login(email: string, password: string): Promise<JwtReturnModel> {
+	static async login(
+		email: string,
+		password: string
+	): Promise<AuthReturnModel> {
 		if (!email || !password) {
 			throw new CustomError('All fields are required', 400);
 		}
@@ -66,7 +69,7 @@ export class AuthServices {
 			throw new CustomError("Passwords don't match", 400);
 		}
 
-		const jwtUserModel: JWTUserModel = {
+		const jwtUserModel: AuthInputModel = {
 			id: user.id,
 			name: user.name,
 			email: user.email,
@@ -85,11 +88,11 @@ export class AuthServices {
 		};
 	}
 
-	static veritfyJWT(token: string): JWTUserModel {
+	static veritfyJWT(token: string): AuthInputModel {
 		return jwt.verify(token, process.env.JWT_SECRET);
 	}
 
-	private static signJWT(user: JWTUserModel): string {
+	private static signJWT(user: AuthInputModel): string {
 		return jwt.sign(user, process.env.JWT_SECRET, {
 			expiresIn: process.env.JWT_LIFETIME,
 		});

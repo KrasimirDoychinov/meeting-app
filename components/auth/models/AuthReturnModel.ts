@@ -1,4 +1,4 @@
-export interface JwtReturnModel {
+export interface AuthReturnModel {
 	token: string;
 	iat: string | undefined;
 	exp: string | undefined;
