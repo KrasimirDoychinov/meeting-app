@@ -2,6 +2,7 @@ import { CustomError } from '../errors/customError';
 import { UserServices } from '../user/userServices';
 import { Chat } from './models/Chat';
 import { ChatAnonData } from './models/ChatAnonData';
+import { ChatMessage } from './models/ChatMessage';
 import { ChatRealData } from './models/ChatRealData';
 
 export class ChatServices {
@@ -26,10 +27,11 @@ export class ChatServices {
 			throw new CustomError("This user doesn't belong to this chat", 400);
 		}
 
-		chat.messages.push({
+		const message: ChatMessage = {
 			senderId: userId,
 			content: content,
-		});
+		};
+		chat.messages.push(message);
 		await chat.save();
 		return `Message: ${content} send succesfully from ${userId}`;
 	}
@@ -60,13 +62,11 @@ export class ChatServices {
 					id: chat.personA.id,
 					name: chat.personA.name,
 					gender: chat.personA.gender,
-					messages: chat.personA.messages,
 				},
 				personB: {
 					id: chat.personB.id,
 					name: chat.personB.name,
 					gender: chat.personB.gender,
-					messages: chat.personB.messages,
 				},
 			};
 		} else {
@@ -106,13 +106,11 @@ export class ChatServices {
 				id: chat.personA.id,
 				name: chat.personA.name,
 				gender: chat.personA.gender,
-				messages: chat.personA.messages,
 			},
 			personB: {
 				id: chat.personB.id,
 				name: chat.personB.name,
 				gender: chat.personB.gender,
-				messages: chat.personB.messages,
 			},
 		};
 

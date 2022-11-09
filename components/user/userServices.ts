@@ -15,7 +15,6 @@ export class UserServices {
 				lastName: user.realData.lastName,
 				imageUrl: user.realData.imageUrl,
 			},
-			messages: user.messages,
 		};
 		return model;
 	}
@@ -110,7 +109,6 @@ export class UserServices {
 				id: x._id,
 				name: x.name,
 				gender: x.gender,
-				messages: [],
 			};
 
 			return model;
@@ -140,7 +138,6 @@ export class UserServices {
 				friendRequestSent:
 					x.friendNotifications.some((x: any) => x.id === userId) ||
 					x.friends.some((x: string) => x === userId),
-				messages: [],
 			};
 			return model;
 		});
@@ -156,7 +153,6 @@ export class UserServices {
 				name: x.name,
 				tags: x.tags,
 				gender: x.gender,
-				messages: [],
 			};
 			return model;
 		});
