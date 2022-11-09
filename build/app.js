@@ -21,8 +21,21 @@ const userRoutes_1 = require("./components/user/userRoutes");
 const connectDB_1 = require("./connectDB");
 const cors = require('cors');
 const bp = require('body-parser');
+const http = require('http');
 const express = require('express');
 const app = express();
+const server = http.createServer(app);
+const { Server } = require('socket.io');
+const io = new Server(server, {
+    cors: {
+        origin: 'http://localhost:5173',
+        methods: ['GET', 'POST'],
+    },
+});
+// socket.io
+io.on('connection', (socket) => {
+    console.log('a user connected');
+});
 app.use(cors());
 app.use(bp.urlencoded({ extended: true }));
 app.use(bp.json());
@@ -42,6 +55,7 @@ const start = () => __awaiter(void 0, void 0, void 0, function* () {
         const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/facebook-clone';
         yield (0, connectDB_1.connectDB)(mongoUri);
         app.listen(port, () => console.log(`Server listening on port: ${port}`));
+        server.listen(3001, () => console.log(`Web socket server listening on port: ${3001}`));
     }
     catch (error) {
         console.log(error);

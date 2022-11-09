@@ -17,14 +17,6 @@
 				>
 					<p>{{ message.content }}</p>
 				</div>
-				<div
-					v-for="(message, index) in currentChat.messages"
-					:key="index"
-					:class="message.senderId === userId ? 'user' : 'friend'"
-					class="message"
-				>
-					<p>{{ message.content }}</p>
-				</div>
 			</div>
 			<div class="send-message">
 				<textarea
@@ -68,11 +60,12 @@ const hideChat = () => {
 };
 
 const sendMessage = async (chatId) => {
-	console.log(message.value);
-	const response = await store.dispatch('sendMessage', {
-		chatId,
-		content: message.value,
-	});
+	if (message.value.length > 1) {
+		const response = await store.dispatch('sendMessage', {
+			chatId,
+			content: message.value,
+		});
+	}
 };
 onBeforeMount(async () => {
 	users.value = ref(await store.dispatch('allFriends'));
