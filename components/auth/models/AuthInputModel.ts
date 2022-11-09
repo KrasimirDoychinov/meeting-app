@@ -1,4 +1,4 @@
-import { UserRealData } from '../../user/models/UserRealData';
+import { UserRealData } from '../../user/models/output/UserRealData';
 
 export interface AuthInputModel {
 	id: string;

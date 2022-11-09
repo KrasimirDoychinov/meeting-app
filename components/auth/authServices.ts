@@ -1,7 +1,7 @@
 import { CustomError } from '../errors/customError';
 import { AuthInputModel } from './models/AuthInputModel';
 import { User } from '../user/models/User';
-import { UserRealData } from '../user/models/UserRealData';
+import { UserRealData } from '../user/models/output/UserRealData';
 import { AuthReturnModel } from './models/AuthReturnModel';
 
 const bcrypt = require('bcrypt');

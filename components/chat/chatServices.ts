@@ -1,9 +1,9 @@
 import { CustomError } from '../errors/customError';
 import { UserServices } from '../user/userServices';
 import { Chat } from './models/Chat';
-import { ChatAnonData } from './models/ChatAnonData';
-import { ChatMessage } from './models/ChatMessage';
-import { ChatRealData } from './models/ChatRealData';
+import { ChatAnonModel } from './models/output/ChatAnonModel';
+import { ChatMessage } from './models/input/ChatMessageModel';
+import { ChatRealModel } from './models/output/ChatRealModel';
 
 export class ChatServices {
 	static async create(
@@ -39,7 +39,7 @@ export class ChatServices {
 	static async byId(
 		personAId: string,
 		personBId: string
-	): Promise<ChatAnonData | ChatRealData> {
+	): Promise<ChatAnonModel | ChatRealModel> {
 		const chat = (
 			await Chat.find({
 				$or: [
@@ -53,7 +53,7 @@ export class ChatServices {
 			})
 		)[0];
 
-		let model: ChatAnonData | ChatRealData | undefined = undefined;
+		let model: ChatAnonModel | ChatRealModel;
 		if (chat.isAnon) {
 			model = {
 				id: chat.id,
@@ -85,7 +85,7 @@ export class ChatServices {
 	static async changeAnonAgree(
 		chatId: string,
 		userId: string
-	): Promise<ChatAnonData> {
+	): Promise<ChatAnonModel> {
 		const chat = await Chat.findById(chatId);
 
 		if (!this.isPersonInChat(chat, userId)) {
@@ -99,7 +99,7 @@ export class ChatServices {
 		}
 
 		await chat.save();
-		const model: ChatAnonData = {
+		const model: ChatAnonModel = {
 			id: chat.id,
 			messages: chat.messages,
 			personA: {
@@ -117,7 +117,7 @@ export class ChatServices {
 		return model;
 	}
 
-	static async changeAnon(id: string): Promise<ChatRealData> {
+	static async changeAnon(id: string): Promise<ChatRealModel> {
 		const chat = await Chat.findById(id);
 
 		if (
@@ -135,7 +135,7 @@ export class ChatServices {
 		chat.isAnon = false;
 		await chat.save();
 
-		const model: ChatRealData = {
+		const model: ChatRealModel = {
 			id: chat.id,
 			messages: chat.messages,
 			personA: chat.personA,

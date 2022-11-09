@@ -1,6 +1,6 @@
-import { Gender } from '../enums/genderEnums';
+import { Gender } from '../../enums/genderEnums';
 
-export interface UserAnonData {
+export interface UserBaseModel {
 	id: string;
 	name: string;
 	gender: Gender;

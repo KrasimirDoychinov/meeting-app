@@ -1,12 +1,12 @@
 import { CustomError } from '../errors/customError';
 import { User } from './models/User';
-import { UserAnonData } from './models/UserAnonData';
-import { UserFullData } from './models/UserFullData';
+import { UserBaseModel } from './models/output/UserBaseModel';
+import { UserFullModel } from './models/output/UserFullModel';
 
 export class UserServices {
-	static async byId(id: string): Promise<UserFullData> {
+	static async byId(id: string): Promise<UserFullModel> {
 		const user = await User.findById(id);
-		const model: UserFullData = {
+		const model: UserFullModel = {
 			id: user._id,
 			name: user.name,
 			gender: user.gender,
@@ -20,7 +20,6 @@ export class UserServices {
 	}
 
 	// Friend requests
-
 	// currentUser sends request to userToFriend
 	static async sendFriendRequest(
 		userToFriendId: string,
@@ -102,10 +101,10 @@ export class UserServices {
 	}
 
 	// Other
-	static async all(userEmail: string): Promise<UserAnonData[]> {
+	static async all(userEmail: string): Promise<UserBaseModel[]> {
 		const users = await User.find({ email: { $not: { $eq: userEmail } } });
-		const result: UserAnonData[] = users.map((x: typeof User) => {
-			const model: UserAnonData = {
+		const result: UserBaseModel[] = users.map((x: typeof User) => {
+			const model: UserBaseModel = {
 				id: x._id,
 				name: x.name,
 				gender: x.gender,
@@ -121,7 +120,7 @@ export class UserServices {
 		tags: string,
 		email: string,
 		userId: string
-	): Promise<UserAnonData[]> {
+	): Promise<UserBaseModel[]> {
 		const users = await User.find({
 			$and: [
 				{ tags: { $regex: tags } },
@@ -129,8 +128,8 @@ export class UserServices {
 				{ friends: { $not: { $regex: userId } } },
 			],
 		});
-		const result: UserAnonData[] = users.map((x: typeof User) => {
-			const model: UserAnonData = {
+		const result: UserBaseModel[] = users.map((x: typeof User) => {
+			const model: UserBaseModel = {
 				id: x._id,
 				name: x.name,
 				tags: x.tags,
@@ -145,10 +144,10 @@ export class UserServices {
 		return result;
 	}
 
-	static async allFriends(userId: string): Promise<UserAnonData[]> {
+	static async allFriends(userId: string): Promise<UserBaseModel[]> {
 		const users = await User.find({ friends: { $regex: userId } });
 		const result = users.map((x: typeof User) => {
-			const model: UserAnonData = {
+			const model: UserBaseModel = {
 				id: x._id,
 				name: x.name,
 				tags: x.tags,
