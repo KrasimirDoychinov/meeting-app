@@ -26,22 +26,36 @@ export class ChatServices {
 			throw new CustomError("This user doesn't belong to this chat", 400);
 		}
 
-		if (chat.personA.id === userId) {
-			chat.personA.messages.push(content);
-		} else if (chat.personB.id === userId) {
-			chat.personB.messages.push(content);
-		}
-
+		chat.messages.push({
+			senderId: userId,
+			content: content,
+		});
 		await chat.save();
 		return `Message: ${content} send succesfully from ${userId}`;
 	}
 
-	static async byId(id: string): Promise<ChatAnonData | ChatRealData> {
-		const chat = await Chat.findById(id);
+	static async byId(
+		personAId: string,
+		personBId: string
+	): Promise<ChatAnonData | ChatRealData> {
+		const chat = (
+			await Chat.find({
+				$or: [
+					{
+						$and: [{ 'personA.id': personAId }, { 'personB.id': personBId }],
+					},
+					{
+						$and: [{ 'personA.id': personBId }, { 'personB.id': personAId }],
+					},
+				],
+			})
+		)[0];
 
 		let model: ChatAnonData | ChatRealData | undefined = undefined;
 		if (chat.isAnon) {
 			model = {
+				id: chat.id,
+				messages: chat.messages,
 				personA: {
 					id: chat.personA.id,
 					name: chat.personA.name,
@@ -57,10 +71,13 @@ export class ChatServices {
 			};
 		} else {
 			model = {
+				id: chat.id,
+				messages: chat.messages,
 				personA: chat.personA,
 				personB: chat.personB,
 			};
 		}
+		console.log(model);
 
 		return model;
 	}
@@ -83,6 +100,8 @@ export class ChatServices {
 
 		await chat.save();
 		const model: ChatAnonData = {
+			id: chat.id,
+			messages: chat.messages,
 			personA: {
 				id: chat.personA.id,
 				name: chat.personA.name,
@@ -119,6 +138,8 @@ export class ChatServices {
 		await chat.save();
 
 		const model: ChatRealData = {
+			id: chat.id,
+			messages: chat.messages,
 			personA: chat.personA,
 			personB: chat.personB,
 		};

@@ -8,17 +8,20 @@ export default createStore({
 		token: '',
 		tags: [],
 		exp: 0,
+		userId: '',
 		notificationCount: 0,
 	},
 	mutations: {
 		setToken(state, data) {
 			state.token = data.token;
 			state.exp = data.exp * 1000;
+			state.userId = data.id;
 			console.log(`Token is set to ${data.token}`);
 		},
 		removeToken(state) {
 			state.token = '';
 			state.exp = 0;
+			state.userId = '';
 		},
 		setTags(state, value) {
 			state.tags = value;
@@ -125,6 +128,14 @@ export default createStore({
 				}
 			);
 			await commit('setTags', tags);
+			return response.data;
+		},
+		// chat
+		async chatById({ state, getters }, { friendId }) {
+			const response = await axios.get(state.host + `/chat/${friendId}`, {
+				headers: getters.getHeaders,
+			});
+
 			return response.data;
 		},
 	},

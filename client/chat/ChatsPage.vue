@@ -2,55 +2,20 @@
 	<div class="chats">
 		<div v-show="!chatIsOpen" class="users">
 			<div v-for="(user, index) in users.value" :key="index" class="user-box">
-				<img @click="openChat" src="../user (2).png" alt="" />
+				<img @click="openChat(user.id)" src="../user (2).png" alt="" />
 				{{ user.name }}
 			</div>
 		</div>
 		<div class="chat" :class="chatIsOpen ? 'open' : ''">
 			<i @click="hideChat" class="close fa-solid fa-x"></i>
 			<div class="main-chat">
-				<div class="message friend">
-					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
-				</div>
-				<div class="message user">
-					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
-				</div>
-				<div class="message user">
-					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
-				</div>
-				<div class="message user">
-					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
-				</div>
-				<div class="message user">
-					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
-				</div>
-				<div class="message friend">
-					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
-				</div>
-				<div class="message user">
-					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
-				</div>
-				<div class="message user">
-					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
-				</div>
-				<div class="message user">
-					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
-				</div>
-				<div class="message user">
-					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
-				</div>
-				<div class="message friend">
-					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
-				</div>
-
-				<div class="message friend">
-					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
-				</div>
-				<div class="message friend">
-					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
-				</div>
-				<div class="message user">
-					<p>Hi how are you?Hi how are you?Hi how are you?Hi how are you?</p>
+				<div
+					v-for="(message, index) in currentChat.messages"
+					:key="index"
+					:class="message.senderId === userId ? 'user' : 'friend'"
+					class="message"
+				>
+					<p>{{ message.content }}</p>
 				</div>
 			</div>
 		</div>
@@ -64,8 +29,13 @@ import store from '../store/index.js';
 // props
 const users = ref([]);
 const chatIsOpen = ref(false);
+
+const currentChat = ref({});
+const userId = ref(store.state.userId);
 // methods
-const openChat = () => {
+const openChat = async (friendId) => {
+	currentChat.value = await store.dispatch('chatById', { friendId });
+	console.log(currentChat.value);
 	chatIsOpen.value = true;
 };
 

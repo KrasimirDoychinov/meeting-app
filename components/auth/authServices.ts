@@ -48,7 +48,7 @@ export class AuthServices {
 		const token = this.signJWT(jwtUserModel);
 
 		const result = this.veritfyJWT(token);
-		return { token, iat: result.iat, exp: result.exp };
+		return { token, iat: result.iat, exp: result.exp, id: user.id };
 	}
 
 	static async login(email: string, password: string): Promise<JwtReturnModel> {
@@ -76,7 +76,13 @@ export class AuthServices {
 		const token = this.signJWT(jwtUserModel);
 
 		const result = this.veritfyJWT(token);
-		return { token, iat: result.iat, exp: result.exp, tags: user.tags };
+		return {
+			token,
+			iat: result.iat,
+			exp: result.exp,
+			tags: user.tags,
+			id: user.id,
+		};
 	}
 
 	static veritfyJWT(token: string): JWTUserModel {

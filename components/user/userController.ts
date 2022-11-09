@@ -1,3 +1,4 @@
+import { ChatServices } from '../chat/chatServices';
 import { UserServices } from './userServices';
 
 export const allWithTags = async (req: any, res: any) => {
@@ -38,8 +39,9 @@ export const acceptFriendRequest = async (req: any, res: any) => {
 		userToFriendId,
 		currentUserId
 	);
+	const createChat = await ChatServices.create(currentUserId, userToFriendId);
 
-	res.status(200).json({ result });
+	res.status(200).json({ friends: result, chat: createChat });
 };
 
 export const friendNRequestsByUser = async (req: any, res: any) => {

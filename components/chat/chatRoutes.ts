@@ -10,7 +10,7 @@ import {
 const express = require('express');
 export const chatRouter = express.Router();
 
-chatRouter.get('/:id', authorize, chatById);
+chatRouter.get('/:friendId', authorize, chatById);
 chatRouter.post('/create/:personId', authorize, createChat);
 chatRouter.post('/message/:id', authorize, createMessage);
 chatRouter.patch('/changeAnon/:id', authorize, changeAnon);

@@ -1,3 +1,5 @@
+import { Gender } from '../../user/enums/genderEnums';
+
 const mongoose = require('mongoose');
 const ChatSchema = new mongoose.Schema(
 	{
@@ -6,9 +8,9 @@ const ChatSchema = new mongoose.Schema(
 				type: String,
 				required: true,
 			},
-			avatarUrl: {
-				type: String,
-				required: true,
+			gender: {
+				type: Number,
+				enum: [Gender.Male, Gender.Female],
 			},
 			name: {
 				type: String,
@@ -22,11 +24,6 @@ const ChatSchema = new mongoose.Schema(
 			changeAnonAgree: {
 				type: Boolean,
 				default: false,
-			},
-			messages: {
-				type: [String],
-				required: false,
-				maxLength: 300,
 			},
 		},
 		personB: {
@@ -34,9 +31,9 @@ const ChatSchema = new mongoose.Schema(
 				type: String,
 				required: true,
 			},
-			avatarUrl: {
-				type: String,
-				required: true,
+			gender: {
+				type: Number,
+				enum: [Gender.Male, Gender.Female],
 			},
 			name: {
 				type: String,
@@ -51,13 +48,25 @@ const ChatSchema = new mongoose.Schema(
 				type: Boolean,
 				default: false,
 			},
-			messages: {
-				type: [String],
-				required: false,
-				maxLength: 300,
-				minLength: 1,
-			},
 		},
+		messages: [
+			{
+				senderId: {
+					type: String,
+					required: true,
+				},
+				content: {
+					type: String,
+					required: true,
+					maxLength: 300,
+					minLength: 1,
+				},
+				date: {
+					type: Date,
+					default: Date.now(),
+				},
+			},
+		],
 		isAnon: {
 			type: Boolean,
 			default: true,
