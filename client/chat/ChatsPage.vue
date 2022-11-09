@@ -17,6 +17,26 @@
 				>
 					<p>{{ message.content }}</p>
 				</div>
+				<div
+					v-for="(message, index) in currentChat.messages"
+					:key="index"
+					:class="message.senderId === userId ? 'user' : 'friend'"
+					class="message"
+				>
+					<p>{{ message.content }}</p>
+				</div>
+			</div>
+			<div class="send-message">
+				<textarea
+					v-model="message"
+					name=""
+					id=""
+					cols="30"
+					rows="10"
+				></textarea>
+				<button @click="sendMessage(currentChat.id)" class="btn send-btn">
+					Send
+				</button>
 			</div>
 		</div>
 	</div>
@@ -32,15 +52,27 @@ const chatIsOpen = ref(false);
 
 const currentChat = ref({});
 const userId = ref(store.state.userId);
+
+const message = ref('');
 // methods
 const openChat = async (friendId) => {
-	currentChat.value = await store.dispatch('chatById', { friendId });
-	console.log(currentChat.value);
+	const chat = await store.dispatch('chatById', { friendId });
+	chat.messages = chat.messages.reverse();
+	currentChat.value = chat;
 	chatIsOpen.value = true;
+	const mainChat = document.querySelector('.main-chat');
 };
 
 const hideChat = () => {
 	chatIsOpen.value = false;
+};
+
+const sendMessage = async (chatId) => {
+	console.log(message.value);
+	const response = await store.dispatch('sendMessage', {
+		chatId,
+		content: message.value,
+	});
 };
 onBeforeMount(async () => {
 	users.value = ref(await store.dispatch('allFriends'));
@@ -65,22 +97,36 @@ onBeforeUnmount(() => {
 }
 
 .chat {
-	display: flex;
-	flex-flow: column;
 	background: $gray;
 	border-top-left-radius: 20px;
 	border-top-right-radius: 20px;
-	margin-top: 5em;
-	height: 83vh;
+	margin-top: 4em;
 	transform: translateY(200px);
 	opacity: 0;
 	transition: 1s;
+	height: 83vh;
 
-	textarea {
-		position: absolute;
-		bottom: 0;
-		width: 100%;
-		height: 2em;
+	.send-message {
+		display: flex;
+		flex-flow: row;
+		justify-content: space-around;
+		align-items: center;
+		height: 16%;
+
+		textarea {
+			width: 80%;
+			height: 6em;
+			color: $white;
+			background: $chat-gray;
+			padding: 0.5em;
+			border: 0px solid;
+			border-radius: 10px;
+		}
+
+		.send-btn {
+			color: $white;
+			background: $purple;
+		}
 	}
 
 	.close {
@@ -94,20 +140,19 @@ onBeforeUnmount(() => {
 
 	.main-chat {
 		display: flex;
-		align-self: flex-end;
-		justify-content: flex-start;
-		background: $dark-gray;
+		flex-flow: column-reverse;
 		overflow-y: auto;
+		justify-content: flex-start;
 		overflow-x: hidden;
-		padding-bottom: 3em;
+		background: $dark-gray;
+		height: 80%;
 		border-top-right-radius: 20px;
 		border-top-left-radius: 20px;
+		padding-bottom: 2em;
 	}
 
 	.message {
 		padding-top: 1em;
-		justify-content: flex-start;
-		color: $purple;
 
 		p {
 			padding: 1em;
@@ -118,7 +163,6 @@ onBeforeUnmount(() => {
 
 	.user {
 		padding-right: 1em;
-
 		align-items: flex-end;
 
 		p {

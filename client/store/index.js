@@ -138,6 +138,14 @@ export default createStore({
 
 			return response.data;
 		},
+		async sendMessage({ state, getters }, { chatId, content }) {
+			const response = await axios.post(
+				state.host + `/chat/message/${chatId}`,
+				{ content },
+				{ headers: getters.getHeaders }
+			);
+			return response.data;
+		},
 	},
 	plugins: [createPersistedState()],
 });
