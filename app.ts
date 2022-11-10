@@ -36,15 +36,14 @@ io.on('connection', (socket: any) => {
 			userId: string,
 			friendId: string
 		) => {
-			console.log(chatId, content, userId, friendId);
 			if (content.length > 0) {
 				const message = await ChatServices.createMessage(
 					chatId,
 					userId,
 					friendId,
-				content
+					content
 				);
-				io.emit('create messag e', message);
+				io.emit('create message', message);
 			}
 		}
 	);

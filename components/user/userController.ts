@@ -39,9 +39,8 @@ export const acceptFriendRequest = async (req: any, res: any) => {
 		userToFriendId,
 		currentUserId
 	);
-	const createChat = await ChatServices.create(currentUserId, userToFriendId);
 
-	res.status(200).json({ friends: result, chat: createChat });
+	res.status(200).json({ friends: result });
 };
 
 export const friendNRequestsByUser = async (req: any, res: any) => {

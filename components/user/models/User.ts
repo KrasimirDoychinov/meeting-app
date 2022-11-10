@@ -43,7 +43,12 @@ const UserSchema = new mongoose.Schema({
 		enum: [Gender.Male, Gender.Female],
 	},
 	tags: [String],
-	friends: [String],
+	friends: [
+		{
+			friendId: String,
+			chatId: String,
+		},
+	],
 	friendNotifications: [
 		{
 			id: {

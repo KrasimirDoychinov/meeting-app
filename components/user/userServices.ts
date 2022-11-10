@@ -2,6 +2,7 @@ import { CustomError } from '../errors/customError';
 import { User } from './models/User';
 import { UserBaseModel } from './models/output/UserBaseModel';
 import { UserFullModel } from './models/output/UserFullModel';
+import { ChatServices } from '../chat/chatServices';
 
 export class UserServices {
 	static async byId(id: string): Promise<UserFullModel> {
@@ -88,8 +89,8 @@ export class UserServices {
 		friendUser.friendNotifications = friendUser.friendNotifications.filter(
 			(x: any) => x.id !== currentUserId
 		);
-
-		const result = await this.addFriends(currentUser, friendUser);
+		const chat = await ChatServices.create(currentUserId, userToFriendId);
+		const result = await this.addFriends(currentUser, friendUser, chat.id);
 		await currentUser.save();
 		return result;
 	}
@@ -144,7 +145,9 @@ export class UserServices {
 			$and: [
 				{ tags: { $regex: tags } },
 				{ email: { $not: { $eq: email } } },
-				{ friends: { $not: { $regex: userId } } },
+				{
+					'friends.friendId': { $not: { $regex: userId } },
+				},
 			],
 		});
 		const result: UserBaseModel[] = users.map((x: typeof User) => {
@@ -167,7 +170,10 @@ export class UserServices {
 		userId: string,
 		isChatAnon: boolean
 	): Promise<UserBaseModel[]> {
-		const users = await User.find({ friends: { $regex: userId } });
+		console.log('breaks');
+		const users = await User.find({
+			'friends.friendId': { $regex: userId },
+		});
 		const result = users.map((x: typeof User) => {
 			const model: UserBaseModel = {
 				id: x._id,
@@ -183,14 +189,15 @@ export class UserServices {
 
 	private static async addFriends(
 		userA: typeof User,
-		userB: typeof User
+		userB: typeof User,
+		chatId: string
 	): Promise<boolean> {
 		if (userA === userB) {
 			throw new CustomError('Cannot friend youself', 400);
 		}
 
-		userA.friends.push(userB.id);
-		userB.friends.push(userA.id);
+		userA.friends.push({ friendId: userB.id, chatId });
+		userB.friends.push({ friendId: userA.id, chatId });
 
 		await userA.save();
 		await userB.save();

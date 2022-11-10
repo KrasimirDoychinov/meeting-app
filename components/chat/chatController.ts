@@ -12,7 +12,6 @@ export const createMessage = async (req: any, res: any) => {
 	const chatId = req.params.id;
 	const userId = res.user.id;
 	const { content, friendId } = req.body;
-	console.log(content, friendId);
 	const result = await ChatServices.createMessage(
 		chatId,
 		userId,

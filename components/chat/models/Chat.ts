@@ -58,8 +58,6 @@ const ChatSchema = new mongoose.Schema(
 				content: {
 					type: String,
 					required: true,
-					maxLength: 300,
-					minLength: 1,
 				},
 				date: {
 					type: Date,

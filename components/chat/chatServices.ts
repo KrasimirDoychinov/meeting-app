@@ -34,6 +34,7 @@ export class ChatServices {
 		};
 		chat.messages.push(message);
 
+		await chat.save();
 		await UserServices.sendChatNotification(friendId, chatId);
 		return message;
 	}
