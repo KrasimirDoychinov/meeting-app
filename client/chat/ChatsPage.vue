@@ -2,9 +2,17 @@
 	<div class="chats">
 		<div v-show="!chatIsOpen" class="users">
 			<div v-for="(user, index) in users.value" :key="index" class="user-box">
-				<img @click="openChat(user.id)" src="../user (2).png" alt="" />
+				<img
+					@click="openChat(user.id, user.name)"
+					src="../user (2).png"
+					alt=""
+				/>
 				{{ user.name }}
 			</div>
+		</div>
+		<div v-show="chatIsOpen" class="current-user">
+			<img src="../user (2).png" alt="" />
+			{{ currentChatFriend.name }}
 		</div>
 		<div class="chat" v-show="chatIsOpen" :class="chatIsOpen ? 'open' : ''">
 			<i @click="hideChat" class="close fa-solid fa-x"></i>
@@ -48,25 +56,28 @@ const users = ref([]);
 const chatIsOpen = ref(false);
 
 const currentChat = ref({});
+const currentChatFriend = ref({});
 const userId = ref(store.state.userId);
 
 const message = ref('');
 // methods
-const openChat = async (friendId) => {
+const openChat = async (friendId, name) => {
+	currentChatFriend.value = { id: friendId, name };
 	const chat = await store.dispatch('chatById', { friendId });
 	chat.messages = chat.messages.reverse();
 	currentChat.value = chat;
 	chatIsOpen.value = true;
-	const mainChat = document.querySelector('.main-chat');
 
-	await socket.on('create message', (msg) => {
-		console.log(msg);
+	await socket.off('create message').on('create message', (msg) => {
 		currentChat.value.messages.unshift(msg);
 	});
 };
 
 const hideChat = () => {
+	const mainChat = document.querySelector('.main-chat');
+	mainChat.scrollTop = 0;
 	chatIsOpen.value = false;
+	currentChatFriend.value = {};
 };
 
 const sendMessage = async (chatId) => {
@@ -76,7 +87,10 @@ const sendMessage = async (chatId) => {
 		message.value,
 		store.state.userId
 	);
+
+	message.value = '';
 };
+
 onBeforeMount(async () => {
 	users.value = ref(await store.dispatch('allFriends'));
 });
@@ -94,7 +108,13 @@ onBeforeUnmount(() => {
 	width: 98vw;
 	.users {
 		display: flex;
+		gap: 1em;
 		flex-flow: row;
+		justify-content: flex-start;
+		overflow-x: auto;
+		overflow-y: hidden;
+		padding: 1em 0;
+		width: 98vw;
 		color: $dark;
 	}
 }
