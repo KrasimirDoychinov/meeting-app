@@ -22,7 +22,7 @@ export const chatById = async (req: any, res: any) => {
 	const friendId = req.params.friendId;
 	const userId = res.user.id;
 
-	const chat = await ChatServices.byId(friendId, userId);
+	const chat = await ChatServices.byId(userId, friendId);
 	res.status(200).json(chat);
 };
 

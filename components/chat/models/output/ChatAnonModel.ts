@@ -4,6 +4,6 @@ export interface ChatModel {
 	id: string;
 	isAnon: boolean;
 	messages: {};
-	personA: UserBaseModel;
-	personB: UserBaseModel;
+	currentUser: UserBaseModel;
+	friendUser: UserBaseModel;
 }

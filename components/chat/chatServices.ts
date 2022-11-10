@@ -36,19 +36,33 @@ export class ChatServices {
 		return message;
 	}
 
-	static async byId(personAId: string, personBId: string): Promise<ChatModel> {
+	static async byId(
+		currentUserId: string,
+		friendUserId: string
+	): Promise<ChatModel> {
 		const chat = (
 			await Chat.find({
 				$or: [
 					{
-						$and: [{ 'personA.id': personAId }, { 'personB.id': personBId }],
+						$and: [
+							{ 'personA.id': currentUserId },
+							{ 'personB.id': friendUserId },
+						],
 					},
 					{
-						$and: [{ 'personA.id': personBId }, { 'personB.id': personAId }],
+						$and: [
+							{ 'personA.id': friendUserId },
+							{ 'personB.id': currentUserId },
+						],
 					},
 				],
 			})
 		)[0];
+
+		const currentUser =
+			chat.personA.id === currentUserId ? chat.personA : chat.personB;
+		const friendUser =
+			chat.personA.id === friendUserId ? chat.personA : chat.personB;
 
 		let model: ChatModel;
 		if (chat.isAnon) {
@@ -56,15 +70,15 @@ export class ChatServices {
 				id: chat.id,
 				isAnon: true,
 				messages: chat.messages,
-				personA: {
-					id: chat.personA.id,
-					name: chat.personA.name,
-					gender: chat.personA.gender,
+				currentUser: {
+					id: currentUser.id,
+					name: currentUser.name,
+					gender: currentUser.gender,
 				},
-				personB: {
-					id: chat.personB.id,
-					name: chat.personB.name,
-					gender: chat.personB.gender,
+				friendUser: {
+					id: friendUser.id,
+					name: friendUser.name,
+					gender: friendUser.gender,
 				},
 			};
 		} else {
@@ -73,21 +87,15 @@ export class ChatServices {
 				id: chat.id,
 				isAnon: false,
 				messages: chat.messages,
-				personA: {
-					id: chat.personA.id,
-					name:
-						chat.personA.realData.firstName +
-						' ' +
-						chat.personA.realData.lastName,
-					gender: chat.personA.gender,
+				currentUser: {
+					id: currentUser.id,
+					name: `${currentUser.realData.firstName} ${currentUser.realData.lastName}`,
+					gender: currentUser.gender,
 				},
-				personB: {
-					id: chat.personA.id,
-					name:
-						chat.personB.realData.firstName +
-						' ' +
-						chat.personB.realData.lastName,
-					gender: chat.personA.gender,
+				friendUser: {
+					id: friendUser.id,
+					name: `${friendUser.realData.firstName} ${friendUser.realData.lastName}`,
+					gender: friendUser.gender,
 				},
 			};
 			console.log(model);

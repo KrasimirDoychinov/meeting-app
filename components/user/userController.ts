@@ -14,7 +14,7 @@ export const allWithTags = async (req: any, res: any) => {
 export const allFriends = async (req: any, res: any) => {
 	const userId = res.user.id;
 
-	const result = await UserServices.allFriends(userId);
+	const result = await UserServices.allFriends(userId, false);
 
 	res.status(200).json(result);
 };

@@ -71,6 +71,7 @@ const message = ref('');
 const openChat = async (friendId) => {
 	currentChatFriend.value = { id: friendId };
 	const chat = await store.dispatch('chatById', { friendId });
+	console.log(chat);
 	chat.messages = chat.messages.reverse();
 	currentChat.value = chat;
 	chatIsOpen.value = true;
