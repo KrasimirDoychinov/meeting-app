@@ -16,6 +16,7 @@
 		</div>
 		<div class="chat" v-show="chatIsOpen" :class="chatIsOpen ? 'open' : ''">
 			<i @click="hideChat" class="close fa-solid fa-x"></i>
+			<button class="btn meet-btn">Meet!</button>
 			<div class="main-chat">
 				<div
 					v-for="(message, index) in currentChat.messages"
@@ -67,7 +68,6 @@ const openChat = async (friendId, name) => {
 	chat.messages = chat.messages.reverse();
 	currentChat.value = chat;
 	chatIsOpen.value = true;
-
 	await socket.off('create message').on('create message', (msg) => {
 		currentChat.value.messages.unshift(msg);
 	});
@@ -127,18 +127,17 @@ onBeforeUnmount(() => {
 	transform: translateY(200px);
 	opacity: 0;
 	transition: 1s;
-	height: 83vh;
+	height: 75vh;
 
 	.send-message {
 		display: flex;
-		flex-flow: row;
-		justify-content: space-around;
-		align-items: center;
-		height: 16%;
+		flex-flow: column;
+		gap: 1em;
+		padding: 1em 0;
+		height: 20%;
 
 		textarea {
-			width: 80%;
-			height: 6em;
+			width: 90%;
 			color: $white;
 			background: $chat-gray;
 			padding: 0.5em;
@@ -147,8 +146,9 @@ onBeforeUnmount(() => {
 		}
 
 		.send-btn {
+			font-size: 10px;
 			color: $white;
-			background: $purple;
+			background: $background-gradient-green;
 		}
 	}
 
@@ -156,9 +156,22 @@ onBeforeUnmount(() => {
 		position: absolute;
 		top: 0;
 		right: 0;
-		padding: 0.5em 0.5em 0 0;
-		color: $purple;
-		font-size: 2.5em;
+		margin: 0.5em 0.5em 0 0;
+		padding: 0.5em;
+		color: $white;
+		font-size: 1.5em;
+		border-radius: 20px;
+		background: $background-gradient-purple;
+	}
+
+	.meet-btn {
+		position: absolute;
+		top: 0;
+		left: 0;
+		font-size: 18px;
+		margin: 0.5em 0 0 0.5em;
+		color: $white;
+		background: $background-gradient-purple;
 	}
 
 	.main-chat {
