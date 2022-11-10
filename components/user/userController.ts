@@ -51,3 +51,10 @@ export const friendNRequestsByUser = async (req: any, res: any) => {
 
 	res.status(200).json({ notifications, count: notifications.length });
 };
+
+export const chatNotificationsByUser = async (req: any, res: any) => {
+	const id = res.user.id;
+
+	const notifications = await UserServices.allChatNotifications(id);
+	res.status(200).json({ notifications, count: notifications.length });
+};

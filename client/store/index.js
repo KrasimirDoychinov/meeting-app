@@ -138,12 +138,22 @@ export default createStore({
 
 			return response.data;
 		},
-		async sendMessage({ state, getters }, { chatId, content }) {
+		async sendMessage({ state, getters }, { chatId, friendId, content }) {
 			const response = await axios.post(
 				state.host + `/chat/message/${chatId}`,
-				{ content },
+				{ content, friendId },
 				{ headers: getters.getHeaders }
 			);
+			return response.data;
+		},
+		async chatNotificationsByUser({ state, getters }) {
+			const response = await axios.get(
+				state.host + '/user/notifications/chat',
+				{
+					headers: getters.getHeaders,
+				}
+			);
+
 			return response.data;
 		},
 		async changeAnonAgree({ state, getters }, { chatId }) {

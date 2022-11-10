@@ -20,6 +20,7 @@ export class ChatServices {
 	static async createMessage(
 		chatId: string,
 		userId: string,
+		friendId: string,
 		content: string
 	): Promise<ChatMessage> {
 		const chat = await Chat.findById(chatId);
@@ -31,8 +32,9 @@ export class ChatServices {
 			senderId: userId,
 			content: content,
 		};
-		chat?.messages.push(message);
-		await chat.save();
+		chat.messages.push(message);
+
+		await UserServices.sendChatNotification(friendId, chatId);
 		return message;
 	}
 
@@ -74,15 +76,16 @@ export class ChatServices {
 					id: currentUser.id,
 					name: currentUser.name,
 					gender: currentUser.gender,
+					changeAnonAgree: currentUser.changeAnonAgree,
 				},
 				friendUser: {
 					id: friendUser.id,
 					name: friendUser.name,
 					gender: friendUser.gender,
+					changeAnonAgree: friendUser.changeAnonAgree,
 				},
 			};
 		} else {
-			console.log(chat.personA);
 			model = {
 				id: chat.id,
 				isAnon: false,
@@ -91,14 +94,15 @@ export class ChatServices {
 					id: currentUser.id,
 					name: `${currentUser.realData.firstName} ${currentUser.realData.lastName}`,
 					gender: currentUser.gender,
+					changeAnonAgree: currentUser.changeAnonAgree,
 				},
 				friendUser: {
 					id: friendUser.id,
 					name: `${friendUser.realData.firstName} ${friendUser.realData.lastName}`,
 					gender: friendUser.gender,
+					changeAnonAgree: friendUser.changeAnonAgree,
 				},
 			};
-			console.log(model);
 		}
 
 		return model;
@@ -107,7 +111,7 @@ export class ChatServices {
 	static async changeAnonAgree(
 		chatId: string,
 		userId: string
-	): Promise<ChatModel> {
+	): Promise<boolean> {
 		const chat = await Chat.findById(chatId);
 
 		if (!this.isPersonInChat(chat, userId)) {
@@ -120,33 +124,17 @@ export class ChatServices {
 			chat.personB.changeAnonAgree = true;
 		}
 
-		await chat.save();
-		let model: ChatModel = {
-			id: chat.id,
-			isAnon: chat.isAnon,
-			messages: chat.messages,
-			personA: {
-				id: chat.personA.id,
-				name: chat.personA.name,
-				gender: chat.personA.gender,
-			},
-			personB: {
-				id: chat.personB.id,
-				name: chat.personB.name,
-				gender: chat.personB.gender,
-			},
-		};
-
 		if (
 			this.arePeopleAgreed(
 				chat.personA.changeAnonAgree,
 				chat.personB.changeAnonAgree
 			)
 		) {
-			model = await this.changeAnon(chat);
+			await this.changeAnon(chat);
 		}
+		await chat.save();
 
-		return model;
+		return true;
 	}
 
 	static async changeAnon(chat: typeof Chat): Promise<ChatRealModel> {
@@ -165,6 +153,8 @@ export class ChatServices {
 		chat.isAnon = false;
 		await chat.save();
 
+		await UserServices.sendChatNotification(chat.personA.id, chat.id);
+		await UserServices.sendChatNotification(chat.personB.id, chat.id);
 		const model: ChatRealModel = {
 			id: chat.id,
 			isAnon: chat.isAnon,

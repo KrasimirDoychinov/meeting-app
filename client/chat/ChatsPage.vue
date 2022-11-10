@@ -17,7 +17,7 @@
 		<div class="chat" v-show="chatIsOpen" :class="chatIsOpen ? 'open' : ''">
 			<i @click="hideChat" class="close fa-solid fa-x"></i>
 			<button
-				v-if="currentChat.isAnon"
+				v-if="!currentChatUser.changeAnonAgree"
 				@click="sendMeetRequest(currentChat.id)"
 				class="btn meet-btn"
 			>
@@ -50,12 +50,7 @@
 </template>
 
 <script setup>
-import {
-	onBeforeMount,
-	onBeforeUnmount,
-	onMounted,
-	ref,
-} from '@vue/runtime-core';
+import { onBeforeMount, onBeforeUnmount, ref } from '@vue/runtime-core';
 import store from '../store/index.js';
 
 // props
@@ -63,15 +58,18 @@ const users = ref([]);
 const chatIsOpen = ref(false);
 
 const currentChat = ref({});
+const currentChatUser = ref({});
 const currentChatFriend = ref({});
 const userId = ref(store.state.userId);
 
 const message = ref('');
 // methods
 const openChat = async (friendId) => {
-	currentChatFriend.value = { id: friendId };
 	const chat = await store.dispatch('chatById', { friendId });
 	console.log(chat);
+
+	currentChatFriend.value = chat.friendUser;
+	currentChatUser.value = chat.currentUser;
 	chat.messages = chat.messages.reverse();
 	currentChat.value = chat;
 	chatIsOpen.value = true;
@@ -83,6 +81,7 @@ const openChat = async (friendId) => {
 const hideChat = () => {
 	const mainChat = document.querySelector('.main-chat');
 	mainChat.scrollTop = 0;
+
 	message.value = '';
 	chatIsOpen.value = false;
 	currentChatFriend.value = {};
@@ -93,7 +92,8 @@ const sendMessage = async (chatId) => {
 		'create message',
 		chatId,
 		message.value,
-		store.state.userId
+		store.state.userId,
+		currentChatFriend.value.id
 	);
 
 	message.value = '';
@@ -101,7 +101,8 @@ const sendMessage = async (chatId) => {
 
 const sendMeetRequest = async (chatId) => {
 	const response = await store.dispatch('changeAnonAgree', { chatId });
-	console.log(response);
+	currentChatUser.value.changeAnonAgree = response;
+	alert('Meet request sent!');
 };
 
 onBeforeMount(async () => {

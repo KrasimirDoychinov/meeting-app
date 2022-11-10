@@ -9,19 +9,26 @@
 				<input type="text" v-model="search" placeholder="Search" />
 			</div>
 			<ul>
-				<li v-if="notificationCount">
+				<li v-if="friendNotificationCount">
 					<router-link to="/requests/friend">
 						<i
-							v-if="notificationCount"
 							class="notifications fa-solid fa-envelope"
-							:count="notificationCount"
+							:count="friendNotificationCount"
 						></i>
 					</router-link>
 				</li>
 				<li v-else>
 					<i class="fa-solid fa-envelope"></i>
 				</li>
-				<li>
+				<li v-if="chatNotificationCount">
+					<router-link to="/chat">
+						<i
+							:count="chatNotificationCount"
+							class="notifications fa-solid fa-message"
+						></i>
+					</router-link>
+				</li>
+				<li v-else>
 					<router-link to="/chat">
 						<i class="fa-solid fa-message"></i>
 					</router-link>
@@ -46,10 +53,16 @@ const props = defineProps({
 		type: Number,
 	},
 });
-const notificationCount = ref(0);
+const friendNotificationCount = ref(0);
+const chatNotificationCount = ref(0);
+
 onBeforeMount(async () => {
-	const response = await store.dispatch('friendRequestsByUser');
-	notificationCount.value = response.count;
+	const friendNCount = await store.dispatch('friendRequestsByUser');
+	const chatNCount = await store.dispatch('chatNotificationsByUser');
+	console.log(chatNCount);
+	console.log(friendNCount);
+	friendNotificationCount.value = friendNCount.count;
+	chatNotificationCount.value = chatNCount.count;
 });
 
 // methods

@@ -100,6 +100,25 @@ export class UserServices {
 		return result.friendNotifications;
 	}
 
+	// Chat Notifications
+	static async sendChatNotification(
+		currentUserId: string,
+		chatId: string
+	): Promise<boolean> {
+		const user = await User.findById(currentUserId);
+
+		user.chatNotifications.push(chatId);
+		await user.save();
+
+		return true;
+	}
+
+	static async allChatNotifications(id: string): Promise<string[]> {
+		const result = await User.findById(id);
+
+		return result.chatNotifications;
+	}
+
 	// Other
 	static async all(userEmail: string): Promise<UserBaseModel[]> {
 		const users = await User.find({ email: { $not: { $eq: userEmail } } });

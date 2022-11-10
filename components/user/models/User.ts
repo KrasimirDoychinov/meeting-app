@@ -60,6 +60,7 @@ const UserSchema = new mongoose.Schema({
 			},
 		},
 	],
+	chatNotifications: [String],
 });
 
 export const User = mongoose.model('User', UserSchema);

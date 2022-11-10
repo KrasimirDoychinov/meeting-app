@@ -28,18 +28,23 @@ const io = new Server(server, {
 // socket.io
 
 io.on('connection', (socket: any) => {
-	console.log('user connected');
 	socket.on(
 		'create message',
-		async (chatId: string, content: string, userId: string) => {
-			console.log('CREATE MESSAGE FROM ' + userId);
+		async (
+			chatId: string,
+			content: string,
+			userId: string,
+			friendId: string
+		) => {
+			console.log(chatId, content, userId, friendId);
 			if (content.length > 0) {
 				const message = await ChatServices.createMessage(
 					chatId,
 					userId,
-					content
+					friendId,
+				content
 				);
-				io.emit('create message', message);
+				io.emit('create messag e', message);
 			}
 		}
 	);

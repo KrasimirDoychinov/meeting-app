@@ -35,12 +35,11 @@ const io = new Server(server, {
 });
 // socket.io
 io.on('connection', (socket) => {
-    console.log('user connected');
-    socket.on('create message', (chatId, content, userId) => __awaiter(void 0, void 0, void 0, function* () {
-        console.log('CREATE MESSAGE FROM ' + userId);
+    socket.on('create message', (chatId, content, userId, friendId) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log(chatId, content, userId, friendId);
         if (content.length > 0) {
-            const message = yield chatServices_1.ChatServices.createMessage(chatId, userId, content);
-            io.emit('create message', message);
+            const message = yield chatServices_1.ChatServices.createMessage(chatId, userId, friendId, content);
+            io.emit('create messag e', message);
         }
     }));
 });
