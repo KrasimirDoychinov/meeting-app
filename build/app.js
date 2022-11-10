@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.io = void 0;
 require('dotenv').config();
 require('express-async-errors');
 const authRoutes_1 = require("./components/auth/authRoutes");
@@ -27,18 +28,18 @@ const express = require('express');
 const app = express();
 const server = http.createServer(app);
 const { Server } = require('socket.io');
-const io = new Server(server, {
+exports.io = new Server(server, {
     cors: {
         origin: 'http://localhost:5173',
         methods: ['GET', 'POST'],
     },
 });
 // socket.io
-io.on('connection', (socket) => {
+exports.io.on('connection', (socket) => {
     socket.on('create message', (chatId, content, userId, friendId) => __awaiter(void 0, void 0, void 0, function* () {
         if (content.length > 0) {
             const message = yield chatServices_1.ChatServices.createMessage(chatId, userId, friendId, content);
-            io.emit('create message', message);
+            exports.io.emit('create message', message);
         }
     }));
 });

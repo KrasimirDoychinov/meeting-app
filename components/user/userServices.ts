@@ -105,13 +105,13 @@ export class UserServices {
 	static async sendChatNotification(
 		currentUserId: string,
 		chatId: string
-	): Promise<boolean> {
+	): Promise<number> {
 		const user = await User.findById(currentUserId);
 
 		user.chatNotifications.push(chatId);
 		await user.save();
 
-		return true;
+		return user.chatNotifications.length;
 	}
 
 	static async allChatNotifications(id: string): Promise<string[]> {

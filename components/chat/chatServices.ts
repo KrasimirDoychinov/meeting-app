@@ -4,6 +4,7 @@ import { Chat } from './models/Chat';
 import { ChatModel } from './models/output/ChatAnonModel';
 import { ChatMessage } from './models/input/ChatMessageModel';
 import { ChatRealModel } from './models/output/ChatRealModel';
+import { io } from '../../app';
 
 export class ChatServices {
 	static async create(
@@ -35,7 +36,11 @@ export class ChatServices {
 		chat.messages.push(message);
 
 		await chat.save();
-		await UserServices.sendChatNotification(friendId, chatId);
+		const chatNCount = await UserServices.sendChatNotification(
+			friendId,
+			chatId
+		);
+		io.emit('chat notifications', chatNCount, friendId);
 		return message;
 	}
 
