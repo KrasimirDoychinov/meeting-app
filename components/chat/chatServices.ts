@@ -1,12 +1,12 @@
 import { CustomError } from '../errors/customError';
 import { UserServices } from '../user/userServices';
 import { Chat } from './models/Chat';
-import { ChatModel } from './models/output/ChatAnonModel';
+import { ChatModel } from './models/output/ChatModel';
 import { ChatMessage } from './models/input/ChatMessageModel';
-import { ChatRealModel } from './models/output/ChatRealModel';
 import { io } from '../../app';
 
 export class ChatServices {
+	// Create
 	static async create(
 		personAId: string,
 		personBId: string
@@ -44,6 +44,7 @@ export class ChatServices {
 		return message;
 	}
 
+	// Retrieve
 	static async byId(
 		currentUserId: string,
 		friendUserId: string
@@ -114,6 +115,26 @@ export class ChatServices {
 		return model;
 	}
 
+	// static async byUserId(id: string): Promise<ChatModel[]> {
+	// 	const chats = await Chat.find({
+	// 		$or: [
+	// 			{
+	// 				$and: [{ 'personA.id': id }],
+	// 			},
+	// 			{
+	// 				$and: [{ 'personB.id': id }],
+	// 			},
+	// 		],
+	// 	});
+
+	// 	const result: ChatModel[] = chats.map((x: typeof Chat) => {
+	// 		const model: ChatModel = {
+
+	// 		}
+	// 	})
+	// }
+
+	// Anon status
 	static async changeAnonAgree(
 		chatId: string,
 		userId: string
@@ -143,7 +164,7 @@ export class ChatServices {
 		return true;
 	}
 
-	static async changeAnon(chat: typeof Chat): Promise<ChatRealModel> {
+	static async changeAnon(chat: typeof Chat): Promise<boolean> {
 		if (
 			!this.arePeopleAgreed(
 				chat.personA.changeAnonAgree,
@@ -161,14 +182,9 @@ export class ChatServices {
 
 		await UserServices.sendChatNotification(chat.personA.id, chat.id);
 		await UserServices.sendChatNotification(chat.personB.id, chat.id);
-		const model: ChatRealModel = {
-			id: chat.id,
-			isAnon: chat.isAnon,
-			messages: chat.messages,
-			personA: chat.personA,
-			personB: chat.personB,
-		};
-		return model;
+		await UserServices.changeChatAnonForUserInChat(chat.id, chat.personA.id);
+		await UserServices.changeChatAnonForUserInChat(chat.id, chat.personB.id);
+		return true;
 	}
 
 	// Private methods

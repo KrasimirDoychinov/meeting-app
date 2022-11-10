@@ -66,18 +66,17 @@ const message = ref('');
 // methods
 const openChat = async (friendId) => {
 	const chat = await store.dispatch('chatById', { friendId });
-	console.log(chat);
+	chat.messages = chat.messages.reverse();
 
 	currentChatFriend.value = chat.friendUser;
 	currentChatUser.value = chat.currentUser;
-	chat.messages = chat.messages.reverse();
+
 	currentChat.value = chat;
 	chatIsOpen.value = true;
 	await socket.emit('chat connection');
 	await socket.off('create message').on('create message', (msg) => {
 		currentChat.value.messages.unshift(msg);
 	});
-
 };
 
 const hideChat = () => {
@@ -109,6 +108,7 @@ const sendMeetRequest = async (chatId) => {
 
 onBeforeMount(async () => {
 	users.value = ref(await store.dispatch('allFriends'));
+	console.log(users.value);
 });
 
 onBeforeUnmount(() => {

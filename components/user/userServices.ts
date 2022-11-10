@@ -4,6 +4,7 @@ import { UserBaseModel } from './models/output/UserBaseModel';
 import { UserFullModel } from './models/output/UserFullModel';
 import { ChatServices } from '../chat/chatServices';
 import { io } from '../../app';
+import { Chat } from '../chat/models/Chat';
 
 export class UserServices {
 	static async byId(id: string): Promise<UserFullModel> {
@@ -122,6 +123,20 @@ export class UserServices {
 		return result.chatNotifications;
 	}
 
+	static async changeChatAnonForUserInChat(
+		chatId: string,
+		id: string
+	): Promise<boolean> {
+		const user = await User.findById(id);
+
+		user.friends.forEach((x: any) => {
+			x.isAnon = false;
+		});
+
+		await user.save();
+		return true;
+	}
+
 	// Other
 	static async all(userEmail: string): Promise<UserBaseModel[]> {
 		const users = await User.find({ email: { $not: { $eq: userEmail } } });
@@ -172,14 +187,20 @@ export class UserServices {
 		userId: string,
 		isChatAnon: boolean
 	): Promise<UserBaseModel[]> {
-		console.log('breaks');
 		const users = await User.find({
 			'friends.friendId': { $regex: userId },
 		});
+
+		console.log();
 		const result = users.map((x: typeof User) => {
+			const isChatAnon = x.friends.find(
+				(x: any) => x.friendId === userId
+			).isAnon;
 			const model: UserBaseModel = {
 				id: x._id,
-				name: x.name,
+				name: isChatAnon
+					? x.name
+					: `${x.realData.firstName} ${x.realData.lastName}`,
 				tags: x.tags,
 				gender: x.gender,
 			};

@@ -47,6 +47,10 @@ const UserSchema = new mongoose.Schema({
 		{
 			friendId: String,
 			chatId: String,
+			isAnon: {
+				type: Boolean,
+				default: true,
+			},
 		},
 	],
 	friendNotifications: [
