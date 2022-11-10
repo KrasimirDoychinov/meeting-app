@@ -146,6 +146,17 @@ export default createStore({
 			);
 			return response.data;
 		},
+		async changeAnonAgree({ state, getters }, { chatId }) {
+			const response = await axios.patch(
+				state.host + `/chat/changeAnon/agree/${chatId}`,
+				{},
+				{
+					headers: getters.getHeaders,
+				}
+			);
+
+			return response.data;
+		},
 	},
 	plugins: [createPersistedState()],
 });

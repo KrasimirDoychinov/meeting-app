@@ -11,12 +11,18 @@
 			</div>
 		</div>
 		<div v-show="chatIsOpen" class="current-user">
-			<img src="../user (2).png" alt="" />
+			<img src="../user (1).png" alt="" />
 			{{ currentChatFriend.name }}
 		</div>
 		<div class="chat" v-show="chatIsOpen" :class="chatIsOpen ? 'open' : ''">
 			<i @click="hideChat" class="close fa-solid fa-x"></i>
-			<button class="btn meet-btn">Meet!</button>
+			<button
+				v-if="currentChat.isAnon"
+				@click="sendMeetRequest(currentChat.id)"
+				class="btn meet-btn"
+			>
+				Meet!
+			</button>
 			<div class="main-chat">
 				<div
 					v-for="(message, index) in currentChat.messages"
@@ -62,8 +68,8 @@ const userId = ref(store.state.userId);
 
 const message = ref('');
 // methods
-const openChat = async (friendId, name) => {
-	currentChatFriend.value = { id: friendId, name };
+const openChat = async (friendId) => {
+	currentChatFriend.value = { id: friendId };
 	const chat = await store.dispatch('chatById', { friendId });
 	chat.messages = chat.messages.reverse();
 	currentChat.value = chat;
@@ -76,6 +82,7 @@ const openChat = async (friendId, name) => {
 const hideChat = () => {
 	const mainChat = document.querySelector('.main-chat');
 	mainChat.scrollTop = 0;
+	message.value = '';
 	chatIsOpen.value = false;
 	currentChatFriend.value = {};
 };
@@ -89,6 +96,11 @@ const sendMessage = async (chatId) => {
 	);
 
 	message.value = '';
+};
+
+const sendMeetRequest = async (chatId) => {
+	const response = await store.dispatch('changeAnonAgree', { chatId });
+	console.log(response);
 };
 
 onBeforeMount(async () => {
@@ -146,7 +158,7 @@ onBeforeUnmount(() => {
 		}
 
 		.send-btn {
-			font-size: 10px;
+			font-size: 18px;
 			color: $white;
 			background: $background-gradient-green;
 		}

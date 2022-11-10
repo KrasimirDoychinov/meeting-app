@@ -144,7 +144,10 @@ export class UserServices {
 		return result;
 	}
 
-	static async allFriends(userId: string): Promise<UserBaseModel[]> {
+	static async allFriends(
+		userId: string,
+		isChatAnon: boolean
+	): Promise<UserBaseModel[]> {
 		const users = await User.find({ friends: { $regex: userId } });
 		const result = users.map((x: typeof User) => {
 			const model: UserBaseModel = {
