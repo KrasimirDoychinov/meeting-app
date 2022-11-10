@@ -42,6 +42,7 @@ exports.io.on('connection', (socket) => {
             exports.io.emit('create message', message);
         }
     }));
+    socket.on('chat connection', () => console.log('chat connected'));
 });
 app.use(cors());
 app.use(bp.urlencoded({ extended: true }));

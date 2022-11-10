@@ -73,9 +73,11 @@ const openChat = async (friendId) => {
 	chat.messages = chat.messages.reverse();
 	currentChat.value = chat;
 	chatIsOpen.value = true;
+	await socket.emit('chat connection');
 	await socket.off('create message').on('create message', (msg) => {
 		currentChat.value.messages.unshift(msg);
 	});
+
 };
 
 const hideChat = () => {

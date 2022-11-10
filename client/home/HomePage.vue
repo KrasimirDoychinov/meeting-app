@@ -1,5 +1,5 @@
 <template>
-	<div class="home-container" key="{{counter}}">
+	<div class="home-container">
 		<div v-if="users.length > 0" class="people-might-know">
 			<h2>People you might know!</h2>
 			<div class="users">
@@ -95,7 +95,6 @@ onBeforeMount(async () => {
 	users.value = await store.dispatch('allUsersByTag', {
 		tags: store.state.tags,
 	});
-	console.log(users.value[0]);
 });
 </script>
 

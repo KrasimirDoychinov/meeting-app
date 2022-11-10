@@ -1,6 +1,7 @@
 require('dotenv').config();
 require('express-async-errors');
 
+import { SocketAddress } from 'net';
 import { authRouter } from './components/auth/authRoutes';
 import { chatRouter } from './components/chat/chatRoutes';
 import { ChatServices } from './components/chat/chatServices';
@@ -47,6 +48,8 @@ io.on('connection', (socket: any) => {
 			}
 		}
 	);
+
+	socket.on('chat connection', () => console.log('chat connected'));
 });
 
 app.use(cors());

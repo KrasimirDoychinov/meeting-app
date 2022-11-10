@@ -59,8 +59,6 @@ const chatNotificationCount = ref(0);
 onBeforeMount(async () => {
 	const friendNCount = await store.dispatch('friendRequestsByUser');
 	const chatNCount = await store.dispatch('chatNotificationsByUser');
-	console.log(chatNCount);
-	console.log(friendNCount);
 	friendNotificationCount.value = friendNCount.count;
 	chatNotificationCount.value = chatNCount.count;
 
@@ -69,6 +67,13 @@ onBeforeMount(async () => {
 			chatNotificationCount.value = count;
 			console.log(count, id);
 		}
+	});
+
+	socket.off('receive friend request').on('receive friend request', (id) => {
+		if (store.state.userId === id) {
+			friendNotificationCount.value += 1;
+		}
+		console.log('friend request sent');
 	});
 });
 

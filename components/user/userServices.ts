@@ -3,6 +3,7 @@ import { User } from './models/User';
 import { UserBaseModel } from './models/output/UserBaseModel';
 import { UserFullModel } from './models/output/UserFullModel';
 import { ChatServices } from '../chat/chatServices';
+import { io } from '../../app';
 
 export class UserServices {
 	static async byId(id: string): Promise<UserFullModel> {
@@ -53,6 +54,7 @@ export class UserServices {
 			gender: currentUser.gender,
 		});
 		await userToFriend.save();
+		io.emit('receive friend request', userToFriendId);
 
 		return true;
 	}

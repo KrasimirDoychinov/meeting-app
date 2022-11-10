@@ -9,7 +9,6 @@ export default createStore({
 		tags: [],
 		exp: 0,
 		userId: '',
-		notificationCount: 0,
 	},
 	mutations: {
 		setToken(state, data) {
@@ -28,12 +27,6 @@ export default createStore({
 		},
 		removeTags(state) {
 			state.tags = [];
-		},
-		setNotificationCount(state, value) {
-			state.notificationCount = value;
-		},
-		removeOneNotification(state) {
-			state.notificationCount--;
 		},
 	},
 	getters: {
@@ -86,7 +79,6 @@ export default createStore({
 			const response = await axios.get(state.host + `/user/requests/friend`, {
 				headers: getters.getHeaders,
 			});
-			await commit('setNotificationCount', response.data.count);
 			return response.data;
 		},
 		async addFriend({ state, getters, commit }, { id }) {
@@ -97,7 +89,6 @@ export default createStore({
 					headers: getters.getHeaders,
 				}
 			);
-			await commit('removeOneNotification');
 			return response.data;
 		},
 		async acceptFriendRequest({ state, getters }, { id }) {
