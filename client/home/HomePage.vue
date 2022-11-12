@@ -16,58 +16,6 @@
 					</button>
 					<button v-else class="btn disabled-btn">Pending</button>
 				</div>
-				<div v-for="(user, index) in users" :key="index" class="user-box">
-					<img src="../user (2).png" alt="" />
-					{{ user.name }}
-
-					<button
-						v-if="!user.friendRequestSent"
-						class="btn accept-btn"
-						@click="addFriend(user.id)"
-					>
-						Send request
-					</button>
-					<button v-else class="btn disabled-btn">Pending</button>
-				</div>
-				<div v-for="(user, index) in users" :key="index" class="user-box">
-					<img src="../user (2).png" alt="" />
-					{{ user.name }}
-
-					<button
-						v-if="!user.friendRequestSent"
-						class="btn accept-btn"
-						@click="addFriend(user.id)"
-					>
-						Send request
-					</button>
-					<button v-else class="btn disabled-btn">Pending</button>
-				</div>
-				<div v-for="(user, index) in users" :key="index" class="user-box">
-					<img src="../user (2).png" alt="" />
-					{{ user.name }}
-
-					<button
-						v-if="!user.friendRequestSent"
-						class="btn accept-btn"
-						@click="addFriend(user.id)"
-					>
-						Send request
-					</button>
-					<button v-else class="btn disabled-btn">Pending</button>
-				</div>
-				<div v-for="(user, index) in users" :key="index" class="user-box">
-					<img src="../user (2).png" alt="" />
-					{{ user.name }}
-
-					<button
-						v-if="!user.friendRequestSent"
-						class="btn accept-btn"
-						@click="addFriend(user.id)"
-					>
-						Send request
-					</button>
-					<button v-else class="btn disabled-btn">Pending</button>
-				</div>
 			</div>
 		</div>
 	</div>

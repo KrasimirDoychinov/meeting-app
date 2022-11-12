@@ -48,8 +48,6 @@ io.on('connection', (socket: any) => {
 			}
 		}
 	);
-
-	socket.on('chat connection', () => console.log('chat connected'));
 });
 
 app.use(cors());
