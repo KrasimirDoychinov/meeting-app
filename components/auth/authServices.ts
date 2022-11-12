@@ -5,7 +5,7 @@ import { UserRealData } from '../user/models/output/UserRealData';
 import { AuthReturnModel } from './models/AuthReturnModel';
 import { JwtSignModel } from './models/JwtSignModel';
 import { GlobalErrorConstants } from '../errors/errorConstants';
-import { AuthErrorConstants } from './constants/errorConstants';
+import { AuthErrorConstants } from './errors/errorConstants';
 import { GlobalErrorHelper } from '../errors/errorHelper';
 
 const bcrypt = require('bcrypt');

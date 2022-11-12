@@ -4,10 +4,16 @@ import { UserBaseModel } from './models/output/UserBaseModel';
 import { UserFullModel } from './models/output/UserFullModel';
 import { ChatServices } from '../chat/chatServices';
 import { io } from '../../app';
+import { GlobalErrorHelper } from '../errors/errorHelper';
+import { UserErrorConstants } from './errors/errorConstants';
 
 export class UserServices {
 	static async byId(id: string): Promise<UserFullModel> {
 		const user = await User.findById(id);
+		if (GlobalErrorHelper.areFieldsNotNull([user])) {
+			throw new CustomError(UserErrorConstants.NotFound, 400);
+		}
+
 		const model: UserFullModel = {
 			id: user._id,
 			name: user.name,
@@ -28,7 +34,7 @@ export class UserServices {
 		currentUserId: string
 	): Promise<boolean> {
 		if (userToFriendId === currentUserId) {
-			throw new CustomError('Cannot friend yourself.', 400);
+			throw new CustomError(UserErrorConstants.CannotFriendSelf, 400);
 		}
 
 		const userToFriend = await User.findById(userToFriendId);
@@ -37,7 +43,7 @@ export class UserServices {
 			(x: any) => x.id === currentUserId
 		);
 		if (friendRequestSend) {
-			throw new CustomError('Friend request already send', 400);
+			throw new CustomError(UserErrorConstants.FriendRequestAlreadySent, 400);
 		}
 
 		const currentUser = await User.findById(currentUserId);
@@ -45,7 +51,7 @@ export class UserServices {
 			userToFriend.friends.includes(currentUserId) &&
 			currentUser.friends.includes(userToFriendId);
 		if (usersAreFriends) {
-			throw new CustomError('Users are already friends', 400);
+			throw new CustomError(UserErrorConstants.AlreadyFriends, 400);
 		}
 
 		userToFriend.friendNotifications.push({
@@ -65,7 +71,7 @@ export class UserServices {
 		currentUserId: string
 	): Promise<boolean> {
 		if (userToFriendId === currentUserId) {
-			throw new CustomError('Cannot friend yourself.', 400);
+			throw new CustomError(UserErrorConstants.CannotFriendSelf, 400);
 		}
 
 		const currentUser = await User.findById(currentUserId);
@@ -75,14 +81,14 @@ export class UserServices {
 			(x: any) => x.id === userToFriendId
 		);
 		if (!friendRequestSend) {
-			throw new CustomError("User hasn't send friend request", 400);
+			throw new CustomError(UserErrorConstants.FriendRequestNotSent, 400);
 		}
 
 		const alreadyFriends =
 			friendUser.friends.includes(currentUserId) &&
 			currentUser.friends.includes(userToFriendId);
 		if (alreadyFriends) {
-			throw new CustomError('Users are already friends', 400);
+			throw new CustomError(UserErrorConstants.AlreadyFriends, 400);
 		}
 
 		currentUser.friendNotifications = currentUser.friendNotifications.filter(
@@ -98,9 +104,12 @@ export class UserServices {
 	}
 
 	static async allFriendRequests(id: string): Promise<string[]> {
-		const result = await User.findById(id);
+		const user = await User.findById(id);
+		if (GlobalErrorHelper.areFieldsNotNull([user])) {
+			throw new CustomError(UserErrorConstants.NotFound, 400);
+		}
 
-		return result.friendNotifications;
+		return user.friendNotifications;
 	}
 
 	// Chat Notifications
@@ -109,6 +118,9 @@ export class UserServices {
 		chatId: string
 	): Promise<number> {
 		const user = await User.findById(currentUserId);
+		if (GlobalErrorHelper.areFieldsNotNull([user])) {
+			throw new CustomError(UserErrorConstants.NotFound, 400);
+		}
 
 		user.chatNotifications.push(chatId);
 		await user.save();
@@ -117,9 +129,12 @@ export class UserServices {
 	}
 
 	static async allChatNotifications(id: string): Promise<string[]> {
-		const result = await User.findById(id);
+		const user = await User.findById(id);
+		if (GlobalErrorHelper.areFieldsNotNull([user])) {
+			throw new CustomError(UserErrorConstants.NotFound, 400);
+		}
 
-		return result.chatNotifications;
+		return user.chatNotifications;
 	}
 
 	static async changeChatAnonForUserInChat(
@@ -127,6 +142,9 @@ export class UserServices {
 		id: string
 	): Promise<boolean> {
 		const user = await User.findById(id);
+		if (GlobalErrorHelper.areFieldsNotNull([user])) {
+			throw new CustomError(UserErrorConstants.NotFound, 400);
+		}
 
 		user.friends.forEach((x: any) => {
 			x.isAnon = false;
@@ -139,6 +157,10 @@ export class UserServices {
 	// Other
 	static async all(userEmail: string): Promise<UserBaseModel[]> {
 		const users = await User.find({ email: { $not: { $eq: userEmail } } });
+		if (GlobalErrorHelper.areFieldsNotNull([users])) {
+			throw new CustomError(UserErrorConstants.NotFound, 400);
+		}
+
 		const result: UserBaseModel[] = users.map((x: typeof User) => {
 			const model: UserBaseModel = {
 				id: x._id,
@@ -166,6 +188,10 @@ export class UserServices {
 				},
 			],
 		});
+		if (GlobalErrorHelper.areFieldsNotNull([users])) {
+			throw new CustomError(UserErrorConstants.NotFound, 400);
+		}
+
 		const result: UserBaseModel[] = users.map((x: typeof User) => {
 			const model: UserBaseModel = {
 				id: x._id,
@@ -189,6 +215,9 @@ export class UserServices {
 		const users = await User.find({
 			'friends.friendId': { $regex: userId },
 		});
+		if (GlobalErrorHelper.areFieldsNotNull([users])) {
+			throw new CustomError(UserErrorConstants.NotFound, 400);
+		}
 
 		const result = users.map((x: typeof User) => {
 			const isChatAnon = x.friends.find(
@@ -213,8 +242,8 @@ export class UserServices {
 		userB: typeof User,
 		chatId: string
 	): Promise<boolean> {
-		if (userA === userB) {
-			throw new CustomError('Cannot friend youself', 400);
+		if (userA.id === userB.id) {
+			throw new CustomError(UserErrorConstants.CannotFriendSelf, 400);
 		}
 
 		userA.friends.push({ friendId: userB.id, chatId });
