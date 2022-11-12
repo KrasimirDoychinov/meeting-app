@@ -59,15 +59,14 @@ app.use(errorHandler_1.errorHandler);
 const start = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const port = process.env.PORT || 3000;
+        const socketPort = process.env.SOCKET_PORT || 3001;
         const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/facebook-clone';
         yield (0, connectDB_1.connectDB)(mongoUri);
         app.listen(port, () => console.log(`Server listening on port: ${port}`));
-        server.listen(3001, () => console.log(`Web socket server listening on port: ${3001}`));
+        server.listen(socketPort, () => console.log(`Web socket server listening on port: ${3001}`));
     }
     catch (error) {
         console.log(error);
     }
 });
 start();
-// TODO: Refactor the recommendation logic BE and FE
-// TODO: Refactor the BE models

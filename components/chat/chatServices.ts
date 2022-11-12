@@ -18,6 +18,7 @@ export class ChatServices {
 		return chat;
 	}
 
+	
 	static async createMessage(
 		chatId: string,
 		userId: string,
@@ -114,25 +115,6 @@ export class ChatServices {
 
 		return model;
 	}
-
-	// static async byUserId(id: string): Promise<ChatModel[]> {
-	// 	const chats = await Chat.find({
-	// 		$or: [
-	// 			{
-	// 				$and: [{ 'personA.id': id }],
-	// 			},
-	// 			{
-	// 				$and: [{ 'personB.id': id }],
-	// 			},
-	// 		],
-	// 	});
-
-	// 	const result: ChatModel[] = chats.map((x: typeof Chat) => {
-	// 		const model: ChatModel = {
-
-	// 		}
-	// 	})
-	// }
 
 	// Anon status
 	static async changeAnonAgree(

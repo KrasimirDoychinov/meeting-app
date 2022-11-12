@@ -19,22 +19,22 @@ export const createMessage = async (req: any, res: any) => {
 		content
 	);
 
-	res.status(201).json({ result });
+	res.status(201).json(result);
 };
 
 export const chatById = async (req: any, res: any) => {
 	const friendId = req.params.friendId;
-	const userId = res.user.id;
+	const { id } = res.user;
 
-	const chat = await ChatServices.byId(userId, friendId);
+	const chat = await ChatServices.byId(id, friendId);
 	res.status(200).json(chat);
 };
 
 export const changeAnonAgree = async (req: any, res: any) => {
 	const chatId = req.params.id;
-	const userId = res.user.id;
+	const { id } = res.user;
 
-	const chat = await ChatServices.changeAnonAgree(chatId, userId);
+	const chat = await ChatServices.changeAnonAgree(chatId, id);
 
 	res.status(200).json(chat);
 };

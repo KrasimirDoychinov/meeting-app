@@ -32,11 +32,10 @@ export default createRouter({
 				default: RegisterPage,
 			},
 			beforeEnter: (to, from, next) => {
-				if (store.state.token) {
+				if (isJwtValid(store.state.token, store.state.exp)) {
 					next('/');
-				} else {
-					next();
 				}
+				next();
 			},
 		},
 		{

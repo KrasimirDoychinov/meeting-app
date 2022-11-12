@@ -4,7 +4,6 @@ import { UserBaseModel } from './models/output/UserBaseModel';
 import { UserFullModel } from './models/output/UserFullModel';
 import { ChatServices } from '../chat/chatServices';
 import { io } from '../../app';
-import { Chat } from '../chat/models/Chat';
 
 export class UserServices {
 	static async byId(id: string): Promise<UserFullModel> {
@@ -191,7 +190,6 @@ export class UserServices {
 			'friends.friendId': { $regex: userId },
 		});
 
-		console.log();
 		const result = users.map((x: typeof User) => {
 			const isChatAnon = x.friends.find(
 				(x: any) => x.friendId === userId

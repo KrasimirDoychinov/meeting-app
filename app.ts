@@ -1,7 +1,6 @@
 require('dotenv').config();
 require('express-async-errors');
 
-import { SocketAddress } from 'net';
 import { authRouter } from './components/auth/authRoutes';
 import { chatRouter } from './components/chat/chatRoutes';
 import { ChatServices } from './components/chat/chatServices';
@@ -19,6 +18,7 @@ const express = require('express');
 const app = express();
 const server = http.createServer(app);
 const { Server } = require('socket.io');
+
 export const io = new Server(server, {
 	cors: {
 		origin: 'http://localhost:5173',
@@ -27,7 +27,6 @@ export const io = new Server(server, {
 });
 
 // socket.io
-
 io.on('connection', (socket: any) => {
 	socket.on(
 		'create message',
@@ -61,18 +60,20 @@ app.use('/api/comment', commentRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/user', userRouter);
 app.use('/api/tag', tagRouter);
-// middlewares
 
+// middlewares
 app.use(errorHandler);
+
 // app start
 const start = async () => {
 	try {
 		const port = process.env.PORT || 3000;
+		const socketPort = process.env.SOCKET_PORT || 3001;
 		const mongoUri =
 			process.env.MONGO_URI || 'mongodb://localhost:27017/facebook-clone';
 		await connectDB(mongoUri);
 		app.listen(port, () => console.log(`Server listening on port: ${port}`));
-		server.listen(3001, () =>
+		server.listen(socketPort, () =>
 			console.log(`Web socket server listening on port: ${3001}`)
 		);
 	} catch (error) {
@@ -81,6 +82,3 @@ const start = async () => {
 };
 
 start();
-
-// TODO: Refactor the recommendation logic BE and FE
-// TODO: Refactor the BE models
