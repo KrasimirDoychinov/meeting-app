@@ -26,7 +26,8 @@ export class AuthServices {
 			throw new CustomError(AuthErrorConstants.PasswordMismatch, 400);
 		}
 
-		const hash = this.hashPassword(password);
+		const hash = await this.hashPassword(password);
+		console.log(hash);
 		const user = await User.create({
 			name,
 			email,

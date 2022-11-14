@@ -1,3 +1,4 @@
+import { CustomError } from '../errors/customError';
 import { UserServices } from './userServices';
 
 export const allWithTags = async (req: any, res: any) => {
@@ -60,7 +61,7 @@ export const chatNotificationsByUser = async (req: any, res: any) => {
 export const initialRealData = async (req: any, res: any) => {
 	const id = res.user.id;
 	const { firstName, lastName } = JSON.parse(req.body.body);
-	const file = req.files.img;
+	const file = req.files?.img;
 	const response = await UserServices.setRealData(
 		id,
 		firstName,
@@ -68,5 +69,5 @@ export const initialRealData = async (req: any, res: any) => {
 		file
 	);
 
-	res.status(200).json({});
+	res.status(200).json({ success: response });
 };

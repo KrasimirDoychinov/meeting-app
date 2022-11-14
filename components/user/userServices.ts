@@ -15,7 +15,6 @@ export class UserServices {
 		lastName: string,
 		img: any
 	): Promise<boolean> {
-		console.log(img);
 		const user = await User.findById(id);
 		if (GlobalErrorHelper.areFieldsNotNull([user])) {
 			throw new CustomError(UserErrorConstants.NotFound, 400);

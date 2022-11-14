@@ -53,7 +53,7 @@ const register = async () => {
 			compare: compare.value,
 			invalidMsg,
 		});
-		router.push('/tags/initial');
+		router.push('/real-data/initial');
 	} catch (error) {
 		invalidMsg.value = error.response.data.msg;
 	}

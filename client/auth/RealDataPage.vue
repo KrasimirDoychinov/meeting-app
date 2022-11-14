@@ -36,9 +36,11 @@
 <script setup>
 import { ref } from '@vue/reactivity';
 import store from '../store';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const allowedExt = ['png', 'jpeg', 'jpg'];
-
 // props
 const file = ref({});
 const error = ref('');
@@ -64,19 +66,16 @@ const onFileChange = async (event) => {
 	};
 };
 
-const next = () => {
+const next = async () => {
 	try {
-		const reader = new FileReader();
-		reader.readAsArrayBuffer(file.value);
-		reader.onload = async () => {
-			const response = await store.dispatch('createRealData', {
-				firstName: firstName.value,
-				lastName: lastName.value,
-				img: file.value,
-			});
-		};
-	} catch (error) {
-		console.log(error);
+		const response = await store.dispatch('createRealData', {
+			firstName: firstName.value,
+			lastName: lastName.value,
+			img: file.value,
+		});
+		router.push('/tags/initial');
+	} catch (err) {
+		error.value = err.response.data.msg;
 	}
 };
 </script>
