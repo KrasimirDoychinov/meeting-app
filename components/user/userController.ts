@@ -55,7 +55,7 @@ export const chatNotificationsByUser = async (req: any, res: any) => {
 	const id = res.user.id;
 
 	const notifications = await UserServices.allChatNotifications(id);
-	res.status(200).json({ notifications, count: notifications.length });
+	res.status(200).json(notifications);
 };
 
 export const initialRealData = async (req: any, res: any) => {

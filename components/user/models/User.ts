@@ -51,6 +51,10 @@ const UserSchema = new mongoose.Schema({
 				type: Boolean,
 				default: true,
 			},
+			notifications: {
+				type: Number,
+				default 0,
+			},
 		},
 	],
 	friendNotifications: [
@@ -62,10 +66,6 @@ const UserSchema = new mongoose.Schema({
 			name: {
 				type: String,
 				required: true,
-			},
-			gender: {
-				type: Number,
-				enum: [Gender.Male, Gender.Female],
 			},
 		},
 	],

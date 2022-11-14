@@ -58,9 +58,9 @@ const chatNotificationCount = ref(0);
 
 onBeforeMount(async () => {
 	const friendNCount = await store.dispatch('friendRequestsByUser');
-	const chatNCount = await store.dispatch('chatNotificationsByUser');
+	const chatNotifications = await store.dispatch('chatNotificationsByUser');
 	friendNotificationCount.value = friendNCount.count;
-	chatNotificationCount.value = chatNCount.count;
+	chatNotificationCount.value = chatNotifications;
 
 	socket.off('chat notification').on('chat notification', (id, chatId) => {
 		console.log(store.state.currentChatId);

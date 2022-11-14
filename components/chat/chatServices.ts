@@ -35,7 +35,9 @@ export class ChatServices {
 		};
 		chat.messages.push(message);
 
+		// emit event to the frontend to increase the notifications for the user
 		io.emit('chat notification', friendId, chatId);
+
 		await chat.save();
 		return message;
 	}

@@ -1,6 +1,6 @@
 import { CustomError } from '../errors/customError';
 import { User } from './models/User';
-import { UserBaseModel } from './models/output/UserBaseModel';
+import { FriendModel, UserBaseModel } from './models/output/UserBaseModel';
 import { UserFullModel } from './models/output/UserFullModel';
 import { ChatServices } from '../chat/chatServices';
 import { io } from '../../app';
@@ -8,6 +8,7 @@ import { GlobalErrorHelper } from '../errors/errorHelper';
 import { UserErrorConstants } from './errors/errorConstants';
 import { GlobalErrorConstants } from '../errors/errorConstants';
 import { HelperConstants } from '../helpers/helperConstants';
+import { Chat } from '../chat/models/Chat';
 
 export class UserServices {
 	static async setRealData(
@@ -153,12 +154,13 @@ export class UserServices {
 			throw new CustomError(UserErrorConstants.NotFound, 400);
 		}
 
-		user.chatNotifications.push(chatId);
+		const currentFriend = user.friends.find((x: any) => x.chatId === chatId);
+		currentFriend.notifications += 1;
 		await user.save();
 
-		io.emit('chat notifications', user.chatNotifications.length);
+		io.emit('chat notifications', currentFriend.notifications);
 		return {
-			notifications: user.chatNotifications.length,
+			notifications: currentFriend.notifications,
 			userId: currentUserId,
 		};
 	}
@@ -169,7 +171,11 @@ export class UserServices {
 			throw new CustomError(UserErrorConstants.NotFound, 400);
 		}
 
-		return user.chatNotifications;
+		const notifications = user.friends
+			.map((x: any) => x.notifications)
+			.reduce((a: number, b: number) => a + b);
+
+		return notifications;
 	}
 
 	static async changeChatAnonForUserInChat(
@@ -248,7 +254,7 @@ export class UserServices {
 	static async allFriends(
 		userId: string,
 		isChatAnon: boolean
-	): Promise<UserBaseModel[]> {
+	): Promise<FriendModel[]> {
 		const users = await User.find({
 			'friends.friendId': { $regex: userId },
 		});
@@ -260,7 +266,8 @@ export class UserServices {
 			const isChatAnon = x.friends.find(
 				(x: any) => x.friendId === userId
 			).isAnon;
-			const model: UserBaseModel = {
+
+			const model: FriendModel = {
 				id: x._id,
 				name: isChatAnon
 					? x.name
@@ -270,6 +277,7 @@ export class UserServices {
 				imageName: isChatAnon
 					? `${HelperConstants.imagesPath}avatar.png`
 					: `${HelperConstants.imagesPath}${x.realData.imageName}`,
+				notificationCount: 10,
 			};
 			return model;
 		});

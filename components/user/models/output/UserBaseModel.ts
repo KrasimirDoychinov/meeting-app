@@ -9,3 +9,7 @@ export interface UserBaseModel {
 	friendRequestSent?: boolean;
 	changeAnonAgree?: boolean;
 }
+
+export interface FriendModel extends UserBaseModel {
+	notificationCount: number;
+}
