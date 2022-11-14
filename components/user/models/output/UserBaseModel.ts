@@ -12,4 +12,5 @@ export interface UserBaseModel {
 
 export interface FriendModel extends UserBaseModel {
 	notificationCount: number;
+	chatId: string;
 }

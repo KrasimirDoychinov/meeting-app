@@ -4,7 +4,7 @@
 			<div v-for="(user, index) in users.value" :key="index" class="user-box">
 				<img
 					class="avatar-img"
-					@click="openChat(user.id, user.imageName)"
+					@click="openChat(user.chatId, user.id, user.imageName)"
 					:src="user.imageName"
 					alt=""
 				/>
@@ -65,8 +65,8 @@ const userId = ref(store.state.userId);
 
 const message = ref('');
 // methods
-const openChat = async (friendId, img) => {
-	const chat = await store.dispatch('chatById', { friendId });
+const openChat = async (chatId, friendId, img) => {
+	const chat = await store.dispatch('chatById', { chatId, friendId });
 	chat.messages = chat.messages.reverse();
 
 	currentChatFriend.value = chat.friendUser;

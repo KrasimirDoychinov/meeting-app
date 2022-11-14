@@ -23,10 +23,11 @@ export const createMessage = async (req: any, res: any) => {
 };
 
 export const chatById = async (req: any, res: any) => {
-	const friendId = req.params.friendId;
+	const chatId = req.params.chatId;
+	const friendId = req.query.friendId;
 	const { id } = res.user;
 
-	const chat = await ChatServices.byId(id, friendId);
+	const chat = await ChatServices.byId(chatId, id, friendId);
 	res.status(200).json(chat);
 };
 

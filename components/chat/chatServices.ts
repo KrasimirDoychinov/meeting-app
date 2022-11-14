@@ -44,27 +44,11 @@ export class ChatServices {
 
 	// Retrieve
 	static async byId(
+		chatId: string,
 		currentUserId: string,
 		friendUserId: string
 	): Promise<ChatModel> {
-		const chat = (
-			await Chat.find({
-				$or: [
-					{
-						$and: [
-							{ 'personA.id': currentUserId },
-							{ 'personB.id': friendUserId },
-						],
-					},
-					{
-						$and: [
-							{ 'personA.id': friendUserId },
-							{ 'personB.id': currentUserId },
-						],
-					},
-				],
-			})
-		)[0];
+		const chat = await Chat.findById(chatId);
 
 		const currentUser =
 			chat.personA.id === currentUserId ? chat.personA : chat.personB;

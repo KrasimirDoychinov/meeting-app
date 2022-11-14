@@ -46,14 +46,21 @@ const UserSchema = new mongoose.Schema({
 	friends: [
 		{
 			friendId: String,
+			name: String,
+			imageName: String,
 			chatId: String,
+			realData: {
+				firstName: String,
+				lastName: String,
+				imageName: String,
+			},
 			isAnon: {
 				type: Boolean,
 				default: true,
 			},
 			notifications: {
 				type: Number,
-				default 0,
+				default: 0,
 			},
 		},
 	],

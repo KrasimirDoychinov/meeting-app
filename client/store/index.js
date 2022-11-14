@@ -143,10 +143,13 @@ export default createStore({
 			return response.data;
 		},
 		// chat
-		async chatById({ state, getters }, { friendId }) {
-			const response = await axios.get(state.host + `/chat/${friendId}`, {
-				headers: getters.getHeaders,
-			});
+		async chatById({ state, getters }, { chatId, friendId }) {
+			const response = await axios.get(
+				state.host + `/chat/${chatId}?friendId=${friendId}`,
+				{
+					headers: getters.getHeaders,
+				}
+			);
 
 			return response.data;
 		},

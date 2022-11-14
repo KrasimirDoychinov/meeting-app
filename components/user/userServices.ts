@@ -165,15 +165,18 @@ export class UserServices {
 		};
 	}
 
-	static async allChatNotifications(id: string): Promise<string[]> {
+	static async allChatNotifications(id: string): Promise<number> {
 		const user = await User.findById(id);
 		if (GlobalErrorHelper.areFieldsNotNull([user])) {
 			throw new CustomError(UserErrorConstants.NotFound, 400);
 		}
 
-		const notifications = user.friends
-			.map((x: any) => x.notifications)
-			.reduce((a: number, b: number) => a + b);
+		const notifications =
+			user.friends.length === 0
+				? 0
+				: user.friends
+						.map((x: any) => x.notifications)
+						.reduce((a: number, b: number) => a + b);
 
 		return notifications;
 	}
@@ -255,33 +258,28 @@ export class UserServices {
 		userId: string,
 		isChatAnon: boolean
 	): Promise<FriendModel[]> {
-		const users = await User.find({
-			'friends.friendId': { $regex: userId },
-		});
+		const users = await User.findById(userId);
 		if (GlobalErrorHelper.areFieldsNotNull([users])) {
 			throw new CustomError(UserErrorConstants.NotFound, 400);
 		}
 
-		const result = users.map((x: typeof User) => {
-			const isChatAnon = x.friends.find(
-				(x: any) => x.friendId === userId
-			).isAnon;
-
+		const result: FriendModel[] = users.friends.map((x: any) => {
 			const model: FriendModel = {
 				id: x._id,
-				name: isChatAnon
+				name: x.isAnon
 					? x.name
 					: `${x.realData.firstName} ${x.realData.lastName}`,
-				tags: x.tags,
 				gender: x.gender,
-				imageName: isChatAnon
+				imageName: x.isAnon
 					? `${HelperConstants.imagesPath}avatar.png`
 					: `${HelperConstants.imagesPath}${x.realData.imageName}`,
-				notificationCount: 10,
+				notificationCount: x.notifications,
+				chatId: x.chatId,
 			};
 			return model;
 		});
 
+		console.log(result);
 		return result;
 	}
 
@@ -294,8 +292,18 @@ export class UserServices {
 			throw new CustomError(UserErrorConstants.CannotFriendSelf, 400);
 		}
 
-		userA.friends.push({ friendId: userB.id, chatId });
-		userB.friends.push({ friendId: userA.id, chatId });
+		userA.friends.push({
+			friendId: userB.id,
+			name: userB.name,
+			imageName: userB.imageName,
+			chatId,
+		});
+		userB.friends.push({
+			friendId: userA.id,
+			name: userA.name,
+			imageName: userA.imageName,
+			chatId,
+		});
 
 		await userA.save();
 		await userB.save();
