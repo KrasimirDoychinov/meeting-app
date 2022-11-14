@@ -66,6 +66,19 @@ export default createStore({
 			return response.data;
 		},
 		// user
+		async createRealData({ state, getters }, { firstName, lastName, img }) {
+			const response = await axios.post(
+				state.host + '/users/realdata/initial',
+				{
+					firstName,
+					lastName,
+					img,
+				},
+				{ headers: getters.getHeaders }
+			);
+
+			return response.data;
+		},
 		async allUsersByTag({ state, getters }, { tags }) {
 			const response = await axios.get(
 				state.host + `/user/?tags=${tags.join('|')}`,

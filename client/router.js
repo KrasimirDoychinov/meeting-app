@@ -6,6 +6,7 @@ import HeaderFull from './global/HeaderFull.vue';
 import ChatsPage from './chat/ChatsPage.vue';
 import TagsInitialPage from './tags/TagsInitialPage.vue';
 import FriendRequestPage from './requests/FriendRequestPage.vue';
+import RealDataPage from './auth/RealDataPage.vue';
 
 import store from './store';
 
@@ -39,18 +40,31 @@ export default createRouter({
 			},
 		},
 		{
+			path: '/real-data/initial',
+			name: 'Real Data Initial',
+			components: {
+				default: RealDataPage,
+			},
+			// beforeEnter: (to, from, next) => {
+			// 	if (isJwtValid(store.state.token, store.state.exp)) {
+			// 		next('/');
+			// 	}
+			// 	next();
+			// },
+		},
+		{
 			path: '/tags/initial',
 			name: 'Tags Initial',
 			components: {
 				default: TagsInitialPage,
 			},
-			beforeEnter: async (to, from, next) => {
-				if (store.getters.hasTags) {
-					isAuthorized(store.state.token, store.state.exp, next, '/');
-				} else {
-					isAuthorized(store.state.token, store.state.exp, next);
-				}
-			},
+			// beforeEnter: async (to, from, next) => {
+			// 	if (store.getters.hasTags) {
+			// 		isAuthorized(store.state.token, store.state.exp, next, '/');
+			// 	} else {
+			// 		isAuthorized(store.state.token, store.state.exp, next);
+			// 	}
+			// },
 		},
 		{
 			path: '/',

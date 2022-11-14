@@ -18,7 +18,6 @@ export class ChatServices {
 		return chat;
 	}
 
-	
 	static async createMessage(
 		chatId: string,
 		userId: string,
