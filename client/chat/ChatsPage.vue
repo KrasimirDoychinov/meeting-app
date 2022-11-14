@@ -3,15 +3,16 @@
 		<div v-show="!chatIsOpen" class="users">
 			<div v-for="(user, index) in users.value" :key="index" class="user-box">
 				<img
-					@click="openChat(user.id, user.name)"
-					src="../user (2).png"
+					class="avatar-img"
+					@click="openChat(user.id, user.imageName)"
+					:src="user.imageName"
 					alt=""
 				/>
 				{{ user.name }}
 			</div>
 		</div>
 		<div v-show="chatIsOpen" class="current-user">
-			<img src="../user (1).png" alt="" />
+			<img class="avatar-img" :src="currentChatFriend.imageName" alt="" />
 			{{ currentChatFriend.name }}
 		</div>
 		<div class="chat" v-show="chatIsOpen" :class="chatIsOpen ? 'open' : ''">
@@ -64,11 +65,12 @@ const userId = ref(store.state.userId);
 
 const message = ref('');
 // methods
-const openChat = async (friendId) => {
+const openChat = async (friendId, img) => {
 	const chat = await store.dispatch('chatById', { friendId });
 	chat.messages = chat.messages.reverse();
 
 	currentChatFriend.value = chat.friendUser;
+	currentChatFriend.value.imageName = img;
 	currentChatUser.value = chat.currentUser;
 
 	currentChat.value = chat;

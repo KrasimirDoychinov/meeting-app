@@ -66,7 +66,7 @@ export default createStore({
 			return response.data;
 		},
 		// user
-		async createRealData({ state, getters }, { firstName, lastName, img }) {
+	async createRealData({ state, getters }, { firstName, lastName, img }) {
 			const formData = new FormData();
 			formData.append('img', img);
 			formData.append('body', JSON.stringify({ firstName, lastName }));

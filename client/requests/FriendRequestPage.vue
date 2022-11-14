@@ -7,7 +7,7 @@
 				:key="index"
 				class="user-box"
 			>
-				<img src="../user (2).png" alt="" />
+				<img src="../../static/avatar.png" alt="" />
 				{{ notification.name }}
 				<button
 					class="btn accept-btn"

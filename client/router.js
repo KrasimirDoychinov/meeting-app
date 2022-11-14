@@ -45,12 +45,13 @@ export default createRouter({
 			components: {
 				default: RealDataPage,
 			},
-			// beforeEnter: (to, from, next) => {
-			// 	if (isJwtValid(store.state.token, store.state.exp)) {
-			// 		next('/');
-			// 	}
-			// 	next();
-			// },
+			beforeEnter: async (to, from, next) => {
+				if (store.getters.hasTags) {
+					isAuthorized(store.state.token, store.state.exp, next, '/');
+				} else {
+					isAuthorized(store.state.token, store.state.exp, next);
+				}
+			},
 		},
 		{
 			path: '/tags/initial',
@@ -58,13 +59,13 @@ export default createRouter({
 			components: {
 				default: TagsInitialPage,
 			},
-			// beforeEnter: async (to, from, next) => {
-			// 	if (store.getters.hasTags) {
-			// 		isAuthorized(store.state.token, store.state.exp, next, '/');
-			// 	} else {
-			// 		isAuthorized(store.state.token, store.state.exp, next);
-			// 	}
-			// },
+			beforeEnter: async (to, from, next) => {
+				if (store.getters.hasTags) {
+					isAuthorized(store.state.token, store.state.exp, next, '/');
+				} else {
+					isAuthorized(store.state.token, store.state.exp, next);
+				}
+			},
 		},
 		{
 			path: '/',

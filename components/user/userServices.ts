@@ -7,6 +7,7 @@ import { io } from '../../app';
 import { GlobalErrorHelper } from '../errors/errorHelper';
 import { UserErrorConstants } from './errors/errorConstants';
 import { GlobalErrorConstants } from '../errors/errorConstants';
+import { HelperConstants } from '../helpers/helperConstants';
 
 export class UserServices {
 	static async setRealData(
@@ -25,8 +26,8 @@ export class UserServices {
 		}
 
 		const fs = require('fs');
-		const imageName = `${firstName}_${lastName}_${user.id}`;
-		fs.writeFile(`./static/${imageName}.png`, img.data, () => {});
+		const imageName = `${firstName}_${lastName}_${user.id}.png`;
+		fs.writeFile(`./static/${imageName}`, img.data, () => {});
 
 		user.realData = {
 			firstName,
@@ -51,7 +52,7 @@ export class UserServices {
 			realData: {
 				firstName: user.realData.firstName,
 				lastName: user.realData.lastName,
-				imageUrl: user.realData.imageUrl,
+				imageName: `${HelperConstants.imagesPath}${user.realData.imageName}`,
 			},
 		};
 		return model;
@@ -196,6 +197,7 @@ export class UserServices {
 				id: x._id,
 				name: x.name,
 				gender: x.gender,
+				imageName: `${HelperConstants.imagesPath}${x.realData.imageName}`,
 			};
 
 			return model;
@@ -231,6 +233,7 @@ export class UserServices {
 				friendRequestSent:
 					x.friendNotifications.some((x: any) => x.id === userId) ||
 					x.friends.some((x: string) => x === userId),
+				imageName: `${HelperConstants.imagesPath}avatar.png`,
 			};
 			return model;
 		});
@@ -260,6 +263,9 @@ export class UserServices {
 					: `${x.realData.firstName} ${x.realData.lastName}`,
 				tags: x.tags,
 				gender: x.gender,
+				imageName: isChatAnon
+					? `${HelperConstants.imagesPath}avatar.png`
+					: `${HelperConstants.imagesPath}${x.realData.imageName}`,
 			};
 			return model;
 		});

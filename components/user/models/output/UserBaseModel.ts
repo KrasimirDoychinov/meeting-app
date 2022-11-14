@@ -5,6 +5,7 @@ export interface UserBaseModel {
 	name: string;
 	gender: Gender;
 	tags?: string[];
+	imageName?: string;
 	friendRequestSent?: boolean;
 	changeAnonAgree?: boolean;
 }

@@ -4,7 +4,7 @@
 			<h2>People you might know!</h2>
 			<div class="users">
 				<div v-for="(user, index) in users" :key="index" class="user-box">
-					<img src="../user (2).png" alt="" />
+					<img class="avatar-img" :src="user.imageName" alt="" />
 					{{ user.name }}
 
 					<button
@@ -58,7 +58,7 @@ onBeforeMount(async () => {
 }
 
 h2 {
-	margin: 0.2em 0em 1em;
+	margin: 0.2em 0em 0.5em;
 }
 
 .people-might-know {
@@ -71,12 +71,7 @@ h2 {
 		overflow-y: hidden;
 		overflow-x: auto;
 		justify-content: flex-start;
-		padding-bottom: 1em;
 		gap: 1em;
-
-		.user-box {
-			gap: 1em;
-		}
 
 		.accept-btn {
 			margin-top: 0.5em;
