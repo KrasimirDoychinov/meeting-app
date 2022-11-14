@@ -2,15 +2,28 @@
 	<div class="chats">
 		<div v-show="!chatIsOpen" class="users">
 			<div v-for="(user, index) in users.value" :key="index" class="user-box">
-				<img
-					class="avatar-img"
+				<div
+					v-if="user.notificationCount"
 					:count="user.notificationCount"
-					@click="openChat(user.chatId, user.id, user.imageName)"
-					:src="user.imageName"
-					alt=""
-				/>
-				{{ user.notificationCount }}
-				{{ user.name }}
+					class="user-box-bubble notifications"
+				>
+					<img
+						class="avatar-img"
+						@click="openChat(user.chatId, user.id, user.imageName)"
+						:src="user.imageName"
+						alt=""
+					/>
+					{{ user.name }}
+				</div>
+				<div v-else class="user-box-bubble">
+					<img
+						class="avatar-img"
+						@click="openChat(user.chatId, user.id, user.imageName)"
+						:src="user.imageName"
+						alt=""
+					/>
+					{{ user.name }}
+				</div>
 			</div>
 		</div>
 		<div v-show="chatIsOpen" class="current-user">
@@ -102,8 +115,6 @@ const hideChat = async () => {
 
 const sendMessage = async (chatId) => {
 	// notify the backend to create a message
-	console.log(store.state.userId);
-	console.log(currentChatFriend.value.id);
 	await socket.emit(
 		'create message',
 		chatId,
@@ -252,19 +263,6 @@ onBeforeUnmount(() => {
 	transform: translateY(0px);
 	opacity: 1;
 	transition: 1s;
-}
-
-.avatar-img {
-	position: relative;
-	&::after {
-		content: ' ';
-		position: absolute;
-		top: 0;
-		width: 10px;
-		height: 10px;
-		background: black;
-		z-index: 1000;
-	}
 }
 
 @media screen and (min-width: 750px) {

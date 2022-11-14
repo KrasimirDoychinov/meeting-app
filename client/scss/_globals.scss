@@ -68,3 +68,24 @@
 	height: 80px;
 	border-radius: 100%;
 }
+
+.notifications {
+	position: relative;
+	&::after {
+		position: absolute;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		content: attr(count);
+		color: $white;
+		background: $red;
+		width: 10px;
+		height: 10px;
+		font-size: 1.5em;
+		padding: 0.4em;
+		border-radius: 50px;
+		top: 0;
+		margin-left: 3.5em;
+		margin-bottom: 0.5em;
+	}
+}

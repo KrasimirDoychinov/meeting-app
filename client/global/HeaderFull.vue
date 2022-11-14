@@ -92,6 +92,7 @@ const logout = async () => {
 
 <style scoped lang="scss">
 @import '../scss/_variables.scss';
+@import '../scss/_globals.scss';
 
 .header {
 	display: flex;
@@ -134,19 +135,7 @@ header {
 	.notifications {
 		position: relative;
 		&::after {
-			position: absolute;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			content: attr(count);
-			color: $white;
-			background: $red;
-			width: 10px;
-			height: 10px;
 			font-size: 0.6em;
-			padding: 0.4em;
-			border-radius: 50px;
-			top: 0;
 			margin-left: 1em;
 			margin-top: 1em;
 		}
