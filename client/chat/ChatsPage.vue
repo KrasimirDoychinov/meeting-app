@@ -75,7 +75,10 @@ const openChat = async (friendId, img) => {
 
 	currentChat.value = chat;
 	chatIsOpen.value = true;
+
+	// notify backend if a notification needs to be created
 	await socket.emit('chat connection');
+	// waits for the backend to add the msg dynamically to the frontend
 	await socket.off('create message').on('create message', (result) => {
 		if (store.state.currentChatId === result.chatId) {
 			currentChat.value.messages.unshift(result.message);
@@ -95,6 +98,7 @@ const hideChat = async () => {
 };
 
 const sendMessage = async (chatId) => {
+	// notify the backend to create a message
 	await socket.emit(
 		'create message',
 		chatId,

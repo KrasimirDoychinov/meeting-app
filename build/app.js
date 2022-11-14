@@ -14,13 +14,12 @@ require('dotenv').config();
 require('express-async-errors');
 const authRoutes_1 = require("./components/auth/authRoutes");
 const chatRoutes_1 = require("./components/chat/chatRoutes");
-const chatServices_1 = require("./components/chat/chatServices");
 const commentRoutes_1 = require("./components/comment/commentRoutes");
+const socketHelper_io_1 = require("./components/helpers/socketHelper.io");
 const errorHandler_1 = require("./components/middlewares/errorHandler");
 const postRoutes_1 = require("./components/post/postRoutes");
 const tagRoutes_1 = require("./components/tag/tagRoutes");
 const userRoutes_1 = require("./components/user/userRoutes");
-const userServices_1 = require("./components/user/userServices");
 const connectDB_1 = require("./connectDB");
 const cors = require('cors');
 const bp = require('body-parser');
@@ -37,21 +36,7 @@ exports.io = new Server(server, {
     },
 });
 // socket.io
-exports.io.on('connection', (socket) => {
-    socket.on('create message', (chatId, content, userId, friendId) => __awaiter(void 0, void 0, void 0, function* () {
-        if (content.length > 0) {
-            const message = yield chatServices_1.ChatServices.createMessage(chatId, userId, friendId, content);
-            exports.io.emit('create message', { message, chatId });
-        }
-    }));
-    socket.on('create notification', (userId, chatId) => __awaiter(void 0, void 0, void 0, function* () {
-        const result = yield userServices_1.UserServices.sendChatNotification(userId, chatId);
-        exports.io.emit('create notification', {
-            count: result.notifications,
-            userId: result.userId,
-        });
-    }));
-});
+(0, socketHelper_io_1.ioHelper)(exports.io);
 app.use(cors());
 app.use(fileUpload());
 app.use(bp.urlencoded({ extended: true }));

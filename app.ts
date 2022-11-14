@@ -5,6 +5,7 @@ import { authRouter } from './components/auth/authRoutes';
 import { chatRouter } from './components/chat/chatRoutes';
 import { ChatServices } from './components/chat/chatServices';
 import { commentRouter } from './components/comment/commentRoutes';
+import { ioHelper } from './components/helpers/socketHelper.io';
 import { errorHandler } from './components/middlewares/errorHandler';
 import { postRouter } from './components/post/postRoutes';
 import { tagRouter } from './components/tag/tagRoutes';
@@ -29,36 +30,7 @@ export const io = new Server(server, {
 });
 
 // socket.io
-io.on('connection', (socket: any) => {
-	socket.on(
-		'create message',
-		async (
-			chatId: string,
-			content: string,
-			userId: string,
-			friendId: string
-		) => {
-			if (content.length > 0) {
-				const message = await ChatServices.createMessage(
-					chatId,
-					userId,
-					friendId,
-					content
-				);
-				io.emit('create message', { message, chatId });
-			}
-		}
-	);
-
-	socket.on('create notification', async (userId: string, chatId: string) => {
-		const result = await UserServices.sendChatNotification(userId, chatId);
-
-		io.emit('create notification', {
-			count: result.notifications,
-			userId: result.userId,
-		});
-	});
-});
+ioHelper(io);
 
 app.use(cors());
 app.use(fileUpload());
