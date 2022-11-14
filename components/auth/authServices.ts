@@ -27,7 +27,6 @@ export class AuthServices {
 		}
 
 		const hash = await this.hashPassword(password);
-		console.log(hash);
 		const user = await User.create({
 			name,
 			email,

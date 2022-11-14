@@ -4,10 +4,12 @@
 			<div v-for="(user, index) in users.value" :key="index" class="user-box">
 				<img
 					class="avatar-img"
+					:count="user.notificationCount"
 					@click="openChat(user.chatId, user.id, user.imageName)"
 					:src="user.imageName"
 					alt=""
 				/>
+				{{ user.notificationCount }}
 				{{ user.name }}
 			</div>
 		</div>
@@ -66,6 +68,7 @@ const userId = ref(store.state.userId);
 const message = ref('');
 // methods
 const openChat = async (chatId, friendId, img) => {
+	console.log(friendId);
 	const chat = await store.dispatch('chatById', { chatId, friendId });
 	chat.messages = chat.messages.reverse();
 
@@ -99,6 +102,8 @@ const hideChat = async () => {
 
 const sendMessage = async (chatId) => {
 	// notify the backend to create a message
+	console.log(store.state.userId);
+	console.log(currentChatFriend.value.id);
 	await socket.emit(
 		'create message',
 		chatId,
@@ -118,7 +123,6 @@ const sendMeetRequest = async (chatId) => {
 
 onBeforeMount(async () => {
 	users.value = ref(await store.dispatch('allFriends'));
-	console.log(users.value);
 });
 
 onBeforeUnmount(() => {
@@ -248,6 +252,19 @@ onBeforeUnmount(() => {
 	transform: translateY(0px);
 	opacity: 1;
 	transition: 1s;
+}
+
+.avatar-img {
+	position: relative;
+	&::after {
+		content: ' ';
+		position: absolute;
+		top: 0;
+		width: 10px;
+		height: 10px;
+		background: black;
+		z-index: 1000;
+	}
 }
 
 @media screen and (min-width: 750px) {

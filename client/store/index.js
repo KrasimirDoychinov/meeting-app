@@ -16,7 +16,6 @@ export default createStore({
 			state.token = data.token;
 			state.exp = data.exp * 1000;
 			state.userId = data.id;
-			console.log(`Token is set to ${data.token}`);
 		},
 		removeToken(state) {
 			state.token = '';

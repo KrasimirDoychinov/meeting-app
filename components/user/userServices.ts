@@ -265,7 +265,7 @@ export class UserServices {
 
 		const result: FriendModel[] = users.friends.map((x: any) => {
 			const model: FriendModel = {
-				id: x._id,
+				id: x.friendId,
 				name: x.isAnon
 					? x.name
 					: `${x.realData.firstName} ${x.realData.lastName}`,
@@ -279,7 +279,6 @@ export class UserServices {
 			return model;
 		});
 
-		console.log(result);
 		return result;
 	}
 

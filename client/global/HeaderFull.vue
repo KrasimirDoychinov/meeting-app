@@ -63,8 +63,8 @@ onBeforeMount(async () => {
 	chatNotificationCount.value = chatNotifications;
 
 	socket.off('chat notification').on('chat notification', (id, chatId) => {
-		console.log(store.state.currentChatId);
 		if (store.state.currentChatId !== chatId && id === store.state.userId) {
+			console.log('sending notification');
 			socket.emit('create notification', id, chatId);
 		}
 	});
@@ -79,7 +79,6 @@ onBeforeMount(async () => {
 		if (store.state.userId === id) {
 			friendNotificationCount.value += 1;
 		}
-		console.log('friend request sent');
 	});
 });
 
