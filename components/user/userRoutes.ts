@@ -5,6 +5,7 @@ import {
 	allWithTags,
 	chatNotificationsByUser,
 	friendNRequestsByUser,
+	initialRealData,
 	sendFriendRequest,
 } from './userController';
 
@@ -17,3 +18,4 @@ userRouter.get('/requests/friend', authorize, friendNRequestsByUser);
 userRouter.get('/notifications/chat', authorize, chatNotificationsByUser);
 userRouter.post('/friend/accept/:id', authorize, acceptFriendRequest);
 userRouter.post('/friend/:id', authorize, sendFriendRequest);
+userRouter.post('/real-data/initial', authorize, initialRealData);

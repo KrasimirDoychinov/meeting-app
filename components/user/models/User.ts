@@ -33,7 +33,7 @@ const UserSchema = new mongoose.Schema({
 			type: String,
 			required: false,
 		},
-		imageUrl: {
+		imageName: {
 			type: String,
 			required: false,
 		},

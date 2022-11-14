@@ -13,6 +13,7 @@ import { connectDB } from './connectDB';
 
 const cors = require('cors');
 const bp = require('body-parser');
+const fileUpload = require('express-fileupload');
 const http = require('http');
 const express = require('express');
 const app = express();
@@ -50,6 +51,7 @@ io.on('connection', (socket: any) => {
 });
 
 app.use(cors());
+app.use(fileUpload());
 app.use(bp.urlencoded({ extended: true }));
 app.use(bp.json());
 

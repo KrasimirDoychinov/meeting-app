@@ -6,8 +6,39 @@ import { ChatServices } from '../chat/chatServices';
 import { io } from '../../app';
 import { GlobalErrorHelper } from '../errors/errorHelper';
 import { UserErrorConstants } from './errors/errorConstants';
+import { GlobalErrorConstants } from '../errors/errorConstants';
 
 export class UserServices {
+	static async setRealData(
+		id: string,
+		firstName: string,
+		lastName: string,
+		img: any
+	): Promise<boolean> {
+		console.log(img);
+		const user = await User.findById(id);
+		if (GlobalErrorHelper.areFieldsNotNull([user])) {
+			throw new CustomError(UserErrorConstants.NotFound, 400);
+		}
+
+		if (GlobalErrorHelper.areFieldsNotNull([firstName, lastName, img])) {
+			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
+		}
+
+		const fs = require('fs');
+		const imageName = `${firstName}_${lastName}_${user.id}`;
+		fs.writeFile(`./static/${imageName}.png`, img.data, () => {});
+
+		user.realData = {
+			firstName,
+			lastName,
+			imageName,
+		};
+
+		await user.save();
+		return true;
+	}
+
 	static async byId(id: string): Promise<UserFullModel> {
 		const user = await User.findById(id);
 		if (GlobalErrorHelper.areFieldsNotNull([user])) {

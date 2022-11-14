@@ -1,4 +1,3 @@
-import { ChatServices } from '../chat/chatServices';
 import { UserServices } from './userServices';
 
 export const allWithTags = async (req: any, res: any) => {
@@ -56,4 +55,18 @@ export const chatNotificationsByUser = async (req: any, res: any) => {
 
 	const notifications = await UserServices.allChatNotifications(id);
 	res.status(200).json({ notifications, count: notifications.length });
+};
+
+export const initialRealData = async (req: any, res: any) => {
+	const id = res.user.id;
+	const { firstName, lastName } = JSON.parse(req.body.body);
+	const file = req.files.img;
+	const response = await UserServices.setRealData(
+		id,
+		firstName,
+		lastName,
+		file
+	);
+
+	res.status(200).json({});
 };

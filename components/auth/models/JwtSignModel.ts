@@ -5,5 +5,5 @@ export interface JwtSignModel {
 	name: string;
 	email: string;
 	tags: string[];
-	realData: UserRealData;
+	realData?: UserRealData;
 }

@@ -35,6 +35,7 @@
 
 <script setup>
 import { ref } from '@vue/reactivity';
+import store from '../store';
 
 const allowedExt = ['png', 'jpeg', 'jpg'];
 
@@ -57,17 +58,26 @@ const onFileChange = async (event) => {
 	}
 	error.value = '';
 	reader.readAsDataURL(event.target.files[0]);
-	reader.onload = () => {
+	reader.onload = async () => {
 		img.value = reader.result;
+		file.value = event.target.files[0];
 	};
 };
 
-const next = async () => {
-  try {
-    
-  } catch (error) {
-    
-  }
+const next = () => {
+	try {
+		const reader = new FileReader();
+		reader.readAsArrayBuffer(file.value);
+		reader.onload = async () => {
+			const response = await store.dispatch('createRealData', {
+				firstName: firstName.value,
+				lastName: lastName.value,
+				img: file.value,
+			});
+		};
+	} catch (error) {
+		console.log(error);
+	}
 };
 </script>
 
@@ -79,7 +89,7 @@ const next = async () => {
 	position: relative;
 	display: grid;
 	justify-items: center;
-	grid-template-rows: 1fr 4fr;
+	grid-template-rows: 1fr 4fr 1fr;
 	background: $background-gradient-purple;
 	height: 70vh;
 	width: 95vw;
@@ -102,25 +112,14 @@ const next = async () => {
 		.img-box {
 			position: relative;
 			background: $chat-gray;
-			height: 50%;
+			height: 300px;
 			width: 80vw;
 
 			img {
-				height: 100%;
+				height: 300px;
 				width: 100%;
 				object-fit: contain;
 				z-index: 1;
-			}
-
-			.img-picker {
-				border-radius: 100%;
-				background: rgb(255, 255, 255);
-				opacity: 0.5;
-				position: absolute;
-				height: 20em;
-				width: 20em;
-				border-radius: 100%;
-				z-index: 3;
 			}
 		}
 
@@ -139,8 +138,6 @@ const next = async () => {
 	}
 
 	button {
-		position: absolute;
-		bottom: 0;
 		font-size: 18px;
 		margin-bottom: 1em;
 	}

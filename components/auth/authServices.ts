@@ -26,19 +26,11 @@ export class AuthServices {
 			throw new CustomError(AuthErrorConstants.PasswordMismatch, 400);
 		}
 
-		// TODO: Hard coded for now
-		const realData: UserRealData = {
-			firstName: 'Krasimir',
-			lastName: 'Doychinov',
-			imageUrl: 'Image url',
-		};
-
 		const hash = this.hashPassword(password);
 		const user = await User.create({
 			name,
 			email,
 			password: hash,
-			realData,
 		});
 
 		const jwtUserModel: JwtSignModel = {
@@ -46,7 +38,6 @@ export class AuthServices {
 			name: user.name,
 			email: user.email,
 			tags: user.tags,
-			realData,
 		};
 		const token = this.signJWT(jwtUserModel);
 		const result = this.verifyJWT(token);

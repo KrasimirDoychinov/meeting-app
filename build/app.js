@@ -23,6 +23,7 @@ const userRoutes_1 = require("./components/user/userRoutes");
 const connectDB_1 = require("./connectDB");
 const cors = require('cors');
 const bp = require('body-parser');
+const fileUpload = require('express-fileupload');
 const http = require('http');
 const express = require('express');
 const app = express();
@@ -44,6 +45,7 @@ exports.io.on('connection', (socket) => {
     }));
 });
 app.use(cors());
+app.use(fileUpload());
 app.use(bp.urlencoded({ extended: true }));
 app.use(bp.json());
 // routes
