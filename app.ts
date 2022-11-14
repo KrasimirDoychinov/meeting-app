@@ -9,6 +9,7 @@ import { errorHandler } from './components/middlewares/errorHandler';
 import { postRouter } from './components/post/postRoutes';
 import { tagRouter } from './components/tag/tagRoutes';
 import { userRouter } from './components/user/userRoutes';
+import { UserServices } from './components/user/userServices';
 import { connectDB } from './connectDB';
 
 const cors = require('cors');
@@ -44,10 +45,19 @@ io.on('connection', (socket: any) => {
 					friendId,
 					content
 				);
-				io.emit('create message', message);
+				io.emit('create message', { message, chatId });
 			}
 		}
 	);
+
+	socket.on('create notification', async (userId: string, chatId: string) => {
+		const result = await UserServices.sendChatNotification(userId, chatId);
+
+		io.emit('create notification', {
+			count: result.notifications,
+			userId: result.userId,
+		});
+	});
 });
 
 app.use(cors());

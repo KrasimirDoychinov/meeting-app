@@ -20,6 +20,7 @@ const errorHandler_1 = require("./components/middlewares/errorHandler");
 const postRoutes_1 = require("./components/post/postRoutes");
 const tagRoutes_1 = require("./components/tag/tagRoutes");
 const userRoutes_1 = require("./components/user/userRoutes");
+const userServices_1 = require("./components/user/userServices");
 const connectDB_1 = require("./connectDB");
 const cors = require('cors');
 const bp = require('body-parser');
@@ -40,8 +41,15 @@ exports.io.on('connection', (socket) => {
     socket.on('create message', (chatId, content, userId, friendId) => __awaiter(void 0, void 0, void 0, function* () {
         if (content.length > 0) {
             const message = yield chatServices_1.ChatServices.createMessage(chatId, userId, friendId, content);
-            exports.io.emit('create message', message);
+            exports.io.emit('create message', { message, chatId });
         }
+    }));
+    socket.on('create notification', (userId, chatId) => __awaiter(void 0, void 0, void 0, function* () {
+        const result = yield userServices_1.UserServices.sendChatNotification(userId, chatId);
+        exports.io.emit('create notification', {
+            count: result.notifications,
+            userId: result.userId,
+        });
     }));
 });
 app.use(cors());

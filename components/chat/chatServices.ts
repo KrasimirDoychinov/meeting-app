@@ -35,12 +35,8 @@ export class ChatServices {
 		};
 		chat.messages.push(message);
 
+		io.emit('chat notification', friendId, chatId);
 		await chat.save();
-		const chatNCount = await UserServices.sendChatNotification(
-			friendId,
-			chatId
-		);
-		io.emit('chat notifications', chatNCount, friendId);
 		return message;
 	}
 

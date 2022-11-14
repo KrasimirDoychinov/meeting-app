@@ -9,6 +9,7 @@ export default createStore({
 		tags: [],
 		exp: 0,
 		userId: '',
+		currentChatId: '',
 	},
 	mutations: {
 		setToken(state, data) {
@@ -27,6 +28,12 @@ export default createStore({
 		},
 		removeTags(state) {
 			state.tags = [];
+		},
+		setChatId(state, value) {
+			state.currentChatId = value;
+		},
+		removeChatId(state) {
+			state.currentChatId = null;
 		},
 	},
 	getters: {
@@ -66,7 +73,7 @@ export default createStore({
 			return response.data;
 		},
 		// user
-	async createRealData({ state, getters }, { firstName, lastName, img }) {
+		async createRealData({ state, getters }, { firstName, lastName, img }) {
 			const formData = new FormData();
 			formData.append('img', img);
 			formData.append('body', JSON.stringify({ firstName, lastName }));

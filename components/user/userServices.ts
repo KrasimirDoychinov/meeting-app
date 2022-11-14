@@ -147,7 +147,7 @@ export class UserServices {
 	static async sendChatNotification(
 		currentUserId: string,
 		chatId: string
-	): Promise<number> {
+	): Promise<any> {
 		const user = await User.findById(currentUserId);
 		if (GlobalErrorHelper.areFieldsNotNull([user])) {
 			throw new CustomError(UserErrorConstants.NotFound, 400);
@@ -156,7 +156,11 @@ export class UserServices {
 		user.chatNotifications.push(chatId);
 		await user.save();
 
-		return user.chatNotifications.length;
+		io.emit('chat notifications', user.chatNotifications.length);
+		return {
+			notifications: user.chatNotifications.length,
+			userId: currentUserId,
+		};
 	}
 
 	static async allChatNotifications(id: string): Promise<string[]> {

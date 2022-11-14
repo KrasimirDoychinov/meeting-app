@@ -62,10 +62,16 @@ onBeforeMount(async () => {
 	friendNotificationCount.value = friendNCount.count;
 	chatNotificationCount.value = chatNCount.count;
 
-	socket.off('chat notifications').on('chat notifications', (count, id) => {
-		if (id === store.state.userId) {
-			chatNotificationCount.value = count;
-			console.log(count, id);
+	socket.off('chat notification').on('chat notification', (id, chatId) => {
+		console.log(store.state.currentChatId);
+		if (store.state.currentChatId !== chatId && id === store.state.userId) {
+			socket.emit('create notification', id, chatId);
+		}
+	});
+
+	socket.off('create notification').on('create notification', (result) => {
+		if (store.state.userId === result.userId) {
+			chatNotificationCount.value = result.count;
 		}
 	});
 

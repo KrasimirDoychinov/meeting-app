@@ -76,18 +76,22 @@ const openChat = async (friendId, img) => {
 	currentChat.value = chat;
 	chatIsOpen.value = true;
 	await socket.emit('chat connection');
-	await socket.off('create message').on('create message', (msg) => {
-		currentChat.value.messages.unshift(msg);
+	await socket.off('create message').on('create message', (result) => {
+		if (store.state.currentChatId === result.chatId) {
+			currentChat.value.messages.unshift(result.message);
+		}
 	});
+	await store.commit('setChatId', chat.id);
 };
 
-const hideChat = () => {
+const hideChat = async () => {
 	const mainChat = document.querySelector('.main-chat');
 	mainChat.scrollTop = 0;
 
 	message.value = '';
 	chatIsOpen.value = false;
 	currentChatFriend.value = {};
+	await store.commit('removeChatId');
 };
 
 const sendMessage = async (chatId) => {
