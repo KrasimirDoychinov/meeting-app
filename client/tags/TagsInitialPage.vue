@@ -88,11 +88,7 @@ const setTags = async () => {
 
 <style lang="scss" scoped>
 @import '../scss/variables';
-
-.selected {
-	color: $white !important;
-	background: $background-pill-selected;
-}
+@import '../scss/globals';
 
 .tag-container {
 	color: $white;

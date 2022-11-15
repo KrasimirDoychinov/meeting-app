@@ -129,15 +129,6 @@ const next = async () => {
 		input[type='file'] {
 			display: none;
 		}
-
-		.custom-file-upload {
-			border-radius: 20px;
-			background: $background-gradient-green;
-			color: $white;
-			padding: 0.5em 1em;
-			font-size: 1.5em;
-			cursor: pointer;
-		}
 	}
 
 	button {
