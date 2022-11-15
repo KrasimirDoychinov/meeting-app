@@ -1,4 +1,3 @@
-import { CustomError } from '../errors/customError';
 import { UserServices } from './userServices';
 
 export const allWithTags = async (req: any, res: any) => {
@@ -56,6 +55,17 @@ export const chatNotificationsByUser = async (req: any, res: any) => {
 
 	const notifications = await UserServices.allChatNotifications(id);
 	res.status(200).json(notifications);
+};
+
+export const removeChatNotificationsByChatId = async (req: any, res: any) => {
+	const chatId = req.params.chatId;
+	const userId = res.user.id;
+
+	const result = await UserServices.removeChatNotificationsForChat(
+		chatId,
+		userId
+	);
+	res.status(200).json({ success: result });
 };
 
 export const initialRealData = async (req: any, res: any) => {

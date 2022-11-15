@@ -10,6 +10,7 @@ export default createStore({
 		exp: 0,
 		userId: '',
 		currentChatId: '',
+		chatNotifications: 0,
 	},
 	mutations: {
 		setToken(state, data) {
@@ -33,6 +34,12 @@ export default createStore({
 		},
 		removeChatId(state) {
 			state.currentChatId = null;
+		},
+		setChatNotifications(state, value) {
+			state.chatNotifications = value;
+		},
+		removeChatNotifications(state, value) {
+			state.chatNotifications -= value;
 		},
 	},
 	getters: {
@@ -168,6 +175,19 @@ export default createStore({
 				}
 			);
 
+			return response.data;
+		},
+		async removeChatNotificationsByChatId(
+			{ state, getters, commit },
+			{ count, chatId }
+		) {
+			const response = await axios.delete(
+				state.host + `/user/notifications/chat/${chatId}`,
+				{
+					headers: getters.getHeaders,
+				}
+			);
+			await commit('removeChatNotifications', count);
 			return response.data;
 		},
 		async changeAnonAgree({ state, getters }, { chatId }) {

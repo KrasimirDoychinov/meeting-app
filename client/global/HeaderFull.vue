@@ -54,7 +54,7 @@ const props = defineProps({
 	},
 });
 const friendNotificationCount = ref(0);
-const chatNotificationCount = ref(0);
+const chatNotificationCount = ref(store.state.chatNotifications);
 
 onBeforeMount(async () => {
 	const friendNCount = await store.dispatch('friendRequestsByUser');
@@ -69,11 +69,14 @@ onBeforeMount(async () => {
 		}
 	});
 
-	socket.off('create notification').on('create notification', (result) => {
-		if (store.state.userId === result.userId) {
-			chatNotificationCount.value = result.count;
-		}
-	});
+	socket
+		.off('create notification')
+		.on('create notification', async (result) => {
+			if (store.state.userId === result.userId) {
+				chatNotificationCount.value = result.count;
+				await state.commit('setChatNotifications', result.count);
+			}
+		});
 
 	socket.off('receive friend request').on('receive friend request', (id) => {
 		if (store.state.userId === id) {

@@ -9,7 +9,14 @@
 				>
 					<img
 						class="avatar-img"
-						@click="openChat(user.chatId, user.id, user.imageName)"
+						@click="
+							openChat(
+								user.chatId,
+								user.id,
+								user.imageName,
+								user.notificationCount
+							)
+						"
 						:src="user.imageName"
 						alt=""
 					/>
@@ -70,6 +77,7 @@ import { onBeforeMount, onBeforeUnmount, ref } from '@vue/runtime-core';
 import store from '../store/index.js';
 
 // props
+const emit = defineEmits(['forceRerenderHeader']);
 const users = ref([]);
 const chatIsOpen = ref(false);
 
@@ -80,8 +88,7 @@ const userId = ref(store.state.userId);
 
 const message = ref('');
 // methods
-const openChat = async (chatId, friendId, img) => {
-	console.log(friendId);
+const openChat = async (chatId, friendId, img, notificationCount) => {
 	const chat = await store.dispatch('chatById', { chatId, friendId });
 	chat.messages = chat.messages.reverse();
 
@@ -101,12 +108,19 @@ const openChat = async (chatId, friendId, img) => {
 		}
 	});
 	await store.commit('setChatId', chat.id);
+	const response = await store.dispatch('removeChatNotificationsByChatId', {
+		count: notificationCount,
+		chatId: chat.id,
+	});
+	console.log(store.state.chatNotifications);
+	emit('forceRerenderHeader');
 };
 
 const hideChat = async () => {
+	users.value = ref(await store.dispatch('allFriends'));
 	const mainChat = document.querySelector('.main-chat');
-	mainChat.scrollTop = 0;
 
+	mainChat.scrollTop = 0;
 	message.value = '';
 	chatIsOpen.value = false;
 	currentChatFriend.value = {};

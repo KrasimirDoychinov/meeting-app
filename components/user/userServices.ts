@@ -165,6 +165,23 @@ export class UserServices {
 		};
 	}
 
+	static async removeChatNotificationsForChat(
+		chatId: string,
+		userId: string
+	): Promise<boolean> {
+		const user = await User.findById(userId);
+		if (GlobalErrorHelper.areFieldsNotNull([chatId, userId])) {
+			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
+		}
+
+		const foundFriend = user.friends.find((x: any) => x.chatId === chatId);
+		foundFriend.notifications = 0;
+
+		await user.save();
+
+		return true;
+	}
+
 	static async allChatNotifications(id: string): Promise<number> {
 		const user = await User.findById(id);
 		if (GlobalErrorHelper.areFieldsNotNull([user])) {
