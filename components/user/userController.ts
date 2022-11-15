@@ -71,8 +71,7 @@ export const removeChatNotificationsByChatId = async (req: any, res: any) => {
 export const initialRealData = async (req: any, res: any) => {
 	const id = res.user.id;
 	const { firstName, lastName, img } = req.body;
-	console.log(req.body);
 	const response = await UserServices.setRealData(id, firstName, lastName, img);
 
-	// res.status(200).json({ success: response });
+	res.status(200).json({ success: response });
 };

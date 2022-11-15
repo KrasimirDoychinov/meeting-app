@@ -50,7 +50,6 @@ export class AuthServices {
 		email: string,
 		password: string
 	): Promise<AuthReturnModel> {
-		console.log(await CloudinaryHelper.getAvatar());
 		if (GlobalErrorHelper.areFieldsNotNull([email, password])) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}

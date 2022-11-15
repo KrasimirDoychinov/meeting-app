@@ -27,15 +27,15 @@ export class UserServices {
 		}
 
 		const imageName = `${firstName}_${lastName}_${user.id}`;
-		await CloudinaryHelper.uploadImage(img, imageName);
+		const imageUrl = await CloudinaryHelper.uploadImage(img, imageName);
 
 		user.realData = {
 			firstName,
 			lastName,
-			imageName,
+			imageUrl,
 		};
 
-		// await user.save();
+		await user.save();
 		return true;
 	}
 
@@ -249,23 +249,26 @@ export class UserServices {
 				},
 			],
 		});
+
 		if (GlobalErrorHelper.areFieldsNotNull([users])) {
 			throw new CustomError(UserErrorConstants.NotFound, 400);
 		}
 
-		const result: UserBaseModel[] = users.map(async (x: typeof User) => {
-			const model: UserBaseModel = {
-				id: x._id,
-				name: x.name,
-				tags: x.tags,
-				gender: x.gender,
-				friendRequestSent:
-					x.friendNotifications.some((x: any) => x.id === userId) ||
-					x.friends.some((x: string) => x === userId),
-				imageName: await CloudinaryHelper.getAvatar(),
-			};
-			return model;
-		});
+		const result: UserBaseModel[] = await Promise.all(
+			users.map(async (x: typeof User) => {
+				const model: UserBaseModel = {
+					id: x._id,
+					name: x.name,
+					tags: x.tags,
+					gender: x.gender,
+					friendRequestSent:
+						x.friendNotifications.some((x: any) => x.id === userId) ||
+						x.friends.some((x: string) => x === userId),
+					imageName: await CloudinaryHelper.getAvatar(),
+				};
+				return model;
+			})
+		);
 
 		return result;
 	}
