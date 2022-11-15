@@ -1,18 +1,18 @@
 import {
 	AuthReturnModel,
 	JwtVerifyReturnModel,
-} from './models/output/authOutputModels';
+} from './models/output/outputModels';
 
 import {
 	AuthLoginModel,
 	AuthRegisterModel,
 	JwtSignModel,
-} from './models/input/authInputModels';
+} from './models/input/inputModels';
 
 import { CustomError } from '../errors/customError';
 import { User } from '../user/models/User';
 import { GlobalErrorConstants } from '../errors/errorConstants';
-import { AuthErrorConstants } from './errors/errorConstants';
+import { AuthErrorConstants } from './errors/constants';
 import { GlobalErrorHelper } from '../errors/errorHelper';
 
 const bcrypt = require('bcrypt');

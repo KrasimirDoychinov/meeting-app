@@ -1,5 +1,5 @@
 import { UserRealData } from '../../../user/models/output/UserRealData';
-import { AuthBaseModel } from '../authBaseModels';
+import { AuthBaseModel } from '../baseModels';
 
 export interface AuthRegisterModel {
 	name: string;
