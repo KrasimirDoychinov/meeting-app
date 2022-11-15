@@ -1,9 +1,13 @@
+import { ChatReturnMessageModel } from './models/output/outputModels';
+import { ChatReturnModel } from './models/output/outputModels';
+import { ChatInput, ChatMessageModel } from './models/input/inputModels';
+
 import { CustomError } from '../errors/customError';
 import { UserServices } from '../user/userServices';
 import { Chat } from './models/Chat';
-import { ChatModel } from './models/output/ChatModel';
-import { ChatMessage } from './models/input/ChatMessageModel';
 import { io } from '../../app';
+import { GlobalErrorHelper } from '../errors/errorHelper';
+import { GlobalErrorConstants } from '../errors/errorConstants';
 
 export class ChatServices {
 	// Create
@@ -18,83 +22,51 @@ export class ChatServices {
 		return chat;
 	}
 
-	static async createMessage(
-		chatId: string,
-		userId: string,
-		friendId: string,
-		content: string
-	): Promise<ChatMessage> {
+	static async createMessage({
+		chatId,
+		senderId,
+		receiverId,
+		content,
+	}: ChatMessageModel): Promise<ChatReturnMessageModel> {
 		const chat = await Chat.findById(chatId);
-		if (!this.isPersonInChat(chat, userId)) {
+		if (!this.isPersonInChat(chat, senderId)) {
 			throw new CustomError("This user doesn't belong to this chat", 400);
 		}
 
-		const message: ChatMessage = {
-			senderId: userId,
+		const message: ChatReturnMessageModel = {
+			senderId,
 			content: content,
 		};
 		chat.messages.push(message);
 
 		// emit event to the frontend to increase the notifications for the user
-		io.emit('chat notification', friendId, chatId);
+		io.emit('chat notification', receiverId, chatId);
 
 		await chat.save();
 		return message;
 	}
 
 	// Retrieve
-	static async byId(
-		chatId: string,
-		currentUserId: string,
-		friendUserId: string
-	): Promise<ChatModel> {
+	static async byId({
+		chatId,
+		currentUserId,
+		friendUserId,
+	}: ChatInput): Promise<ChatReturnModel> {
+		if (GlobalErrorHelper.areFieldsExactlyEqual(currentUserId, friendUserId)) {
+			throw new CustomError(GlobalErrorConstants.FieldsAreEqual, 400);
+		}
+
 		const chat = await Chat.findById(chatId);
+		if (GlobalErrorHelper.areFieldsNotNull([chat])) {
+			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
+		}
 
 		const currentUser =
 			chat.personA.id === currentUserId ? chat.personA : chat.personB;
 		const friendUser =
 			chat.personA.id === friendUserId ? chat.personA : chat.personB;
 
-		let model: ChatModel;
-		if (chat.isAnon) {
-			model = {
-				id: chat.id,
-				isAnon: true,
-				messages: chat.messages,
-				currentUser: {
-					id: currentUser.id,
-					name: currentUser.name,
-					gender: currentUser.gender,
-					changeAnonAgree: currentUser.changeAnonAgree,
-				},
-				friendUser: {
-					id: friendUser.id,
-					name: friendUser.name,
-					gender: friendUser.gender,
-					changeAnonAgree: friendUser.changeAnonAgree,
-				},
-			};
-		} else {
-			model = {
-				id: chat.id,
-				isAnon: false,
-				messages: chat.messages,
-				currentUser: {
-					id: currentUser.id,
-					name: `${currentUser.realData.firstName} ${currentUser.realData.lastName}`,
-					gender: currentUser.gender,
-					changeAnonAgree: currentUser.changeAnonAgree,
-				},
-				friendUser: {
-					id: friendUser.id,
-					name: `${friendUser.realData.firstName} ${friendUser.realData.lastName}`,
-					gender: friendUser.gender,
-					changeAnonAgree: friendUser.changeAnonAgree,
-				},
-			};
-		}
-
-		return model;
+		return this.buildChatModel(chat, currentUser, friendUser);
 	}
 
 	// Anon status
@@ -103,16 +75,15 @@ export class ChatServices {
 		userId: string
 	): Promise<boolean> {
 		const chat = await Chat.findById(chatId);
+		if (GlobalErrorHelper.areFieldsNotNull([chat])) {
+			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
+		}
 
 		if (!this.isPersonInChat(chat, userId)) {
 			throw new CustomError("This user doesn't belong to this chat", 400);
 		}
 
-		if (chat.personA.id === userId) {
-			chat.personA.changeAnonAgree = true;
-		} else if (chat.personB.id === userId) {
-			chat.personB.changeAnonAgree = true;
-		}
+		this.changeCorrectPersonAnonStatus(chat, userId);
 
 		if (
 			this.arePeopleAgreed(
@@ -122,8 +93,8 @@ export class ChatServices {
 		) {
 			await this.changeAnon(chat);
 		}
-		await chat.save();
 
+		await chat.save();
 		return true;
 	}
 
@@ -151,6 +122,49 @@ export class ChatServices {
 	}
 
 	// Private methods
+	private static buildChatModel(
+		chat: typeof Chat,
+		currentUser,
+		friendUser
+	): ChatReturnModel {
+		let model: ChatReturnModel;
+		model = {
+			id: chat.id,
+			isAnon: chat.isAnon,
+			messages: chat.messages,
+		};
+
+		if (chat.isAnon) {
+			model.currentUser = {
+				id: currentUser.id,
+				name: currentUser.name,
+				gender: currentUser.gender,
+				changeAnonAgree: currentUser.changeAnonAgree,
+			};
+			model.friendUser = {
+				id: friendUser.id,
+				name: friendUser.name,
+				gender: friendUser.gender,
+				changeAnonAgree: friendUser.changeAnonAgree,
+			};
+		} else {
+			model.currentUser = {
+				id: currentUser.id,
+				name: `${currentUser.realData.firstName} ${currentUser.realData.lastName}`,
+				gender: currentUser.gender,
+				changeAnonAgree: currentUser.changeAnonAgree,
+			};
+			model.friendUser = {
+				id: friendUser.id,
+				name: `${friendUser.realData.firstName} ${friendUser.realData.lastName}`,
+				gender: friendUser.gender,
+				changeAnonAgree: friendUser.changeAnonAgree,
+			};
+		}
+
+		return model;
+	}
+
 	private static arePeopleAgreed(
 		personAAgree: boolean,
 		personBAgree: boolean
@@ -160,5 +174,16 @@ export class ChatServices {
 
 	private static isPersonInChat(chat: typeof Chat, personId: string): boolean {
 		return chat.personA.id === personId || chat.personB.id === personId;
+	}
+
+	private static changeCorrectPersonAnonStatus(
+		chat: typeof Chat,
+		userId: string
+	): void {
+		if (chat.personA.id === userId) {
+			chat.personA.changeAnonAgree = true;
+		} else if (chat.personB.id === userId) {
+			chat.personB.changeAnonAgree = true;
+		}
 	}
 }

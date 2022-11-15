@@ -9,8 +9,9 @@ import {
 	JwtSignModel,
 } from './models/input/inputModels';
 
-import { CustomError } from '../errors/customError';
 import { User } from '../user/models/User';
+
+import { CustomError } from '../errors/customError';
 import { GlobalErrorConstants } from '../errors/errorConstants';
 import { AuthErrorConstants } from './errors/constants';
 import { GlobalErrorHelper } from '../errors/errorHelper';

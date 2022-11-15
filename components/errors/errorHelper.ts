@@ -6,4 +6,11 @@ export class GlobalErrorHelper {
 
 		return false;
 	};
+
+	static areFieldsExactlyEqual = (a, b) => {
+		if (a === b) {
+			return true;
+		}
+		return false;
+	};
 }

@@ -18,12 +18,12 @@ const handleMessageEvent = async (socket: any, io: any) => {
 			friendId: string
 		) => {
 			if (content.length > 0) {
-				const message = await ChatServices.createMessage(
+				const message = await ChatServices.createMessage({
 					chatId,
-					userId,
-					friendId,
-					content
-				);
+					content,
+					senderId: userId,
+					receiverId: friendId,
+				});
 				io.emit('create message', { message, chatId });
 			}
 		}
