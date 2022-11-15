@@ -1,24 +1,30 @@
+import {
+	AuthReturnModel,
+	JwtVerifyReturnModel,
+} from './models/output/authOutputModels';
+
+import {
+	AuthLoginModel,
+	AuthRegisterModel,
+	JwtSignModel,
+} from './models/input/authInputModels';
+
 import { CustomError } from '../errors/customError';
-import { JwtReturnModel } from './models/JwtReturnModel';
 import { User } from '../user/models/User';
-import { UserRealData } from '../user/models/output/UserRealData';
-import { AuthReturnModel } from './models/AuthReturnModel';
-import { JwtSignModel } from './models/JwtSignModel';
 import { GlobalErrorConstants } from '../errors/errorConstants';
 import { AuthErrorConstants } from './errors/errorConstants';
 import { GlobalErrorHelper } from '../errors/errorHelper';
-import { CloudinaryHelper } from '../helpers/cloudinaryHelper';
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 export class AuthServices {
-	static async register(
-		name: string,
-		email: string,
-		password: string,
-		compare: string
-	): Promise<AuthReturnModel> {
+	static async register({
+		name,
+		email,
+		password,
+		compare,
+	}: AuthRegisterModel): Promise<AuthReturnModel> {
 		if (GlobalErrorHelper.areFieldsNotNull([name, email, password, compare])) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
@@ -43,13 +49,13 @@ export class AuthServices {
 		const token = this.signJWT(jwtUserModel);
 		const result = this.verifyJWT(token);
 
-		return { token, iat: result.iat, exp: result.exp, id: user.id };
+		return { token, id: user.id, iat: result.iat, exp: result.exp };
 	}
 
-	static async login(
-		email: string,
-		password: string
-	): Promise<AuthReturnModel> {
+	static async login({
+		email,
+		password,
+	}: AuthLoginModel): Promise<AuthReturnModel> {
 		if (GlobalErrorHelper.areFieldsNotNull([email, password])) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
@@ -71,19 +77,20 @@ export class AuthServices {
 			tags: user.tags,
 			realData: user.realData,
 		};
+
 		const token = this.signJWT(jwtUserModel);
 		const result = this.verifyJWT(token);
 
 		return {
 			token,
+			id: user.id,
 			iat: result.iat,
 			exp: result.exp,
 			tags: user.tags,
-			id: user.id,
 		};
 	}
 
-	static verifyJWT(token: string): JwtReturnModel {
+	static verifyJWT(token: string): JwtVerifyReturnModel {
 		return jwt.verify(token, process.env.JWT_SECRET);
 	}
 

@@ -3,9 +3,9 @@ import { PostServices } from './postServices';
 
 export const createPost = async (req: any, res: any) => {
 	const userId = res.user.id;
-	const { description, mediaUri, status } = req.body;
+	const { tags, description, img } = req.body;
 
-	const post = await PostServices.create(userId, description, mediaUri, status);
+	const post = await PostServices.create(userId, description, tags, img);
 	res.status(201).json(post);
 };
 

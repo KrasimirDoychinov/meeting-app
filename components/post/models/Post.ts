@@ -18,13 +18,14 @@ const PostSchema = new mongoose.Schema(
 			type: Date,
 			default: new Date(),
 		},
-		status: {
-			type: Number,
-			required: true,
-			enum: [PostStatus.Public, PostStatus.Private, PostStatus.Friends],
-		},
+		// status: {
+		// 	type: Number,
+		// 	required: true,
+		// 	enum: [PostStatus.Public, PostStatus.Private, PostStatus.Friends],
+		// },
 		likes: [String],
-		mediaUrl: String,
+		tags: [String],
+		imgUrl: String,
 	},
 	{ collection: 'post' }
 );

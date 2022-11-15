@@ -202,6 +202,22 @@ export default createStore({
 
 			return response.data;
 		},
+		// posts
+		async createPost({ state, getters }, { tags, description, img }) {
+			const response = await axios.post(
+				state.host + '/post',
+				{
+					tags,
+					description,
+					img,
+				},
+				{
+					headers: getters.getHeaders,
+				}
+			);
+
+			return response.data;
+		},
 	},
 	plugins: [createPersistedState()],
 });

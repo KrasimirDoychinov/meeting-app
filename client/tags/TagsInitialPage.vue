@@ -38,7 +38,7 @@
 				</div>
 			</div>
 		</div>
-		<button @click="setTags" class="accept-btn">Save</button>
+		<button @click="setTags" class="btn accept-btn">Save</button>
 	</div>
 </template>
 

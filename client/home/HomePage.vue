@@ -25,6 +25,7 @@
 		<div class="create-post">
 			<textarea
 				@click="focusCreatePost(true)"
+				v-model="description"
 				class="input"
 				type="text"
 				placeholder="Today I'm feeling..."
@@ -54,10 +55,14 @@
 						</div>
 					</div>
 				</div>
-				<label for="file-upload" class="custom-file-upload">
-					<i class="fa fa-cloud-upload"></i> Upload
-				</label>
-				<input id="file-upload" type="file" />
+				<div class="post-creation-btns">
+					<label for="file-upload" class="custom-file-upload">
+						<i class="fa fa-cloud-upload"></i> Upload
+					</label>
+					<input id="file-upload" type="file" @change="onFileChange" />
+					<button @click="createPost" class="btn accept-btn">Post!</button>
+				</div>
+				<p class="red-color" v-show="error">{{ error }}</p>
 			</div>
 		</div>
 		<div @click="focusCreatePost(false)" class="test"></div>
@@ -68,7 +73,12 @@
 import { onBeforeMount, ref } from '@vue/runtime-core';
 import store from '../store/index.js';
 
+const allowedExt = ['png', 'jpeg', 'jpg'];
 // props
+const error = ref('');
+const img = ref('');
+const description = ref('');
+const file = ref({});
 const users = ref([]);
 const postCreationFocus = ref(false);
 
@@ -86,7 +96,49 @@ const addFriend = async (id) => {
 	}
 };
 
-// post creation
+const onFileChange = async (event) => {
+	const reader = new FileReader();
+	const currentFileName = event.target.files[0].name;
+	const currentFileExt = currentFileName.split('.').reverse()[0];
+	if (!allowedExt.includes(currentFileExt)) {
+		error.value = 'The file extension can only be .png, .jpeg, .jpg.';
+		img.value = '';
+		return;
+	}
+	error.value = '';
+	reader.readAsDataURL(event.target.files[0]);
+	reader.onload = async () => {
+		img.value = reader.result;
+		file.value = event.target.files[0];
+	};
+};
+
+const createPost = async () => {
+	try {
+		let response;
+		if (img.value) {
+			const reader = new FileReader();
+			reader.readAsDataURL(file.value);
+			reader.onload = async () => {
+				response = await store.dispatch('createPost', {
+					tags: selectedTags.value,
+					description: description.value,
+					img: reader.result,
+				});
+			};
+		} else {
+			console.log('NO IMAGE');
+			response = await store.dispatch('createPost', {
+				tags: selectedTags.value,
+				description: description.value,
+			});
+		}
+		console.log(response);
+	} catch (err) {
+		error.value = err;
+	}
+};
+
 const focusCreatePost = (value) => {
 	postCreationFocus.value = value;
 };
@@ -147,6 +199,7 @@ h2 {
 .open-input {
 	height: 100%;
 }
+
 .create-post {
 	display: flex;
 	justify-content: start;
@@ -189,6 +242,12 @@ h2 {
 				object-fit: contain;
 				z-index: 1;
 			}
+		}
+
+		.post-creation-btns {
+			display: flex;
+			flex-flow: row;
+			justify-content: space-around;
 		}
 	}
 }

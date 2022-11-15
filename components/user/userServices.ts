@@ -7,7 +7,6 @@ import { io } from '../../app';
 import { GlobalErrorHelper } from '../errors/errorHelper';
 import { UserErrorConstants } from './errors/errorConstants';
 import { GlobalErrorConstants } from '../errors/errorConstants';
-import { Chat } from '../chat/models/Chat';
 import { CloudinaryHelper } from '../helpers/cloudinaryHelper';
 
 export class UserServices {
@@ -37,6 +36,10 @@ export class UserServices {
 
 		await user.save();
 		return true;
+	}
+
+	static async test(id) {
+		
 	}
 
 	static async byId(id: string): Promise<UserFullModel> {
