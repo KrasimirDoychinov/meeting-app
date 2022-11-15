@@ -3,14 +3,12 @@ require('express-async-errors');
 
 import { authRouter } from './components/auth/authRoutes';
 import { chatRouter } from './components/chat/chatRoutes';
-import { ChatServices } from './components/chat/chatServices';
 import { commentRouter } from './components/comment/commentRoutes';
-import { ioHelper } from './components/helpers/socketHelper.io';
+import { IoHelper } from './components/helpers/socketHelper.io';
 import { errorHandler } from './components/middlewares/errorHandler';
 import { postRouter } from './components/post/postRoutes';
 import { tagRouter } from './components/tag/tagRoutes';
 import { userRouter } from './components/user/userRoutes';
-import { UserServices } from './components/user/userServices';
 import { connectDB } from './connectDB';
 
 const cors = require('cors');
@@ -31,7 +29,7 @@ export const io = new Server(server, {
 });
 
 // socket.io
-ioHelper(io);
+IoHelper.initialize(io);
 
 // cloudinary
 cloudinary.config({
