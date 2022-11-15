@@ -281,6 +281,7 @@ export class UserServices {
 		}
 
 		const result: FriendModel[] = users.friends.map((x: any) => {
+			console.log(x.realData);
 			const model: FriendModel = {
 				id: x.friendId,
 				name: x.isAnon
@@ -312,12 +313,14 @@ export class UserServices {
 			friendId: userB.id,
 			name: userB.name,
 			imageName: userB.imageName,
+			realData: userB.realData,
 			chatId,
 		});
 		userB.friends.push({
 			friendId: userA.id,
 			name: userA.name,
 			imageName: userA.imageName,
+			realData: userA.realData,
 			chatId,
 		});
 
