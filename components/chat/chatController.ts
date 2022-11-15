@@ -1,5 +1,4 @@
 import { StatusCodes } from 'http-status-codes';
-
 import { ChatServices } from './chatServices';
 
 export const createChat = async (req: any, res: any) => {
