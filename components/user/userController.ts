@@ -13,7 +13,7 @@ export const allWithTags = async (req: any, res: any) => {
 export const allFriends = async (req: any, res: any) => {
 	const userId = res.user.id;
 
-	const result = await UserServices.allFriends(userId, false);
+	const result = await UserServices.allFriends(userId);
 
 	res.status(200).json(result);
 };
@@ -70,14 +70,9 @@ export const removeChatNotificationsByChatId = async (req: any, res: any) => {
 
 export const initialRealData = async (req: any, res: any) => {
 	const id = res.user.id;
-	const { firstName, lastName } = JSON.parse(req.body.body);
-	const file = req.files?.img;
-	const response = await UserServices.setRealData(
-		id,
-		firstName,
-		lastName,
-		file
-	);
+	const { firstName, lastName, img } = req.body;
+	console.log(req.body);
+	const response = await UserServices.setRealData(id, firstName, lastName, img);
 
-	res.status(200).json({ success: response });
+	// res.status(200).json({ success: response });
 };

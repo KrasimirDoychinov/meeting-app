@@ -45,13 +45,13 @@ export default createRouter({
 			components: {
 				default: RealDataPage,
 			},
-			beforeEnter: async (to, from, next) => {
-				if (store.getters.hasTags) {
-					isAuthorized(store.state.token, store.state.exp, next, '/');
-				} else {
-					isAuthorized(store.state.token, store.state.exp, next);
-				}
-			},
+			// beforeEnter: async (to, from, next) => {
+			// 	if (store.getters.hasTags) {
+			// 		isAuthorized(store.state.token, store.state.exp, next, '/');
+			// 	} else {
+			// 		isAuthorized(store.state.token, store.state.exp, next);
+			// 	}
+			// },
 		},
 		{
 			path: '/tags/initial',

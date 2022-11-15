@@ -68,12 +68,16 @@ const onFileChange = async (event) => {
 
 const next = async () => {
 	try {
-		const response = await store.dispatch('createRealData', {
-			firstName: firstName.value,
-			lastName: lastName.value,
-			img: file.value,
-		});
-		router.push('/tags/initial');
+		const reader = new FileReader();
+		reader.readAsDataURL(file.value);
+		reader.onload = async () => {
+			const response = await store.dispatch('createRealData', {
+				firstName: firstName.value,
+				lastName: lastName.value,
+				img: reader.result,
+			});
+			router.push('/tags/initial');
+		};
 	} catch (err) {
 		error.value = err.response.data.msg;
 	}

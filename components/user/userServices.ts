@@ -7,15 +7,15 @@ import { io } from '../../app';
 import { GlobalErrorHelper } from '../errors/errorHelper';
 import { UserErrorConstants } from './errors/errorConstants';
 import { GlobalErrorConstants } from '../errors/errorConstants';
-import { HelperConstants } from '../helpers/helperConstants';
 import { Chat } from '../chat/models/Chat';
+import { CloudinaryHelper } from '../helpers/cloudinaryHelper';
 
 export class UserServices {
 	static async setRealData(
 		id: string,
 		firstName: string,
 		lastName: string,
-		img: any
+		img: string
 	): Promise<boolean> {
 		const user = await User.findById(id);
 		if (GlobalErrorHelper.areFieldsNotNull([user])) {
@@ -26,9 +26,8 @@ export class UserServices {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
 
-		const fs = require('fs');
-		const imageName = `${firstName}_${lastName}_${user.id}.png`;
-		fs.writeFile(`./static/${imageName}`, img.data, () => {});
+		const imageName = `${firstName}_${lastName}_${user.id}`;
+		await CloudinaryHelper.uploadImage(img, imageName);
 
 		user.realData = {
 			firstName,
@@ -36,7 +35,7 @@ export class UserServices {
 			imageName,
 		};
 
-		await user.save();
+		// await user.save();
 		return true;
 	}
 
@@ -53,7 +52,7 @@ export class UserServices {
 			realData: {
 				firstName: user.realData.firstName,
 				lastName: user.realData.lastName,
-				imageName: `${HelperConstants.imagesPath}${user.realData.imageName}`,
+				imageName: '', //`${HelperConstants.imagesPath}${user.realData.imageName}`,
 			},
 		};
 		return model;
@@ -227,7 +226,7 @@ export class UserServices {
 				id: x._id,
 				name: x.name,
 				gender: x.gender,
-				imageName: `${HelperConstants.imagesPath}${x.realData.imageName}`,
+				imageName: '', //`${HelperConstants.imagesPath}${x.realData.imageName}`,
 			};
 
 			return model;
@@ -254,7 +253,7 @@ export class UserServices {
 			throw new CustomError(UserErrorConstants.NotFound, 400);
 		}
 
-		const result: UserBaseModel[] = users.map((x: typeof User) => {
+		const result: UserBaseModel[] = users.map(async (x: typeof User) => {
 			const model: UserBaseModel = {
 				id: x._id,
 				name: x.name,
@@ -263,7 +262,7 @@ export class UserServices {
 				friendRequestSent:
 					x.friendNotifications.some((x: any) => x.id === userId) ||
 					x.friends.some((x: string) => x === userId),
-				imageName: `${HelperConstants.imagesPath}avatar.png`,
+				imageName: await CloudinaryHelper.getAvatar(),
 			};
 			return model;
 		});
@@ -271,31 +270,27 @@ export class UserServices {
 		return result;
 	}
 
-	static async allFriends(
-		userId: string,
-		isChatAnon: boolean
-	): Promise<FriendModel[]> {
+	static async allFriends(userId: string): Promise<FriendModel[]> {
 		const users = await User.findById(userId);
 		if (GlobalErrorHelper.areFieldsNotNull([users])) {
 			throw new CustomError(UserErrorConstants.NotFound, 400);
 		}
 
-		const result: FriendModel[] = users.friends.map((x: any) => {
-			console.log(x.realData);
-			const model: FriendModel = {
-				id: x.friendId,
-				name: x.isAnon
-					? x.name
-					: `${x.realData.firstName} ${x.realData.lastName}`,
-				gender: x.gender,
-				imageName: x.isAnon
-					? `${HelperConstants.imagesPath}avatar.png`
-					: `${HelperConstants.imagesPath}${x.realData.imageName}`,
-				notificationCount: x.notifications,
-				chatId: x.chatId,
-			};
-			return model;
-		});
+		const result: FriendModel[] = await Promise.all(
+			users.friends.map(async (x: any) => {
+				const model: FriendModel = {
+					id: x.friendId,
+					name: x.isAnon
+						? x.name
+						: `${x.realData.firstName} ${x.realData.lastName}`,
+					gender: x.gender,
+					imageName: x.isAnon ? await CloudinaryHelper.getAvatar() : '', //`${HelperConstants.imagesPath}${x.realData.imageName}`,
+					notificationCount: x.notifications,
+					chatId: x.chatId,
+				};
+				return model;
+			})
+		);
 
 		return result;
 	}

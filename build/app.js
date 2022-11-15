@@ -29,6 +29,7 @@ const express = require('express');
 const app = express();
 const server = http.createServer(app);
 const { Server } = require('socket.io');
+const cloudinary = require('cloudinary').v2;
 exports.io = new Server(server, {
     cors: {
         origin: 'http://localhost:5173',
@@ -37,6 +38,13 @@ exports.io = new Server(server, {
 });
 // socket.io
 (0, socketHelper_io_1.ioHelper)(exports.io);
+// cloudinary
+cloudinary.config({
+    cloud_name: 'detha4545',
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    secure: true,
+});
 app.use(cors());
 app.use(fileUpload());
 app.use(bp.urlencoded({ extended: true }));

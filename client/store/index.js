@@ -80,12 +80,13 @@ export default createStore({
 		},
 		// user
 		async createRealData({ state, getters }, { firstName, lastName, img }) {
-			const formData = new FormData();
-			formData.append('img', img);
-			formData.append('body', JSON.stringify({ firstName, lastName }));
 			const response = await axios.post(
 				state.host + '/user/real-data/initial',
-				formData,
+				{
+					firstName,
+					lastName,
+					img,
+				},
 				{
 					headers: Object.assign(getters.getHeaders),
 				}

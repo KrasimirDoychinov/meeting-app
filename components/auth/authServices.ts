@@ -7,6 +7,7 @@ import { JwtSignModel } from './models/JwtSignModel';
 import { GlobalErrorConstants } from '../errors/errorConstants';
 import { AuthErrorConstants } from './errors/errorConstants';
 import { GlobalErrorHelper } from '../errors/errorHelper';
+import { CloudinaryHelper } from '../helpers/cloudinaryHelper';
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -49,6 +50,7 @@ export class AuthServices {
 		email: string,
 		password: string
 	): Promise<AuthReturnModel> {
+		console.log(await CloudinaryHelper.getAvatar());
 		if (GlobalErrorHelper.areFieldsNotNull([email, password])) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
