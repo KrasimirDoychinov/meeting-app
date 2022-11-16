@@ -1,7 +1,52 @@
 import { Gender } from '../enums/genderEnums';
 
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+import * as mongoose from 'mongoose';
+
+const RealDataSchema = new mongoose.Schema({
+	firstName: {
+		type: String,
+		required: false,
+	},
+	lastName: {
+		type: String,
+		required: false,
+	},
+	imageUrl: {
+		type: String,
+		required: false,
+	},
+});
+
+const FriendSchema = new mongoose.Schema({
+	friendId: String,
+	name: String,
+	imageName: String,
+	chatId: String,
+	realData: {
+		firstName: String,
+		lastName: String,
+		imageName: String,
+	},
+	isAnon: {
+		type: Boolean,
+		default: true,
+	},
+	notifications: {
+		type: Number,
+		default: 0,
+	},
+});
+
+const FriendNotification = new mongoose.Schema({
+	id: {
+		type: String,
+		required: true,
+	},
+	name: {
+		type: String,
+		required: true,
+	},
+});
 
 const UserSchema = new mongoose.Schema({
 	name: {
@@ -24,58 +69,14 @@ const UserSchema = new mongoose.Schema({
 		required: [true, 'Please provide password'],
 		minlength: 6,
 	},
-	realData: {
-		firstName: {
-			type: String,
-			required: false,
-		},
-		lastName: {
-			type: String,
-			required: false,
-		},
-		imageUrl: {
-			type: String,
-			required: false,
-		},
-	},
+	realData: RealDataSchema,
 	gender: {
 		type: Number,
 		enum: [Gender.Male, Gender.Female],
 	},
 	tags: [String],
-	friends: [
-		{
-			friendId: String,
-			name: String,
-			imageName: String,
-			chatId: String,
-			realData: {
-				firstName: String,
-				lastName: String,
-				imageName: String,
-			},
-			isAnon: {
-				type: Boolean,
-				default: true,
-			},
-			notifications: {
-				type: Number,
-				default: 0,
-			},
-		},
-	],
-	friendNotifications: [
-		{
-			id: {
-				type: String,
-				required: true,
-			},
-			name: {
-				type: String,
-				required: true,
-			},
-		},
-	],
+	friends: [FriendSchema],
+	friendNotifications: [FriendNotification],
 	chatNotifications: [String],
 });
 

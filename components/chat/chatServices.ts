@@ -4,21 +4,20 @@ import { ChatInput, ChatMessageModel } from './models/input/inputModels';
 
 import { CustomError } from '../errors/customError';
 import { UserServices } from '../user/userServices';
-import { Chat } from './models/Chat';
+import { Chat, ChatMessage, IChat } from './models/Chat';
 import { io } from '../../app';
 import { GlobalErrorHelper } from '../errors/errorHelper';
 import { GlobalErrorConstants } from '../errors/errorConstants';
+import { User } from '../user/models/User';
+import { Document, HydratedDocument, Model } from 'mongoose';
 
 export class ChatServices {
 	// Create
-	static async create(
-		personAId: string,
-		personBId: string
-	): Promise<typeof Chat> {
+	static async create(personAId: string, personBId: string): Promise<IChat> {
 		const personA = await UserServices.byId(personAId);
 		const personB = await UserServices.byId(personBId);
 
-		const chat = await Chat.create({ personA, personB });
+		const chat: IChat = await Chat.create({ personA, personB });
 		return chat;
 	}
 
@@ -27,13 +26,17 @@ export class ChatServices {
 		senderId,
 		receiverId,
 		content,
-	}: ChatMessageModel): Promise<ChatReturnMessageModel> {
-		const chat = await Chat.findById(chatId);
+	}: ChatMessageModel): Promise<ChatMessage> {
+		const chat: IChat | null = await Chat.findById(chatId);
+		if (!chat) {
+			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
+		}
+
 		if (!this.isPersonInChat(chat, senderId)) {
 			throw new CustomError("This user doesn't belong to this chat", 400);
 		}
 
-		const message: ChatReturnMessageModel = {
+		const message: ChatMessage = {
 			senderId,
 			content: content,
 		};
@@ -57,7 +60,7 @@ export class ChatServices {
 		}
 
 		const chat = await Chat.findById(chatId);
-		if (GlobalErrorHelper.areFieldsNotNull([chat])) {
+		if (!chat) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
 
@@ -74,8 +77,8 @@ export class ChatServices {
 		chatId: string,
 		userId: string
 	): Promise<boolean> {
-		const chat = await Chat.findById(chatId);
-		if (GlobalErrorHelper.areFieldsNotNull([chat])) {
+		const chat: IChat | null = await Chat.findById(chatId);
+		if (!chat) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
 
@@ -98,7 +101,7 @@ export class ChatServices {
 		return true;
 	}
 
-	static async changeAnon(chat: typeof Chat): Promise<boolean> {
+	static async changeAnon(chat: IChat): Promise<boolean> {
 		if (
 			!this.arePeopleAgreed(
 				chat.personA.changeAnonAgree,
@@ -123,7 +126,7 @@ export class ChatServices {
 
 	// Private methods
 	private static buildChatModel(
-		chat: typeof Chat,
+		chat: IChat,
 		currentUser,
 		friendUser
 	): ChatReturnModel {
@@ -172,12 +175,12 @@ export class ChatServices {
 		return personAAgree && personBAgree;
 	}
 
-	private static isPersonInChat(chat: typeof Chat, personId: string): boolean {
+	private static isPersonInChat(chat: IChat, personId: string): boolean {
 		return chat.personA.id === personId || chat.personB.id === personId;
 	}
 
 	private static changeCorrectPersonAnonStatus(
-		chat: typeof Chat,
+		chat: IChat,
 		userId: string
 	): void {
 		if (chat.personA.id === userId) {

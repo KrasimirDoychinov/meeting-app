@@ -16,9 +16,8 @@ import { GlobalErrorConstants } from '../errors/errorConstants';
 import { AuthErrorConstants } from './errors/constants';
 import { GlobalErrorHelper } from '../errors/errorHelper';
 
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-
+import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
 export class AuthServices {
 	static async register({
 		name,
@@ -90,6 +89,8 @@ export class AuthServices {
 			tags: user.tags,
 		};
 	}
+
+	async login(): Promise<void> {}
 
 	static verifyJWT(token: string): JwtVerifyReturnModel {
 		return jwt.verify(token, process.env.JWT_SECRET);

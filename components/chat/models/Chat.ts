@@ -1,7 +1,33 @@
 import { Gender } from '../../user/enums/genderEnums';
 
-const mongoose = require('mongoose');
-const ChatSchema = new mongoose.Schema(
+import * as mongoose from 'mongoose';
+
+interface ChatPerson {
+	id: string;
+	gender: string;
+	name: string;
+	realData: {
+		firstName: string;
+		lastName: string;
+		imageUrl: string;
+	};
+	changeAnonAgree: boolean;
+}
+
+export interface ChatMessage {
+	senderId: string;
+	content: string;
+	date?: Date;
+}
+
+export interface IChat extends mongoose.Document {
+	personA: ChatPerson;
+	personB: ChatPerson;
+	messages: [ChatMessage];
+	isAnon: boolean;
+}
+
+const ChatSchema = new mongoose.Schema<IChat>(
 	{
 		personA: {
 			id: {

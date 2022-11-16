@@ -38,9 +38,7 @@ export class UserServices {
 		return true;
 	}
 
-	static async test(id) {
-		
-	}
+	static async test(id) {}
 
 	static async byId(id: string): Promise<UserFullModel> {
 		const user = await User.findById(id);
