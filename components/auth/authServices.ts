@@ -9,15 +9,18 @@ import {
 	JwtSignModel,
 } from './models/input/inputModels';
 
-import { User } from '../user/models/User';
+import { IUser, User } from '../user/models/User';
 
 import { CustomError } from '../errors/customError';
+
 import { GlobalErrorConstants } from '../errors/errorConstants';
 import { AuthErrorConstants } from './errors/constants';
-import { GlobalErrorHelper } from '../errors/errorHelper';
+
+import { EnvHelper } from '../helpers/envHelper';
 
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
+
 export class AuthServices {
 	static async register({
 		name,
@@ -25,7 +28,7 @@ export class AuthServices {
 		password,
 		compare,
 	}: AuthRegisterModel): Promise<AuthReturnModel> {
-		if (GlobalErrorHelper.areFieldsNotNull([name, email, password, compare])) {
+		if (!name || !email || !password || !compare) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
 
@@ -56,12 +59,12 @@ export class AuthServices {
 		email,
 		password,
 	}: AuthLoginModel): Promise<AuthReturnModel> {
-		if (GlobalErrorHelper.areFieldsNotNull([email, password])) {
+		if (!email || !password) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
 
-		const user = await User.findOne({ email });
-		if (GlobalErrorHelper.areFieldsNotNull([user])) {
+		const user: IUser | null = await User.findOne({ email });
+		if (!user) {
 			throw new CustomError(AuthErrorConstants.EmailNotFound, 400);
 		}
 
@@ -90,10 +93,13 @@ export class AuthServices {
 		};
 	}
 
-	async login(): Promise<void> {}
-
 	static verifyJWT(token: string): JwtVerifyReturnModel {
-		return jwt.verify(token, process.env.JWT_SECRET);
+		const obj = jwt.verify(token, EnvHelper.JwtSecret) as jwt.JwtPayload;
+
+		return {
+			iat: obj.iat,
+			exp: obj.exp,
+		};
 	}
 
 	// private methods
@@ -104,8 +110,8 @@ export class AuthServices {
 	}
 
 	private static signJWT(user: JwtSignModel): string {
-		return jwt.sign(user, process.env.JWT_SECRET, {
-			expiresIn: process.env.JWT_LIFETIME,
+		return jwt.sign(user, EnvHelper.JwtSecret, {
+			expiresIn: EnvHelper.JwtLifetime,
 		});
 	}
 

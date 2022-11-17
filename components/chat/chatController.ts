@@ -5,8 +5,8 @@ export const createChat = async (req: any, res: any) => {
 	const personAId = res.user.id;
 	const personBId = req.params.personId;
 
-	await ChatServices.create(personAId, personBId);
-	res.status(StatusCodes.CREATED).json({ success: true });
+	const chat = await ChatServices.create(personAId, personBId);
+	res.status(StatusCodes.CREATED).json(chat);
 };
 
 export const createMessage = async (req: any, res: any) => {
@@ -14,13 +14,13 @@ export const createMessage = async (req: any, res: any) => {
 	const userId = res.user.id;
 	const { content, friendId } = req.body;
 
-	const result = await ChatServices.createMessage({
+	const message = await ChatServices.createMessage({
 		chatId,
 		content,
 		senderId: userId,
 		receiverId: friendId,
 	});
-	res.status(StatusCodes.CREATED).json(result);
+	res.status(StatusCodes.CREATED).json(message);
 };
 
 export const chatById = async (req: any, res: any) => {

@@ -48,7 +48,40 @@ const FriendNotification = new mongoose.Schema({
 	},
 });
 
-const UserSchema = new mongoose.Schema({
+interface IFriend {
+	friendId: string;
+	name: string;
+	imageName: string;
+	chatId: string;
+	realData: {
+		firstName: string;
+		lastName: string;
+		imageUrl: string;
+	};
+	isAnon: boolean;
+	notifications: number;
+}
+
+export interface IUser extends mongoose.Document {
+	name: string;
+	email: string;
+	password: string;
+	realData: {
+		firstName: string;
+		lastName: string;
+		imageUrl: string;
+	};
+	gender: Gender;
+	tags: string[];
+	friends: IFriend[];
+	friendNotifications: {
+		id: string;
+		name: string;
+	};
+	chatNotifications: string[];
+}
+
+const UserSchema = new mongoose.Schema<IUser>({
 	name: {
 		type: String,
 		required: [true, 'Please provide name'],

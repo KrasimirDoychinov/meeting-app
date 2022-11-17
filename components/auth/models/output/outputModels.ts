@@ -1,17 +1,12 @@
-import { UserRealData } from '../../../user/models/output/UserRealData';
 import { AuthBaseModel } from '../baseModels';
 
 export interface AuthReturnModel extends AuthBaseModel {
 	token: string;
-	iat?: string;
-	exp?: string;
+	iat?: number;
+	exp?: number;
 }
 
-export interface JwtVerifyReturnModel extends AuthBaseModel {
-	name: string;
-	email: string;
-	realData: UserRealData;
-	token: string;
-	iat?: string;
-	exp?: string;
+export interface JwtVerifyReturnModel {
+	iat?: number;
+	exp?: number;
 }
