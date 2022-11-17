@@ -80,7 +80,7 @@ export class UserServices {
 			name: currentUser.name,
 		});
 		await friendUser.save();
-		io.emit('receive friend request', friendUser);
+		io.emit('receive friend request', friendUser.id);
 
 		return true;
 	}
