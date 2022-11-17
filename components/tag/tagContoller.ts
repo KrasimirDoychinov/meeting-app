@@ -1,9 +1,19 @@
+import { autoInjectable } from 'tsyringe';
 import { TagService } from './tagService';
 
-export const setTags = async (req: any, res: any) => {
-	const { tags } = req.body;
-	const userId = res.user.id;
+@autoInjectable()
+export default class TagController {
+	tagService: TagService;
 
-	const result = await TagService.setTags(userId, tags);
-	res.status(201).json({ success: result });
-};
+	constructor(tagService?: TagService) {
+		this.tagService = tagService!;
+	}
+
+	setTags = async (req: any, res: any) => {
+		const { tags } = req.body;
+		const userId = res.user.id;
+
+		const result = await this.tagService.setTags(userId, tags);
+		res.status(201).json({ success: result });
+	};
+}

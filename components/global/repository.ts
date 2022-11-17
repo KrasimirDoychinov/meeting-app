@@ -1,6 +1,6 @@
-// import { Document } from 'mongoose';
+import { Document } from 'mongoose';
 
-// export interface IRepository {
-// 	findById(id: string): Promise<any>;
-// 	find(obj: {}): Promise<any>;
-// }
+export interface IRepository<TModel> {
+	findById(id: string): Promise<TModel>;
+	find(query: {}): Promise<TModel[]>;
+}

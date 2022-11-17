@@ -1,77 +1,91 @@
+import { autoInjectable } from 'tsyringe';
 import { UserServices } from './userServices';
 
-export const allWithTags = async (req: any, res: any) => {
-	const tags = req.query.tags;
-	const userId = res.user.id;
-	const email = res.user.email;
+@autoInjectable()
+export default class UserController {
+	userService: UserServices;
+	constructor(userService?: UserServices) {
+		this.userService = userService!;
+	}
 
-	const result = await UserServices.allWithTags(tags, email, userId);
+	allWithTags = async (req: any, res: any) => {
+		const tags = req.query.tags;
+		const userId = res.user.id;
+		const email = res.user.email;
 
-	res.status(200).json(result);
-};
+		const result = await this.userService.allWithTags(tags, email, userId);
 
-export const allFriends = async (req: any, res: any) => {
-	const userId = res.user.id;
+		res.status(200).json(result);
+	};
 
-	const result = await UserServices.allFriends(userId);
+	allFriends = async (req: any, res: any) => {
+		const userId = res.user.id;
 
-	res.status(200).json(result);
-};
+		const result = await this.userService.allFriends(userId);
 
-export const sendFriendRequest = async (req: any, res: any) => {
-	const userToFriendId = req.params.id;
-	const currentUserId = res.user.id;
+		res.status(200).json(result);
+	};
 
-	const result = await UserServices.sendFriendRequest(
-		userToFriendId,
-		currentUserId
-	);
+	sendFriendRequest = async (req: any, res: any) => {
+		const userToFriendId = req.params.id;
+		const currentUserId = res.user.id;
 
-	res.status(200).json({ result });
-};
+		const result = await this.userService.sendFriendRequest(
+			userToFriendId,
+			currentUserId
+		);
 
-export const acceptFriendRequest = async (req: any, res: any) => {
-	const userToFriendId = req.params.id;
-	const currentUserId = res.user.id;
+		res.status(200).json({ result });
+	};
 
-	const result = await UserServices.acceptFriendRequest(
-		userToFriendId,
-		currentUserId
-	);
+	acceptFriendRequest = async (req: any, res: any) => {
+		const userToFriendId = req.params.id;
+		const currentUserId = res.user.id;
 
-	res.status(200).json({ friends: result });
-};
+		const result = await this.userService.acceptFriendRequest(
+			userToFriendId,
+			currentUserId
+		);
 
-export const friendNRequestsByUser = async (req: any, res: any) => {
-	const id = res.user.id;
+		res.status(200).json({ friends: result });
+	};
 
-	const notifications = await UserServices.allFriendRequests(id);
+	friendNRequestsByUser = async (req: any, res: any) => {
+		const id = res.user.id;
 
-	res.status(200).json({ notifications, count: notifications.length });
-};
+		const notifications = await this.userService.allFriendRequests(id);
 
-export const chatNotificationsByUser = async (req: any, res: any) => {
-	const id = res.user.id;
+		res.status(200).json({ notifications, count: notifications.length });
+	};
 
-	const notifications = await UserServices.allChatNotifications(id);
-	res.status(200).json(notifications);
-};
+	chatNotificationsByUser = async (req: any, res: any) => {
+		const id = res.user.id;
 
-export const removeChatNotificationsByChatId = async (req: any, res: any) => {
-	const chatId = req.params.chatId;
-	const userId = res.user.id;
+		const notifications = await this.userService.allChatNotifications(id);
+		res.status(200).json(notifications);
+	};
 
-	const result = await UserServices.removeChatNotificationsForChat(
-		chatId,
-		userId
-	);
-	res.status(200).json({ success: result });
-};
+	removeChatNotificationsByChatId = async (req: any, res: any) => {
+		const chatId = req.params.chatId;
+		const userId = res.user.id;
 
-export const initialRealData = async (req: any, res: any) => {
-	const id = res.user.id;
-	const { firstName, lastName, img } = req.body;
-	const response = await UserServices.setRealData(id, firstName, lastName, img);
+		const result = await this.userService.removeChatNotificationsForChat(
+			chatId,
+			userId
+		);
+		res.status(200).json({ success: result });
+	};
 
-	res.status(200).json({ success: response });
-};
+	initialRealData = async (req: any, res: any) => {
+		const id = res.user.id;
+		const { firstName, lastName, img } = req.body;
+		const response = await this.userService.setRealData(
+			id,
+			firstName,
+			lastName,
+			img
+		);
+
+		res.status(200).json({ success: response });
+	};
+}

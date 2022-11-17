@@ -1,7 +1,9 @@
 import { authorize } from '../middlewares/authorization';
-import { setTags } from './tagContoller';
 
 import express from 'express';
+import TagController from './tagContoller';
 export const tagRouter = express.Router();
 
-tagRouter.post('/', authorize, setTags);
+const controller = new TagController();
+
+tagRouter.post('/', authorize, controller.setTags);
