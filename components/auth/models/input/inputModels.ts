@@ -1,4 +1,4 @@
-import { UserRealData } from '../../../user/models/output/UserRealData';
+import { RealData } from '../../../user/models/User';
 import { AuthBaseModel } from '../baseModels';
 
 export interface AuthRegisterModel {
@@ -13,7 +13,7 @@ export interface JwtSignModel extends AuthBaseModel {
 	name: string;
 	email: string;
 	tags: string[];
-	realData?: UserRealData;
+	realData?: RealData;
 }
 
 export interface AuthLoginModel {

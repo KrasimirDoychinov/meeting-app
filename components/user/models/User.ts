@@ -48,7 +48,7 @@ const FriendNotification = new mongoose.Schema({
 	},
 });
 
-export interface IFriend {
+export interface Friend {
 	friendId: string;
 	name: string;
 	imageUrl: string;
@@ -62,7 +62,7 @@ export interface IFriend {
 	notifications: number;
 }
 
-export interface IFriendNotification {
+export interface FriendNotification {
 	id: string;
 	name: string;
 }
@@ -71,16 +71,18 @@ export interface IUser extends mongoose.Document {
 	name: string;
 	email: string;
 	password: string;
-	realData: {
-		firstName: string;
-		lastName: string;
-		imageUrl: string;
-	};
+	realData: RealData;
 	gender: Gender;
 	tags: string[];
-	friends: IFriend[];
-	friendNotifications: IFriendNotification[];
+	friends: Friend[];
+	friendNotifications: FriendNotification[];
 	chatNotifications: string[];
+}
+
+export interface RealData {
+	firstName: string;
+	lastName: string;
+	imageUrl: string;
 }
 
 const UserSchema = new mongoose.Schema<IUser>({

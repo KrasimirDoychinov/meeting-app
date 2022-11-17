@@ -1,6 +1,6 @@
 import { CustomError } from '../errors/customError';
 import { UserErrorConstants } from './errors/errorConstants';
-import { IFriend, IUser, User } from './models/User';
+import { Friend, IUser, User } from './models/User';
 
 export class UserRepository {
 	static async findById(id: string): Promise<IUser> {
@@ -20,9 +20,9 @@ export class UserRepository {
 		return users;
 	}
 
-	static findFriend(friends: IFriend[], chatId: string): IFriend {
-		const friend: IFriend | undefined = friends.find(
-			(x: IFriend) => x.chatId === chatId
+	static findFriend(friends: Friend[], chatId: string): Friend {
+		const friend: Friend | undefined = friends.find(
+			(x: Friend) => x.chatId === chatId
 		);
 		if (!friend) {
 			throw new CustomError(UserErrorConstants.NotFound, 400);

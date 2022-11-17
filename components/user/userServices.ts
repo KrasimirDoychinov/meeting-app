@@ -1,7 +1,7 @@
 import { CustomError } from '../errors/customError';
-import { IUser, IFriend, User, IFriendNotification } from './models/User';
-import { FriendModel, UserBaseModel } from './models/output/UserBaseModel';
-import { UserFullModel } from './models/output/UserFullModel';
+import { IUser, Friend, User, FriendNotification } from './models/User';
+import { FriendModel, UserBaseModel } from './models/output/outputModels';
+import { UserFullModel } from './models/output/outputModels';
 import { ChatServices } from '../chat/chatServices';
 import { io } from '../../app';
 import { UserErrorConstants } from './errors/errorConstants';
@@ -120,7 +120,7 @@ export class UserServices {
 		return result;
 	}
 
-	static async allFriendRequests(id: string): Promise<IFriendNotification[]> {
+	static async allFriendRequests(id: string): Promise<FriendNotification[]> {
 		const user: IUser = await UserRepository.findById(id);
 
 		return user.friendNotifications;
@@ -133,7 +133,7 @@ export class UserServices {
 	): Promise<any> {
 		const user: IUser = await UserRepository.findById(currentUserId);
 
-		const currentFriend: IFriend = UserRepository.findFriend(
+		const currentFriend: Friend = UserRepository.findFriend(
 			user.friends,
 			chatId
 		);
@@ -240,7 +240,7 @@ export class UserServices {
 					gender: x.gender,
 					friendRequestSent:
 						x.friendNotifications.some((x: any) => x.id === userId) ||
-						x.friends.some((x: IFriend) => x.friendId === userId),
+						x.friends.some((x: Friend) => x.friendId === userId),
 					imageUrl: await CloudinaryHelper.getAvatar(),
 				};
 				return model;
@@ -278,10 +278,8 @@ export class UserServices {
 
 	private static areFriends(currentUser: IUser, userToFriend: IUser): boolean {
 		const usersAreFriends =
-			userToFriend.friends.some(
-				(x: IFriend) => x.friendId === currentUser.id
-			) &&
-			currentUser.friends.some((x: IFriend) => x.friendId === userToFriend.id);
+			userToFriend.friends.some((x: Friend) => x.friendId === currentUser.id) &&
+			currentUser.friends.some((x: Friend) => x.friendId === userToFriend.id);
 		return usersAreFriends;
 	}
 
@@ -294,7 +292,7 @@ export class UserServices {
 			throw new CustomError(UserErrorConstants.CannotFriendSelf, 400);
 		}
 
-		const userBFriend: IFriend = {
+		const userBFriend: Friend = {
 			friendId: userB.id,
 			name: userB.name,
 			imageUrl: userB.realData.imageUrl,
@@ -303,7 +301,7 @@ export class UserServices {
 			isAnon: true,
 			chatId,
 		};
-		const userAFriend: IFriend = {
+		const userAFriend: Friend = {
 			friendId: userA.id,
 			name: userA.name,
 			imageUrl: userA.realData.imageUrl,

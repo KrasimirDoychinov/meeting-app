@@ -1,4 +1,4 @@
-import { UserBaseModel } from '../../../user/models/output/UserBaseModel';
+import { UserBaseModel } from '../../../user/models/output/outputModels';
 import { ChatBaseModel } from '../baseModels';
 
 export interface ChatReturnModel extends ChatBaseModel {
