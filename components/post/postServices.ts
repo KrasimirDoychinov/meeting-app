@@ -3,7 +3,6 @@ import { Post } from './models/Post';
 import { PostStatus } from './models/PostStatusEnums';
 import { PostUpdateModel } from './models/PostUpdateModel';
 import { PostReturnModel } from './models/PostReturnModel';
-import { GlobalErrorHelper } from '../errors/errorHelper';
 import { GlobalErrorConstants } from '../errors/errorConstants';
 import { CloudinaryHelper } from '../helpers/cloudinaryHelper';
 
@@ -15,7 +14,7 @@ export class PostServices {
 		img?: string,
 		status: PostStatus = 0
 	): Promise<PostUpdateModel> {
-		if (GlobalErrorHelper.areFieldsNotNull([creatorId, description, tags])) {
+		if (!creatorId || !description || !tags) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
 
@@ -26,7 +25,6 @@ export class PostServices {
 			status,
 		});
 
-		console.log(img);
 		if (img) {
 			const imgName = `${post._id}_post`;
 			const imgUrl = await CloudinaryHelper.uploadImage(img, imgName);

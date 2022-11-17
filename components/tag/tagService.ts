@@ -1,12 +1,11 @@
 import { CustomError } from '../errors/customError';
-import { GlobalErrorHelper } from '../errors/errorHelper';
 import { UserErrorConstants } from '../user/errors/errorConstants';
-import { User } from '../user/models/User';
+import { IUser, User } from '../user/models/User';
 
 export class TagService {
 	static async setTags(userId: string, tags: [string]): Promise<boolean> {
-		const user = await User.findById(userId);
-		if (GlobalErrorHelper.areFieldsNotNull([user])) {
+		const user: IUser | null = await User.findById(userId);
+		if (!user) {
 			throw new CustomError(UserErrorConstants.NotFound, 400);
 		}
 

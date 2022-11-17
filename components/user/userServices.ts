@@ -1,13 +1,13 @@
 import { CustomError } from '../errors/customError';
-import { User } from './models/User';
+import { IUser, IFriend, User, IFriendNotification } from './models/User';
 import { FriendModel, UserBaseModel } from './models/output/UserBaseModel';
 import { UserFullModel } from './models/output/UserFullModel';
 import { ChatServices } from '../chat/chatServices';
 import { io } from '../../app';
-import { GlobalErrorHelper } from '../errors/errorHelper';
 import { UserErrorConstants } from './errors/errorConstants';
 import { GlobalErrorConstants } from '../errors/errorConstants';
 import { CloudinaryHelper } from '../helpers/cloudinaryHelper';
+import { UserRepository } from './userRepository';
 
 export class UserServices {
 	static async setRealData(
@@ -16,12 +16,9 @@ export class UserServices {
 		lastName: string,
 		img: string
 	): Promise<boolean> {
-		const user = await User.findById(id);
-		if (GlobalErrorHelper.areFieldsNotNull([user])) {
-			throw new CustomError(UserErrorConstants.NotFound, 400);
-		}
+		const user = await UserRepository.findById(id);
 
-		if (GlobalErrorHelper.areFieldsNotNull([firstName, lastName, img])) {
+		if (!firstName || !lastName || !img) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
 
@@ -38,13 +35,8 @@ export class UserServices {
 		return true;
 	}
 
-	static async test(id) {}
-
 	static async byId(id: string): Promise<UserFullModel> {
-		const user = await User.findById(id);
-		if (GlobalErrorHelper.areFieldsNotNull([user])) {
-			throw new CustomError(UserErrorConstants.NotFound, 400);
-		}
+		const user: IUser = await UserRepository.findById(id);
 
 		const model: UserFullModel = {
 			id: user._id,
@@ -53,7 +45,7 @@ export class UserServices {
 			realData: {
 				firstName: user.realData.firstName,
 				lastName: user.realData.lastName,
-				imageName: '', //`${HelperConstants.imagesPath}${user.realData.imageName}`,
+				imageUrl: user.realData.imageUrl,
 			},
 		};
 		return model;
@@ -69,30 +61,26 @@ export class UserServices {
 			throw new CustomError(UserErrorConstants.CannotFriendSelf, 400);
 		}
 
-		const userToFriend = await User.findById(userToFriendId);
+		const currentUser: IUser = await UserRepository.findById(currentUserId);
+		const friendUser: IUser = await UserRepository.findById(userToFriendId);
 
-		const friendRequestSend = userToFriend.friendNotifications.some(
+		const friendRequestSend = friendUser.friendNotifications.some(
 			(x: any) => x.id === currentUserId
 		);
 		if (friendRequestSend) {
 			throw new CustomError(UserErrorConstants.FriendRequestAlreadySent, 400);
 		}
 
-		const currentUser = await User.findById(currentUserId);
-		const usersAreFriends =
-			userToFriend.friends.includes(currentUserId) &&
-			currentUser.friends.includes(userToFriendId);
-		if (usersAreFriends) {
+		if (this.areFriends(currentUser, friendUser)) {
 			throw new CustomError(UserErrorConstants.AlreadyFriends, 400);
 		}
 
-		userToFriend.friendNotifications.push({
+		friendUser.friendNotifications.push({
 			id: currentUser.id,
 			name: currentUser.name,
-			gender: currentUser.gender,
 		});
-		await userToFriend.save();
-		io.emit('receive friend request', userToFriendId);
+		await friendUser.save();
+		io.emit('receive friend request', friendUser);
 
 		return true;
 	}
@@ -106,8 +94,8 @@ export class UserServices {
 			throw new CustomError(UserErrorConstants.CannotFriendSelf, 400);
 		}
 
-		const currentUser = await User.findById(currentUserId);
-		const friendUser = await User.findById(userToFriendId);
+		const currentUser: IUser = await UserRepository.findById(currentUserId);
+		const friendUser: IUser = await UserRepository.findById(userToFriendId);
 
 		const friendRequestSend = currentUser.friendNotifications.some(
 			(x: any) => x.id === userToFriendId
@@ -116,10 +104,7 @@ export class UserServices {
 			throw new CustomError(UserErrorConstants.FriendRequestNotSent, 400);
 		}
 
-		const alreadyFriends =
-			friendUser.friends.includes(currentUserId) &&
-			currentUser.friends.includes(userToFriendId);
-		if (alreadyFriends) {
+		if (this.areFriends(currentUser, friendUser)) {
 			throw new CustomError(UserErrorConstants.AlreadyFriends, 400);
 		}
 
@@ -135,12 +120,10 @@ export class UserServices {
 		return result;
 	}
 
-	static async allFriendRequests(id: string): Promise<string[]> {
-		const user = await User.findById(id);
-		if (GlobalErrorHelper.areFieldsNotNull([user])) {
-			throw new CustomError(UserErrorConstants.NotFound, 400);
-		}
+	static async allFriendRequests(id: string): Promise<IFriendNotification[]> {
+		const user: IUser = await UserRepository.findById(id);
 
+		console.log(id, user.friendNotifications);
 		return user.friendNotifications;
 	}
 
@@ -149,12 +132,13 @@ export class UserServices {
 		currentUserId: string,
 		chatId: string
 	): Promise<any> {
-		const user = await User.findById(currentUserId);
-		if (GlobalErrorHelper.areFieldsNotNull([user])) {
-			throw new CustomError(UserErrorConstants.NotFound, 400);
-		}
+		const user: IUser = await UserRepository.findById(currentUserId);
 
-		const currentFriend = user.friends.find((x: any) => x.chatId === chatId);
+		const currentFriend: IFriend = UserRepository.findFriend(
+			user.friends,
+			chatId
+		);
+
 		currentFriend.notifications += 1;
 		await user.save();
 
@@ -169,12 +153,12 @@ export class UserServices {
 		chatId: string,
 		userId: string
 	): Promise<boolean> {
-		const user = await User.findById(userId);
-		if (GlobalErrorHelper.areFieldsNotNull([chatId, userId])) {
+		const user: IUser = await UserRepository.findById(userId);
+		if (!chatId) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
 
-		const foundFriend = user.friends.find((x: any) => x.chatId === chatId);
+		const foundFriend = UserRepository.findFriend(user.friends, chatId);
 		foundFriend.notifications = 0;
 
 		await user.save();
@@ -183,10 +167,7 @@ export class UserServices {
 	}
 
 	static async allChatNotifications(id: string): Promise<number> {
-		const user = await User.findById(id);
-		if (GlobalErrorHelper.areFieldsNotNull([user])) {
-			throw new CustomError(UserErrorConstants.NotFound, 400);
-		}
+		const user: IUser = await UserRepository.findById(id);
 
 		const notifications =
 			user.friends.length === 0
@@ -202,10 +183,7 @@ export class UserServices {
 		chatId: string,
 		id: string
 	): Promise<boolean> {
-		const user = await User.findById(id);
-		if (GlobalErrorHelper.areFieldsNotNull([user])) {
-			throw new CustomError(UserErrorConstants.NotFound, 400);
-		}
+		const user: IUser = await UserRepository.findById(id);
 
 		user.friends.forEach((x: any) => {
 			x.isAnon = false;
@@ -217,17 +195,16 @@ export class UserServices {
 
 	// Other
 	static async all(userEmail: string): Promise<UserBaseModel[]> {
-		const users = await User.find({ email: { $not: { $eq: userEmail } } });
-		if (GlobalErrorHelper.areFieldsNotNull([users])) {
-			throw new CustomError(UserErrorConstants.NotFound, 400);
-		}
+		const users: IUser[] = await UserRepository.find({
+			email: { $not: { $eq: userEmail } },
+		});
 
-		const result: UserBaseModel[] = users.map((x: typeof User) => {
+		const result: UserBaseModel[] = users.map((x: IUser) => {
 			const model: UserBaseModel = {
-				id: x._id,
+				id: x.id,
 				name: x.name,
 				gender: x.gender,
-				imageName: '', //`${HelperConstants.imagesPath}${x.realData.imageName}`,
+				imageUrl: x.realData.imageUrl, //`${HelperConstants.imagesPath}${x.realData.imageName}`,
 			};
 
 			return model;
@@ -251,12 +228,12 @@ export class UserServices {
 			],
 		});
 
-		if (GlobalErrorHelper.areFieldsNotNull([users])) {
+		if (!users) {
 			throw new CustomError(UserErrorConstants.NotFound, 400);
 		}
 
 		const result: UserBaseModel[] = await Promise.all(
-			users.map(async (x: typeof User) => {
+			users.map(async (x: IUser) => {
 				const model: UserBaseModel = {
 					id: x._id,
 					name: x.name,
@@ -264,8 +241,8 @@ export class UserServices {
 					gender: x.gender,
 					friendRequestSent:
 						x.friendNotifications.some((x: any) => x.id === userId) ||
-						x.friends.some((x: string) => x === userId),
-					imageName: await CloudinaryHelper.getAvatar(),
+						x.friends.some((x: IFriend) => x.friendId === userId),
+					imageUrl: await CloudinaryHelper.getAvatar(),
 				};
 				return model;
 			})
@@ -275,10 +252,7 @@ export class UserServices {
 	}
 
 	static async allFriends(userId: string): Promise<FriendModel[]> {
-		const users = await User.findById(userId);
-		if (GlobalErrorHelper.areFieldsNotNull([users])) {
-			throw new CustomError(UserErrorConstants.NotFound, 400);
-		}
+		const users: IUser = await UserRepository.findById(userId);
 
 		const result: FriendModel[] = await Promise.all(
 			users.friends.map(async (x: any) => {
@@ -288,7 +262,9 @@ export class UserServices {
 						? x.name
 						: `${x.realData.firstName} ${x.realData.lastName}`,
 					gender: x.gender,
-					imageName: x.isAnon ? await CloudinaryHelper.getAvatar() : '', //`${HelperConstants.imagesPath}${x.realData.imageName}`,
+					imageUrl: x.isAnon
+						? await CloudinaryHelper.getAvatar()
+						: x.realData.imageUrl,
 					notificationCount: x.notifications,
 					chatId: x.chatId,
 				};
@@ -299,29 +275,47 @@ export class UserServices {
 		return result;
 	}
 
+	// private methods
+
+	private static areFriends(currentUser: IUser, userToFriend: IUser): boolean {
+		const usersAreFriends =
+			userToFriend.friends.some(
+				(x: IFriend) => x.friendId === currentUser.id
+			) &&
+			currentUser.friends.some((x: IFriend) => x.friendId === userToFriend.id);
+		return usersAreFriends;
+	}
+
 	private static async addFriends(
-		userA: typeof User,
-		userB: typeof User,
+		userA: IUser,
+		userB: IUser,
 		chatId: string
 	): Promise<boolean> {
 		if (userA.id === userB.id) {
 			throw new CustomError(UserErrorConstants.CannotFriendSelf, 400);
 		}
 
-		userA.friends.push({
+		const userBFriend: IFriend = {
 			friendId: userB.id,
 			name: userB.name,
-			imageName: userB.imageName,
+			imageUrl: userB.realData.imageUrl,
 			realData: userB.realData,
+			notifications: 0,
+			isAnon: true,
 			chatId,
-		});
-		userB.friends.push({
+		};
+		const userAFriend: IFriend = {
 			friendId: userA.id,
 			name: userA.name,
-			imageName: userA.imageName,
+			imageUrl: userA.realData.imageUrl,
 			realData: userA.realData,
+			notifications: 0,
+			isAnon: true,
 			chatId,
-		});
+		};
+
+		userA.friends.push(userBFriend);
+		userB.friends.push(userAFriend);
 
 		await userA.save();
 		await userB.save();

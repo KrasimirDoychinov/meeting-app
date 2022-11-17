@@ -6,7 +6,8 @@ export interface AuthReturnModel extends AuthBaseModel {
 	exp?: number;
 }
 
-export interface JwtVerifyReturnModel {
+export interface JwtVerifyReturnModel extends AuthBaseModel {
+	email: string;
 	iat?: number;
 	exp?: number;
 }

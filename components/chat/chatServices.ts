@@ -1,4 +1,3 @@
-import { ChatReturnMessageModel } from './models/output/outputModels';
 import { ChatReturnModel } from './models/output/outputModels';
 import { ChatInput, ChatMessageModel } from './models/input/inputModels';
 
@@ -6,10 +5,7 @@ import { CustomError } from '../errors/customError';
 import { UserServices } from '../user/userServices';
 import { Chat, ChatMessage, IChat } from './models/Chat';
 import { io } from '../../app';
-import { GlobalErrorHelper } from '../errors/errorHelper';
 import { GlobalErrorConstants } from '../errors/errorConstants';
-import { User } from '../user/models/User';
-import { Document, HydratedDocument, Model } from 'mongoose';
 
 export class ChatServices {
 	// Create
@@ -55,7 +51,7 @@ export class ChatServices {
 		currentUserId,
 		friendUserId,
 	}: ChatInput): Promise<ChatReturnModel> {
-		if (GlobalErrorHelper.areFieldsExactlyEqual(currentUserId, friendUserId)) {
+		if (currentUserId === friendUserId) {
 			throw new CustomError(GlobalErrorConstants.FieldsAreEqual, 400);
 		}
 

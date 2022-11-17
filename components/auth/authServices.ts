@@ -97,6 +97,9 @@ export class AuthServices {
 		const obj = jwt.verify(token, EnvHelper.JwtSecret) as jwt.JwtPayload;
 
 		return {
+			id: obj.id,
+			email: obj.email,
+			tags: obj.tags,
 			iat: obj.iat,
 			exp: obj.exp,
 		};

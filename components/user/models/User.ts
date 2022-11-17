@@ -20,12 +20,12 @@ const RealDataSchema = new mongoose.Schema({
 const FriendSchema = new mongoose.Schema({
 	friendId: String,
 	name: String,
-	imageName: String,
+	imageUrl: String,
 	chatId: String,
 	realData: {
 		firstName: String,
 		lastName: String,
-		imageName: String,
+		imageUrl: String,
 	},
 	isAnon: {
 		type: Boolean,
@@ -48,10 +48,10 @@ const FriendNotification = new mongoose.Schema({
 	},
 });
 
-interface IFriend {
+export interface IFriend {
 	friendId: string;
 	name: string;
-	imageName: string;
+	imageUrl: string;
 	chatId: string;
 	realData: {
 		firstName: string;
@@ -60,6 +60,11 @@ interface IFriend {
 	};
 	isAnon: boolean;
 	notifications: number;
+}
+
+export interface IFriendNotification {
+	id: string;
+	name: string;
 }
 
 export interface IUser extends mongoose.Document {
@@ -74,10 +79,7 @@ export interface IUser extends mongoose.Document {
 	gender: Gender;
 	tags: string[];
 	friends: IFriend[];
-	friendNotifications: {
-		id: string;
-		name: string;
-	};
+	friendNotifications: IFriendNotification[];
 	chatNotifications: string[];
 }
 
