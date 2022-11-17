@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 
 require('dotenv').config();
-require('express-async-errors');
+import 'express-async-errors';
 
 import { authRouter } from './components/auth/authRoutes';
 import { chatRouter } from './components/chat/chatRoutes';
@@ -31,7 +31,6 @@ export const io = new Server(server, {
 		methods: ['GET', 'POST'],
 	},
 });
-
 // socket.io
 IoHelper.initialize(io);
 

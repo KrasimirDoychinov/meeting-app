@@ -1,15 +1,25 @@
 import { StatusCodes } from 'http-status-codes';
+import { autoInjectable } from 'tsyringe';
 
 import { AuthServices } from './authServices';
 
-export const register = async (req, res) => {
-	const result = await AuthServices.register(req.body);
+@autoInjectable()
+export default class AuthController {
+	private authService: AuthServices;
 
-	res.status(StatusCodes.OK).json(result);
-};
+	constructor(authService?: AuthServices) {
+		this.authService = authService!;
+	}
 
-export const login = async (req, res) => {
-	const result = await AuthServices.login(req.body);
+	register = async (req, res) => {
+		const result = await this.authService.register(req.body);
 
-	res.status(StatusCodes.OK).json(result);
-};
+		res.status(StatusCodes.OK).json(result);
+	};
+
+	login = async (req, res) => {
+		const result = await this.authService.login(req.body);
+
+		res.status(StatusCodes.OK).json(result);
+	};
+}

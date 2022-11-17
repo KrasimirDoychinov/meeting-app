@@ -1,10 +1,12 @@
-import { autoInjectable } from 'tsyringe';
+import { autoInjectable, injectable } from 'tsyringe';
 import { IUser } from '../user/models/baseModels';
 import UserRepository from '../user/userRepository';
 
+@injectable()
 @autoInjectable()
 export class TagService {
-	userRepo: UserRepository;
+	private userRepo: UserRepository;
+
 	constructor(userRepo?: UserRepository) {
 		this.userRepo = userRepo!;
 	}

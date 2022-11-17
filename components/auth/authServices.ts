@@ -21,10 +21,20 @@ import { EnvHelper } from '../helpers/envHelper';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { IUser } from '../user/models/baseModels';
-import { UserRepository } from '../user/userRepository';
+import { autoInjectable, injectable } from 'tsyringe';
+import UserRepository from '../user/userRepository';
+import e from 'express';
 
+@injectable()
+@autoInjectable()
 export class AuthServices {
-	static async register({
+	private userRepo: UserRepository;
+
+	constructor(userRepo?: UserRepository) {
+		this.userRepo = userRepo!;
+	}
+
+	async register({
 		name,
 		email,
 		password,
@@ -57,42 +67,42 @@ export class AuthServices {
 		return { token, id: user.id, iat: result.iat, exp: result.exp };
 	}
 
-	static async login({
-		email,
-		password,
-	}: AuthLoginModel): Promise<AuthViewModel> {
+	async login({ email, password }: AuthLoginModel): Promise<AuthViewModel> {
 		if (!email || !password) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
 
-		const user: IUser = await UserRepository.find({ email })[0];
-
-		const passwordsMatch = await this.comparePassword(password, user.password);
-		if (!passwordsMatch) {
-			throw new CustomError(AuthErrorConstants.PasswordMismatch, 400);
+		try {
+			const user: IUser = await this.userRepo.find({ email })[0];
+		} catch (error) {
+			console.log('DAFAK IS GOING ON');
 		}
+		// const passwordsMatch = await this.comparePassword(password, user.password);
+		// if (!passwordsMatch) {
+		// 	throw new CustomError(AuthErrorConstants.PasswordMismatch, 400);
+		// }
 
-		const jwtUserModel: JwtSignModel = {
-			id: user.id,
-			name: user.name,
-			email: user.email,
-			tags: user.tags,
-			realData: user.realData,
-		};
+		// const jwtUserModel: JwtSignModel = {
+		// 	id: user.id,
+		// 	name: user.name,
+		// 	email: user.email,
+		// 	tags: user.tags,
+		// 	realData: user.realData,
+		// };
 
-		const token = this.signJWT(jwtUserModel);
-		const result = this.verifyJWT(token);
+		// const token = this.signJWT(jwtUserModel);
+		// const result = this.verifyJWT(token);
 
-		return {
-			token,
-			id: user.id,
-			iat: result.iat,
-			exp: result.exp,
-			tags: user.tags,
-		};
+		// return {
+		// 	token,
+		// 	id: user.id,
+		// 	iat: result.iat,
+		// 	exp: result.exp,
+		// 	tags: user.tags,
+		// };
 	}
 
-	static verifyJWT(token: string): JwtVerifyViewModel {
+	verifyJWT(token: string): JwtVerifyViewModel {
 		const obj = jwt.verify(token, EnvHelper.JwtSecret) as jwt.JwtPayload;
 
 		return {
@@ -105,19 +115,19 @@ export class AuthServices {
 	}
 
 	// private methods
-	private static async hashPassword(originalPassword: string): Promise<string> {
+	private async hashPassword(originalPassword: string): Promise<string> {
 		const salt = await bcrypt.genSalt(10);
 		const hash = await bcrypt.hash(originalPassword, salt);
 		return hash;
 	}
 
-	private static signJWT(user: JwtSignModel): string {
+	private signJWT(user: JwtSignModel): string {
 		return jwt.sign(user, EnvHelper.JwtSecret, {
 			expiresIn: EnvHelper.JwtLifetime,
 		});
 	}
 
-	private static async comparePassword(
+	private async comparePassword(
 		password: string,
 		hash: string
 	): Promise<boolean> {

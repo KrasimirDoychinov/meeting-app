@@ -1,3 +1,5 @@
+import 'express-async-errors';
+
 import { injectable } from 'tsyringe';
 import { CustomError } from '../errors/customError';
 import { IRepository } from '../global/repository';
