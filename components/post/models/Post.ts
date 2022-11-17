@@ -1,6 +1,15 @@
 import mongoose from 'mongoose';
 
-const PostSchema = new mongoose.Schema(
+export interface IPost extends mongoose.Document {
+	creatorId: string;
+	description: string;
+	createdOn: Date;
+	likes: string[];
+	tags: string[];
+	imgUrl: string;
+}
+
+const PostSchema = new mongoose.Schema<IPost>(
 	{
 		creatorId: {
 			type: String,

@@ -1,10 +1,11 @@
 import { CustomError } from '../errors/customError';
-import { Post } from './models/Post';
+import { IPost, Post } from './models/Post';
 import { PostStatus } from './models/PostStatusEnums';
 import { PostUpdateModel } from './models/PostUpdateModel';
 import { PostReturnModel } from './models/PostReturnModel';
 import { GlobalErrorConstants } from '../errors/errorConstants';
 import { CloudinaryHelper } from '../helpers/cloudinaryHelper';
+import { PostRepository } from './postRepository';
 
 export class PostServices {
 	static async create(
@@ -13,12 +14,12 @@ export class PostServices {
 		tags: string[],
 		img?: string,
 		status: PostStatus = 0
-	): Promise<PostUpdateModel> {
+	): Promise<IPost> {
 		if (!creatorId || !description || !tags) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
 
-		const post = await Post.create({
+		const post: IPost = await Post.create({
 			creatorId,
 			description,
 			tags,
@@ -41,7 +42,7 @@ export class PostServices {
 			throw new CustomError('CreatorId is missing', 400);
 		}
 
-		const posts = await Post.find({ creatorId });
+		const posts: IPost[] = await PostRepository.find({ creatorId });
 		const result = posts.map((x: any) => {
 			const model: PostReturnModel = {
 				description: x.description,
@@ -55,8 +56,8 @@ export class PostServices {
 		return result;
 	}
 
-	static async byId(id: string) {
-		return await Post.findById(id);
+	static async byId(id: string): Promise<IPost> {
+		return await PostRepository.findById(id);
 	}
 
 	static async like(postId: string, creatorId: string): Promise<number> {
@@ -64,10 +65,7 @@ export class PostServices {
 			throw new CustomError("Id's is missing", 400);
 		}
 
-		const post = await Post.findById(postId);
-		if (!post) {
-			throw new CustomError("Post isn't found", 400);
-		}
+		const post: IPost = await PostRepository.findById(postId);
 
 		if (post.likes.includes(creatorId)) {
 			post.likes = post.likes.filter((x: string) => x !== creatorId);
@@ -76,7 +74,7 @@ export class PostServices {
 		}
 
 		await post.save();
-		return post.likes;
+		return post.likes.length;
 	}
 
 	static async delete(postId: string): Promise<boolean> {
