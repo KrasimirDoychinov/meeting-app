@@ -10,7 +10,7 @@ import {
 	sendFriendRequest,
 } from './userController';
 
-const express = require('express');
+import express from 'express';
 export const userRouter = express.Router();
 
 userRouter.get('/', authorize, allWithTags);

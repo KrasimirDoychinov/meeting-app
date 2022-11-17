@@ -11,15 +11,15 @@ import { tagRouter } from './components/tag/tagRoutes';
 import { userRouter } from './components/user/userRoutes';
 import { connectDB } from './connectDB';
 
-const cors = require('cors');
-const bp = require('body-parser');
-const fileUpload = require('express-fileupload');
-const http = require('http');
-const express = require('express');
+import cors from 'cors';
+import bp from 'body-parser';
+import fileUpload from 'express-fileupload';
+import http from 'http';
+import express from 'express';
 const app = express();
 const server = http.createServer(app);
-const { Server } = require('socket.io');
-const cloudinary = require('cloudinary').v2;
+import { Server } from 'socket.io';
+import cloudinary from 'cloudinary';
 
 export const io = new Server(server, {
 	cors: {
@@ -32,7 +32,7 @@ export const io = new Server(server, {
 IoHelper.initialize(io);
 
 // cloudinary
-cloudinary.config({
+cloudinary.v2.config({
 	cloud_name: 'detha4545',
 	api_key: process.env.CLOUDINARY_API_KEY,
 	api_secret: process.env.CLOUDINARY_API_SECRET,

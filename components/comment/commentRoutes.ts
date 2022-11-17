@@ -1,7 +1,7 @@
 import { authorize } from '../middlewares/authorization';
 import { allByPost, createComment } from './commentController';
 
-const express = require('express');
+import express from 'express';
 export const commentRouter = express.Router();
 
 commentRouter.post('/:postId', authorize, createComment);

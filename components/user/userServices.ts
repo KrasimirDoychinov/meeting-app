@@ -123,7 +123,6 @@ export class UserServices {
 	static async allFriendRequests(id: string): Promise<IFriendNotification[]> {
 		const user: IUser = await UserRepository.findById(id);
 
-		console.log(id, user.friendNotifications);
 		return user.friendNotifications;
 	}
 

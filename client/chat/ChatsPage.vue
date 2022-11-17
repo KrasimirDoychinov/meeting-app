@@ -144,7 +144,6 @@
 
 	const hideChat = async () => {
 		users.value = ref(await store.dispatch('allFriends'));
-		console.log(users.value);
 		const mainChat = document.querySelector('.main-chat');
 
 		mainChat.scrollTop = 0;

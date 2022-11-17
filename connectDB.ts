@@ -1,12 +1,9 @@
-const mongoose = require('mongoose');
+import * as mongoose from 'mongoose';
 
 export const connectDB = async (uri: string) => {
 	try {
-		const test = mongoose
-			.connect(uri, {
-				useUnifiedTopology: true,
-				useNewUrlParser: true,
-			})
+		mongoose
+			.connect(uri, {})
 			.then(() => console.log(`Connected to MongoDB: ${uri}`))
 			.catch((err: any) => console.log(err));
 	} catch (error) {

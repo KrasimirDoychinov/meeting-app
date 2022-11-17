@@ -7,7 +7,7 @@ import {
 	updatePost,
 } from './postController';
 
-const express = require('express');
+import express from 'express';
 export const postRouter = express.Router();
 
 postRouter.post('/', authorize, createPost);

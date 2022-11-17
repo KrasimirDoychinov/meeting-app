@@ -7,7 +7,7 @@ import {
 	createMessage,
 } from './chatController';
 
-const express = require('express');
+import express from 'express';
 export const chatRouter = express.Router();
 
 chatRouter.get('/:chatId', authorize, chatById);
