@@ -1,12 +1,12 @@
 import { AuthBaseModel } from '../baseModels';
 
-export interface AuthReturnModel extends AuthBaseModel {
+export interface AuthViewModel extends AuthBaseModel {
 	token: string;
 	iat?: number;
 	exp?: number;
 }
 
-export interface JwtVerifyReturnModel extends AuthBaseModel {
+export interface JwtVerifyViewModel extends AuthBaseModel {
 	email: string;
 	iat?: number;
 	exp?: number;

@@ -1,11 +1,12 @@
-import { ChatReturnModel } from './models/output/outputModels';
 import { ChatInput, ChatMessageModel } from './models/input/inputModels';
 
 import { CustomError } from '../errors/customError';
 import { UserServices } from '../user/userServices';
-import { Chat, ChatMessage, IChat } from './models/Chat';
+import { Chat } from './models/Chat';
 import { io } from '../../app';
 import { GlobalErrorConstants } from '../errors/errorConstants';
+import { ChatMessage, IChat } from './models/baseModels';
+import { ChatViewModel } from './models/output/outputModels';
 
 export class ChatServices {
 	// Create
@@ -50,7 +51,7 @@ export class ChatServices {
 		chatId,
 		currentUserId,
 		friendUserId,
-	}: ChatInput): Promise<ChatReturnModel> {
+	}: ChatInput): Promise<ChatViewModel> {
 		if (currentUserId === friendUserId) {
 			throw new CustomError(GlobalErrorConstants.FieldsAreEqual, 400);
 		}
@@ -125,8 +126,8 @@ export class ChatServices {
 		chat: IChat,
 		currentUser,
 		friendUser
-	): ChatReturnModel {
-		let model: ChatReturnModel;
+	): ChatViewModel {
+		let model: ChatViewModel;
 		model = {
 			id: chat.id,
 			isAnon: chat.isAnon,

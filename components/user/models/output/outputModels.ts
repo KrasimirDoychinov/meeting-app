@@ -1,5 +1,5 @@
 import { Gender } from '../../enums/genderEnums';
-import { RealData } from '../User';
+import { RealData } from '../baseModels';
 
 export interface UserBaseModel {
 	id: string;
@@ -11,11 +11,11 @@ export interface UserBaseModel {
 	changeAnonAgree?: boolean;
 }
 
-export interface FriendModel extends UserBaseModel {
+export interface FriendViewModel extends UserBaseModel {
 	notificationCount: number;
 	chatId: string;
 }
 
-export interface UserFullModel extends UserBaseModel {
+export interface UserFullViewModelModel extends UserBaseModel {
 	realData: RealData;
 }

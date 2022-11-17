@@ -1,4 +1,4 @@
-import { IUser } from '../user/models/User';
+import { IUser } from '../user/models/baseModels';
 import { UserRepository } from '../user/userRepository';
 
 export class TagService {

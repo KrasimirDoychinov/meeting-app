@@ -1,19 +1,20 @@
 import { Gender } from '../enums/genderEnums';
 
 import * as mongoose from 'mongoose';
+import { IUser } from './baseModels';
 
-const RealDataSchema = new mongoose.Schema({
+export const RealDataSchema = new mongoose.Schema({
 	firstName: {
 		type: String,
-		required: false,
+		required: [true, 'Please provide a first name.'],
 	},
 	lastName: {
 		type: String,
-		required: false,
+		required: [true, 'Please provide a last name.'],
 	},
 	imageUrl: {
 		type: String,
-		required: false,
+		required: [true, 'Please provide an image.'],
 	},
 });
 
@@ -22,11 +23,7 @@ const FriendSchema = new mongoose.Schema({
 	name: String,
 	imageUrl: String,
 	chatId: String,
-	realData: {
-		firstName: String,
-		lastName: String,
-		imageUrl: String,
-	},
+	realData: RealDataSchema,
 	isAnon: {
 		type: Boolean,
 		default: true,
@@ -48,53 +45,16 @@ const FriendNotification = new mongoose.Schema({
 	},
 });
 
-export interface Friend {
-	friendId: string;
-	name: string;
-	imageUrl: string;
-	chatId: string;
-	realData: {
-		firstName: string;
-		lastName: string;
-		imageUrl: string;
-	};
-	isAnon: boolean;
-	notifications: number;
-}
-
-export interface FriendNotification {
-	id: string;
-	name: string;
-}
-
-export interface IUser extends mongoose.Document {
-	name: string;
-	email: string;
-	password: string;
-	realData: RealData;
-	gender: Gender;
-	tags: string[];
-	friends: Friend[];
-	friendNotifications: FriendNotification[];
-	chatNotifications: string[];
-}
-
-export interface RealData {
-	firstName: string;
-	lastName: string;
-	imageUrl: string;
-}
-
 const UserSchema = new mongoose.Schema<IUser>({
 	name: {
 		type: String,
-		required: [true, 'Please provide name'],
+		required: [true, 'Please provide a name'],
 		maxLength: 50,
 		minLength: 3,
 	},
 	email: {
 		type: String,
-		required: [true, 'Please provide email'],
+		required: [true, 'Please provide an email'],
 		match: [
 			/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
 			'Please provide a valid email',
@@ -117,4 +77,4 @@ const UserSchema = new mongoose.Schema<IUser>({
 	chatNotifications: [String],
 });
 
-export const User = mongoose.model('User', UserSchema);
+export const User = mongoose.model('U ser', UserSchema);

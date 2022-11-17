@@ -1,6 +1,6 @@
 import {
-	AuthReturnModel,
-	JwtVerifyReturnModel,
+	AuthViewModel,
+	JwtVerifyViewModel,
 } from './models/output/outputModels';
 
 import {
@@ -9,7 +9,7 @@ import {
 	JwtSignModel,
 } from './models/input/inputModels';
 
-import { IUser, User } from '../user/models/User';
+import { User } from '../user/models/User';
 
 import { CustomError } from '../errors/customError';
 
@@ -20,6 +20,8 @@ import { EnvHelper } from '../helpers/envHelper';
 
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
+import { IUser } from '../user/models/baseModels';
+import { UserRepository } from '../user/userRepository';
 
 export class AuthServices {
 	static async register({
@@ -27,7 +29,7 @@ export class AuthServices {
 		email,
 		password,
 		compare,
-	}: AuthRegisterModel): Promise<AuthReturnModel> {
+	}: AuthRegisterModel): Promise<AuthViewModel> {
 		if (!name || !email || !password || !compare) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
@@ -58,15 +60,12 @@ export class AuthServices {
 	static async login({
 		email,
 		password,
-	}: AuthLoginModel): Promise<AuthReturnModel> {
+	}: AuthLoginModel): Promise<AuthViewModel> {
 		if (!email || !password) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
 
-		const user: IUser | null = await User.findOne({ email });
-		if (!user) {
-			throw new CustomError(AuthErrorConstants.EmailNotFound, 400);
-		}
+		const user: IUser = await UserRepository.find({ email })[0];
 
 		const passwordsMatch = await this.comparePassword(password, user.password);
 		if (!passwordsMatch) {
@@ -93,7 +92,7 @@ export class AuthServices {
 		};
 	}
 
-	static verifyJWT(token: string): JwtVerifyReturnModel {
+	static verifyJWT(token: string): JwtVerifyViewModel {
 		const obj = jwt.verify(token, EnvHelper.JwtSecret) as jwt.JwtPayload;
 
 		return {

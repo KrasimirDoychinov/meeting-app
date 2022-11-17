@@ -1,6 +1,7 @@
 import { CustomError } from '../errors/customError';
 import { UserErrorConstants } from './errors/errorConstants';
-import { Friend, IUser, User } from './models/User';
+import { Friend, IUser } from './models/baseModels';
+import { User } from './models/User';
 
 export class UserRepository {
 	static async findById(id: string): Promise<IUser> {

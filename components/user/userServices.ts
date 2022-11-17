@@ -1,13 +1,17 @@
 import { CustomError } from '../errors/customError';
-import { IUser, Friend, User, FriendNotification } from './models/User';
-import { FriendModel, UserBaseModel } from './models/output/outputModels';
-import { UserFullModel } from './models/output/outputModels';
+import {
+	FriendViewModel,
+	UserBaseModel,
+	UserFullViewModelModel,
+} from './models/output/outputModels';
+
 import { ChatServices } from '../chat/chatServices';
 import { io } from '../../app';
 import { UserErrorConstants } from './errors/errorConstants';
 import { GlobalErrorConstants } from '../errors/errorConstants';
 import { CloudinaryHelper } from '../helpers/cloudinaryHelper';
 import { UserRepository } from './userRepository';
+import { Friend, FriendNotification, IUser } from './models/baseModels';
 
 export class UserServices {
 	static async setRealData(
@@ -35,10 +39,10 @@ export class UserServices {
 		return true;
 	}
 
-	static async byId(id: string): Promise<UserFullModel> {
+	static async byId(id: string): Promise<UserFullViewModelModel> {
 		const user: IUser = await UserRepository.findById(id);
 
-		const model: UserFullModel = {
+		const model: UserFullViewModelModel = {
 			id: user._id,
 			name: user.name,
 			gender: user.gender,
@@ -194,7 +198,7 @@ export class UserServices {
 
 	// Other
 	static async all(userEmail: string): Promise<UserBaseModel[]> {
-		const users: IUser[] = await UserRepository.find({
+		const users = await UserRepository.find({
 			email: { $not: { $eq: userEmail } },
 		});
 
@@ -217,7 +221,7 @@ export class UserServices {
 		email: string,
 		userId: string
 	): Promise<UserBaseModel[]> {
-		const users = await User.find({
+		const users = await UserRepository.find({
 			$and: [
 				{ tags: { $regex: tags } },
 				{ email: { $not: { $eq: email } } },
@@ -250,12 +254,12 @@ export class UserServices {
 		return result;
 	}
 
-	static async allFriends(userId: string): Promise<FriendModel[]> {
-		const users: IUser = await UserRepository.findById(userId);
+	static async allFriends(userId: string): Promise<FriendViewModel[]> {
+		const users = await UserRepository.findById(userId);
 
-		const result: FriendModel[] = await Promise.all(
+		const result: FriendViewModel[] = await Promise.all(
 			users.friends.map(async (x: any) => {
-				const model: FriendModel = {
+				const model: FriendViewModel = {
 					id: x.friendId,
 					name: x.isAnon
 						? x.name
@@ -275,7 +279,6 @@ export class UserServices {
 	}
 
 	// private methods
-
 	private static areFriends(currentUser: IUser, userToFriend: IUser): boolean {
 		const usersAreFriends =
 			userToFriend.friends.some((x: Friend) => x.friendId === currentUser.id) &&

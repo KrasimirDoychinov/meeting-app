@@ -1,4 +1,4 @@
-import { RealData } from '../../../user/models/User';
+import { RealData } from '../../../user/models/baseModels';
 import { AuthBaseModel } from '../baseModels';
 
 export interface AuthRegisterModel {
