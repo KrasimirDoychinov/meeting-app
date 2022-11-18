@@ -73,7 +73,7 @@ export class AuthServices {
 		}
 
 		const user: IUser = await this.userRepo.findOne({ email });
-		console.log(user);
+
 		const passwordsMatch = await this.comparePassword(password, user.password);
 		if (!passwordsMatch) {
 			throw new CustomError(AuthErrorConstants.PasswordMismatch, 400);

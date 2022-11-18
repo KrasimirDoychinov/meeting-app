@@ -1,15 +1,20 @@
+import { autoInjectable } from 'tsyringe';
 import { ChatServices } from '../chat/chatServices';
 import { UserServices } from '../user/userServices';
 
+@autoInjectable()
 export class IoHelper {
-	static async initialize(io) {
+	private userService: UserServices;
+
+	constructor(io: any, userService?: UserServices) {
+		this.userService = userService!;
 		io.on('connection', (socket: any) => {
 			this.handleMessageEvent(socket, io);
 			this.handleNotificationEvent(socket, io);
 		});
 	}
 
-	private static async handleMessageEvent(socket, io) {
+	private async handleMessageEvent(socket, io) {
 		socket.on(
 			'create message',
 			async (
@@ -31,9 +36,12 @@ export class IoHelper {
 		);
 	}
 
-	private static async handleNotificationEvent(socket, io) {
+	private async handleNotificationEvent(socket, io) {
 		socket.on('create notification', async (userId: string, chatId: string) => {
-			const result = await UserServices.sendChatNotification(userId, chatId);
+			const result = await this.userService.sendChatNotification(
+				userId,
+				chatId
+			);
 
 			io.emit('create notification', {
 				count: result.notifications,

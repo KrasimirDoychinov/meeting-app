@@ -32,7 +32,7 @@ export const io = new Server(server, {
 	},
 });
 // socket.io
-IoHelper.initialize(io);
+const ioHelper = new IoHelper(io);
 
 // cloudinary
 cloudinary.v2.config({
