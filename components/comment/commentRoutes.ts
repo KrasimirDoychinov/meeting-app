@@ -1,4 +1,4 @@
-import { authorize } from '../middlewares/authorization';
+import { authorize } from '../middlewares/middlewares';
 import { allByPost, createComment } from './commentController';
 
 import express from 'express';

@@ -1,4 +1,4 @@
-import { authorize } from '../middlewares/authorization';
+import { authorize } from '../middlewares/middlewares';
 import UserController from './userController';
 
 import express from 'express';

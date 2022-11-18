@@ -7,7 +7,6 @@ import { authRouter } from './components/auth/authRoutes';
 import { chatRouter } from './components/chat/chatRoutes';
 import { commentRouter } from './components/comment/commentRoutes';
 import { IoHelper } from './components/helpers/socketHelper.io';
-import { errorHandler } from './components/middlewares/errorHandler';
 import { postRouter } from './components/post/postRoutes';
 import { tagRouter } from './components/tag/tagRoutes';
 import { userRouter } from './components/user/userRoutes';
@@ -24,6 +23,7 @@ const server = http.createServer(app);
 
 import { Server } from 'socket.io';
 import cloudinary from 'cloudinary';
+import { errorHandler } from './components/middlewares/middlewares';
 
 export const io = new Server(server, {
 	cors: {
