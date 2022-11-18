@@ -20,6 +20,10 @@ const MessageSchema = new mongoose.Schema({
 });
 
 const PersonSchema = new mongoose.Schema({
+	id: {
+		type: String,
+		required: true,
+	},
 	gender: {
 		type: Number,
 		enum: [Gender.Male, Gender.Female],

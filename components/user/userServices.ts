@@ -19,7 +19,7 @@ import { autoInjectable, injectable } from 'tsyringe';
 @injectable()
 @autoInjectable()
 export class UserServices {
-	userRepo: UserRepository;
+	private userRepo: UserRepository;
 
 	constructor(userRepo?: UserRepository) {
 		this.userRepo = userRepo!;
@@ -80,7 +80,7 @@ export class UserServices {
 		const friendUser: IUser = await this.userRepo.findById(userToFriendId);
 
 		const friendRequestSend = friendUser.friendNotifications.some(
-			(x: any) => x.id === currentUserId
+			(x: any) => x.friendId === currentUserId
 		);
 		if (friendRequestSend) {
 			throw new CustomError(UserErrorConstants.FriendRequestAlreadySent, 400);
@@ -91,7 +91,7 @@ export class UserServices {
 		}
 
 		friendUser.friendNotifications.push({
-			id: currentUser.id,
+			friendId: currentUser.id,
 			name: currentUser.name,
 		});
 		await friendUser.save();
@@ -104,7 +104,7 @@ export class UserServices {
 	async acceptFriendRequest(
 		userToFriendId: string,
 		currentUserId: string
-	): Promise<boolean> {
+	): Promise<{ currentUser: IUser; friendUser: IUser }> {
 		if (userToFriendId === currentUserId) {
 			throw new CustomError(UserErrorConstants.CannotFriendSelf, 400);
 		}
@@ -113,8 +113,9 @@ export class UserServices {
 		const friendUser: IUser = await this.userRepo.findById(userToFriendId);
 
 		const friendRequestSend = currentUser.friendNotifications.some(
-			(x: any) => x.id === userToFriendId
+			(x: any) => x.friendId === userToFriendId
 		);
+
 		if (!friendRequestSend) {
 			throw new CustomError(UserErrorConstants.FriendRequestNotSent, 400);
 		}
@@ -124,15 +125,53 @@ export class UserServices {
 		}
 
 		currentUser.friendNotifications = currentUser.friendNotifications.filter(
-			(x: any) => x.id !== userToFriendId
+			(x: any) => x.friendId !== userToFriendId
 		);
 		friendUser.friendNotifications = friendUser.friendNotifications.filter(
-			(x: any) => x.id !== currentUserId
+			(x: any) => x.friendId !== currentUserId
 		);
-		const chat = await ChatServices.create(currentUserId, userToFriendId);
-		const result = await this.addFriends(currentUser, friendUser, chat.id);
+
 		await currentUser.save();
-		return result;
+		return {
+			currentUser,
+			friendUser,
+		};
+	}
+
+	async addFriends(
+		userA: IUser,
+		userB: IUser,
+		chatId: string
+	): Promise<boolean> {
+		if (userA.id === userB.id) {
+			throw new CustomError(UserErrorConstants.CannotFriendSelf, 400);
+		}
+
+		const userBFriend: Friend = {
+			friendId: userB.id,
+			name: userB.name,
+			imageUrl: userB.realData.imageUrl,
+			realData: userB.realData,
+			notifications: 0,
+			isAnon: true,
+			chatId,
+		};
+		const userAFriend: Friend = {
+			friendId: userA.id,
+			name: userA.name,
+			imageUrl: userA.realData.imageUrl,
+			realData: userA.realData,
+			notifications: 0,
+			isAnon: true,
+			chatId,
+		};
+
+		userA.friends.push(userBFriend);
+		userB.friends.push(userAFriend);
+
+		await userA.save();
+		await userB.save();
+		return true;
 	}
 
 	async allFriendRequests(id: string): Promise<FriendNotification[]> {
@@ -249,12 +288,12 @@ export class UserServices {
 		const result: UserBaseModel[] = await Promise.all(
 			users.map(async (x: IUser) => {
 				const model: UserBaseModel = {
-					id: x._id,
+					id: x.id,
 					name: x.name,
 					tags: x.tags,
 					gender: x.gender,
 					friendRequestSent:
-						x.friendNotifications.some((x: any) => x.id === userId) ||
+						x.friendNotifications.some((x: any) => x.friendId === userId) ||
 						x.friends.some((x: Friend) => x.friendId === userId),
 					imageUrl: await CloudinaryHelper.getAvatar(),
 				};
@@ -291,45 +330,10 @@ export class UserServices {
 
 	// private methods
 	private areFriends(currentUser: IUser, userToFriend: IUser): boolean {
+		console.log('test');
 		const usersAreFriends =
 			userToFriend.friends.some((x: Friend) => x.friendId === currentUser.id) &&
 			currentUser.friends.some((x: Friend) => x.friendId === userToFriend.id);
 		return usersAreFriends;
-	}
-
-	private async addFriends(
-		userA: IUser,
-		userB: IUser,
-		chatId: string
-	): Promise<boolean> {
-		if (userA.id === userB.id) {
-			throw new CustomError(UserErrorConstants.CannotFriendSelf, 400);
-		}
-
-		const userBFriend: Friend = {
-			friendId: userB.id,
-			name: userB.name,
-			imageUrl: userB.realData.imageUrl,
-			realData: userB.realData,
-			notifications: 0,
-			isAnon: true,
-			chatId,
-		};
-		const userAFriend: Friend = {
-			friendId: userA.id,
-			name: userA.name,
-			imageUrl: userA.realData.imageUrl,
-			realData: userA.realData,
-			notifications: 0,
-			isAnon: true,
-			chatId,
-		};
-
-		userA.friends.push(userBFriend);
-		userB.friends.push(userAFriend);
-
-		await userA.save();
-		await userB.save();
-		return true;
 	}
 }

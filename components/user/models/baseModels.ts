@@ -16,7 +16,7 @@ export interface Friend {
 }
 
 export interface FriendNotification {
-	id: string;
+	friendId: string;
 	name: string;
 }
 

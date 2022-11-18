@@ -1,11 +1,15 @@
 import { autoInjectable } from 'tsyringe';
+import { ChatServices } from '../chat/chatServices';
 import { UserServices } from './userServices';
 
 @autoInjectable()
 export default class UserController {
-	userService: UserServices;
-	constructor(userService?: UserServices) {
+	private readonly userService: UserServices;
+	private readonly chatService: ChatServices;
+
+	constructor(userService?: UserServices, chatService?: ChatServices) {
 		this.userService = userService!;
+		this.chatService = chatService!;
 	}
 
 	allWithTags = async (req: any, res: any) => {
@@ -46,8 +50,14 @@ export default class UserController {
 			userToFriendId,
 			currentUserId
 		);
+		const chat = await this.chatService.create(currentUserId, userToFriendId);
+		const friends = await this.userService.addFriends(
+			result.currentUser,
+			result.friendUser,
+			chat.id
+		);
 
-		res.status(200).json({ friends: result });
+		res.status(200).json({ friends });
 	};
 
 	friendNRequestsByUser = async (req: any, res: any) => {

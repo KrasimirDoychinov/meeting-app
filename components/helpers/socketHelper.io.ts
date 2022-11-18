@@ -5,9 +5,12 @@ import { UserServices } from '../user/userServices';
 @autoInjectable()
 export class IoHelper {
 	private userService: UserServices;
+	private chatService: ChatServices;
 
-	constructor(io: any, userService?: UserServices) {
+	constructor(io: any, userService?: UserServices, chatService?: ChatServices) {
 		this.userService = userService!;
+		this.chatService = chatService!;
+
 		io.on('connection', (socket: any) => {
 			this.handleMessageEvent(socket, io);
 			this.handleNotificationEvent(socket, io);
@@ -24,7 +27,7 @@ export class IoHelper {
 				friendId: string
 			) => {
 				if (content.length > 0) {
-					const message = await ChatServices.createMessage({
+					const message = await this.chatService.createMessage({
 						chatId,
 						content,
 						senderId: userId,

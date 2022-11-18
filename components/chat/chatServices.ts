@@ -7,30 +7,42 @@ import { io } from '../../app';
 import { GlobalErrorConstants } from '../errors/errorConstants';
 import { ChatMessage, IChat } from './models/baseModels';
 import { ChatViewModel } from './models/output/outputModels';
+import { autoInjectable, injectable } from 'tsyringe';
+import ChatRepository from './chatRepository';
 
+@injectable()
+@autoInjectable()
 export class ChatServices {
+	private userService: UserServices;
+	private chatRepo: ChatRepository;
+
+	constructor(userService?: UserServices, chatRepo?: ChatRepository) {
+		this.userService = userService!;
+		this.chatRepo = chatRepo!;
+	}
+
 	// Create
-	static async create(personAId: string, personBId: string): Promise<IChat> {
-		const personA = await UserServices.byId(personAId);
-		const personB = await UserServices.byId(personBId);
+	async create(personAId: string, personBId: string): Promise<IChat> {
+		const personA = await this.userService.byId(personAId);
+		const personB = await this.userService.byId(personBId);
 
 		const chat: IChat = await Chat.create({ personA, personB });
 		return chat;
 	}
 
-	static async createMessage({
+	async createMessage({
 		chatId,
 		senderId,
 		receiverId,
 		content,
 	}: ChatMessageModel): Promise<ChatMessage> {
-		const chat: IChat | null = await Chat.findById(chatId);
+		const chat: IChat | null = await this.chatRepo.findById(chatId);
 		if (!chat) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
 
 		if (!this.isPersonInChat(chat, senderId)) {
-			throw new CustomError("This user doesn't belong to this chat", 400);
+			throw new CustomError("This user  doesn't belong to this chat", 400);
 		}
 
 		const message: ChatMessage = {
@@ -47,7 +59,7 @@ export class ChatServices {
 	}
 
 	// Retrieve
-	static async byId({
+	async byId({
 		chatId,
 		currentUserId,
 		friendUserId,
@@ -56,7 +68,7 @@ export class ChatServices {
 			throw new CustomError(GlobalErrorConstants.FieldsAreEqual, 400);
 		}
 
-		const chat = await Chat.findById(chatId);
+		const chat = await this.chatRepo.findById(chatId);
 		if (!chat) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
@@ -70,11 +82,8 @@ export class ChatServices {
 	}
 
 	// Anon status
-	static async changeAnonAgree(
-		chatId: string,
-		userId: string
-	): Promise<boolean> {
-		const chat: IChat | null = await Chat.findById(chatId);
+	async changeAnonAgree(chatId: string, userId: string): Promise<boolean> {
+		const chat: IChat | null = await this.chatRepo.findById(chatId);
 		if (!chat) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
@@ -98,7 +107,7 @@ export class ChatServices {
 		return true;
 	}
 
-	static async changeAnon(chat: IChat): Promise<boolean> {
+	async changeAnon(chat: IChat): Promise<boolean> {
 		if (
 			!this.arePeopleAgreed(
 				chat.personA.changeAnonAgree,
@@ -114,19 +123,21 @@ export class ChatServices {
 		chat.isAnon = false;
 		await chat.save();
 
-		await UserServices.sendChatNotification(chat.personA.id, chat.id);
-		await UserServices.sendChatNotification(chat.personB.id, chat.id);
-		await UserServices.changeChatAnonForUserInChat(chat.id, chat.personA.id);
-		await UserServices.changeChatAnonForUserInChat(chat.id, chat.personB.id);
+		await this.userService.sendChatNotification(chat.personA.id, chat.id);
+		await this.userService.sendChatNotification(chat.personB.id, chat.id);
+		await this.userService.changeChatAnonForUserInChat(
+			chat.id,
+			chat.personA.id
+		);
+		await this.userService.changeChatAnonForUserInChat(
+			chat.id,
+			chat.personB.id
+		);
 		return true;
 	}
 
 	// Private methods
-	private static buildChatModel(
-		chat: IChat,
-		currentUser,
-		friendUser
-	): ChatViewModel {
+	private buildChatModel(chat: IChat, currentUser, friendUser): ChatViewModel {
 		let model: ChatViewModel;
 		model = {
 			id: chat.id,
@@ -165,21 +176,18 @@ export class ChatServices {
 		return model;
 	}
 
-	private static arePeopleAgreed(
+	private arePeopleAgreed(
 		personAAgree: boolean,
 		personBAgree: boolean
 	): boolean {
 		return personAAgree && personBAgree;
 	}
 
-	private static isPersonInChat(chat: IChat, personId: string): boolean {
+	private isPersonInChat(chat: IChat, personId: string): boolean {
 		return chat.personA.id === personId || chat.personB.id === personId;
 	}
 
-	private static changeCorrectPersonAnonStatus(
-		chat: IChat,
-		userId: string
-	): void {
+	private changeCorrectPersonAnonStatus(chat: IChat, userId: string): void {
 		if (chat.personA.id === userId) {
 			chat.personA.changeAnonAgree = true;
 		} else if (chat.personB.id === userId) {

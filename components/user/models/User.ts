@@ -35,7 +35,7 @@ const FriendSchema = new mongoose.Schema({
 });
 
 const FriendNotification = new mongoose.Schema({
-	id: {
+	friendId: {
 		type: String,
 		required: true,
 	},
