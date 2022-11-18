@@ -72,34 +72,31 @@ export class AuthServices {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
 
-		try {
-			const user: IUser = await this.userRepo.find({ email })[0];
-		} catch (error) {
-			console.log('DAFAK IS GOING ON');
+		const user: IUser = await this.userRepo.findOne({ email });
+		console.log(user);
+		const passwordsMatch = await this.comparePassword(password, user.password);
+		if (!passwordsMatch) {
+			throw new CustomError(AuthErrorConstants.PasswordMismatch, 400);
 		}
-		// const passwordsMatch = await this.comparePassword(password, user.password);
-		// if (!passwordsMatch) {
-		// 	throw new CustomError(AuthErrorConstants.PasswordMismatch, 400);
-		// }
 
-		// const jwtUserModel: JwtSignModel = {
-		// 	id: user.id,
-		// 	name: user.name,
-		// 	email: user.email,
-		// 	tags: user.tags,
-		// 	realData: user.realData,
-		// };
+		const jwtUserModel: JwtSignModel = {
+			id: user.id,
+			name: user.name,
+			email: user.email,
+			tags: user.tags,
+			realData: user.realData,
+		};
 
-		// const token = this.signJWT(jwtUserModel);
-		// const result = this.verifyJWT(token);
+		const token = this.signJWT(jwtUserModel);
+		const result = this.verifyJWT(token);
 
-		// return {
-		// 	token,
-		// 	id: user.id,
-		// 	iat: result.iat,
-		// 	exp: result.exp,
-		// 	tags: user.tags,
-		// };
+		return {
+			token,
+			id: user.id,
+			iat: result.iat,
+			exp: result.exp,
+			tags: user.tags,
+		};
 	}
 
 	verifyJWT(token: string): JwtVerifyViewModel {

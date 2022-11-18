@@ -18,12 +18,23 @@ export default class UserRepository implements IRepository<IUser> {
 	}
 
 	async find(query: {}): Promise<IUser[]> {
+		console.log(query);
 		const users: IUser[] = await User.find(query);
 		if (!users || users.length === 0) {
 			throw new CustomError(UserErrorConstants.NotFound, 400);
 		}
 
 		return users;
+	}
+
+	async findOne(query: {}): Promise<IUser> {
+		console.log(query);
+		const user: IUser | null = await User.findOne(query);
+		if (!user) {
+			throw new CustomError(UserErrorConstants.NotFound, 400);
+		}
+
+		return user;
 	}
 
 	findFriend(friends: Friend[], chatId: string): Friend {

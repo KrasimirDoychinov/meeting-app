@@ -77,4 +77,4 @@ const UserSchema = new mongoose.Schema<IUser>({
 	chatNotifications: [String],
 });
 
-export const User = mongoose.model('U ser', UserSchema);
+export const User = mongoose.model('User', UserSchema);
