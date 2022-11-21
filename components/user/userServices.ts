@@ -1,10 +1,6 @@
 import { CustomError } from '../errors/customError';
 
-import {
-	FriendViewModel,
-	UserBaseModel,
-	UserFullViewModelModel,
-} from './models/output/outputModels';
+import { FriendViewModel, UserBaseModel, UserFullViewModelModel } from './models/output/outputModels';
 
 import { ChatServices } from '../chat/chatServices';
 import { io } from '../../app';
@@ -13,7 +9,7 @@ import { GlobalErrorConstants } from '../errors/errorConstants';
 import { CloudinaryHelper } from '../helpers/cloudinaryHelper';
 import { Friend, FriendNotification, IUser } from './models/baseModels';
 
-import UserRepository from './userRepository';
+import { UserRepository } from './userRepository';
 import { autoInjectable, injectable } from 'tsyringe';
 
 @injectable()
@@ -25,12 +21,7 @@ export class UserServices {
 		this.userRepo = userRepo!;
 	}
 
-	async setRealData(
-		id: string,
-		firstName: string,
-		lastName: string,
-		img: string
-	): Promise<boolean> {
+	async setRealData(id: string, firstName: string, lastName: string, img: string): Promise<boolean> {
 		const user = await this.userRepo.findById(id);
 
 		if (!firstName || !lastName || !img) {
@@ -68,10 +59,7 @@ export class UserServices {
 
 	// Friend requests
 	// currentUser sends request to userToFriend
-	async sendFriendRequest(
-		userToFriendId: string,
-		currentUserId: string
-	): Promise<boolean> {
+	async sendFriendRequest(userToFriendId: string, currentUserId: string): Promise<boolean> {
 		if (userToFriendId === currentUserId) {
 			throw new CustomError(UserErrorConstants.CannotFriendSelf, 400);
 		}
@@ -79,9 +67,7 @@ export class UserServices {
 		const currentUser: IUser = await this.userRepo.findById(currentUserId);
 		const friendUser: IUser = await this.userRepo.findById(userToFriendId);
 
-		const friendRequestSend = friendUser.friendNotifications.some(
-			(x: any) => x.friendId === currentUserId
-		);
+		const friendRequestSend = friendUser.friendNotifications.some((x: any) => x.friendId === currentUserId);
 		if (friendRequestSend) {
 			throw new CustomError(UserErrorConstants.FriendRequestAlreadySent, 400);
 		}
@@ -101,10 +87,7 @@ export class UserServices {
 	}
 
 	// currentUser accepts userToFriend and they become friends
-	async acceptFriendRequest(
-		userToFriendId: string,
-		currentUserId: string
-	): Promise<{ currentUser: IUser; friendUser: IUser }> {
+	async acceptFriendRequest(userToFriendId: string, currentUserId: string): Promise<{ currentUser: IUser; friendUser: IUser }> {
 		if (userToFriendId === currentUserId) {
 			throw new CustomError(UserErrorConstants.CannotFriendSelf, 400);
 		}
@@ -112,9 +95,7 @@ export class UserServices {
 		const currentUser: IUser = await this.userRepo.findById(currentUserId);
 		const friendUser: IUser = await this.userRepo.findById(userToFriendId);
 
-		const friendRequestSend = currentUser.friendNotifications.some(
-			(x: any) => x.friendId === userToFriendId
-		);
+		const friendRequestSend = currentUser.friendNotifications.some((x: any) => x.friendId === userToFriendId);
 
 		if (!friendRequestSend) {
 			throw new CustomError(UserErrorConstants.FriendRequestNotSent, 400);
@@ -124,12 +105,8 @@ export class UserServices {
 			throw new CustomError(UserErrorConstants.AlreadyFriends, 400);
 		}
 
-		currentUser.friendNotifications = currentUser.friendNotifications.filter(
-			(x: any) => x.friendId !== userToFriendId
-		);
-		friendUser.friendNotifications = friendUser.friendNotifications.filter(
-			(x: any) => x.friendId !== currentUserId
-		);
+		currentUser.friendNotifications = currentUser.friendNotifications.filter((x: any) => x.friendId !== userToFriendId);
+		friendUser.friendNotifications = friendUser.friendNotifications.filter((x: any) => x.friendId !== currentUserId);
 
 		await currentUser.save();
 		return {
@@ -138,11 +115,7 @@ export class UserServices {
 		};
 	}
 
-	async addFriends(
-		userA: IUser,
-		userB: IUser,
-		chatId: string
-	): Promise<boolean> {
+	async addFriends(userA: IUser, userB: IUser, chatId: string): Promise<boolean> {
 		if (userA.id === userB.id) {
 			throw new CustomError(UserErrorConstants.CannotFriendSelf, 400);
 		}
@@ -181,16 +154,10 @@ export class UserServices {
 	}
 
 	// Chat Notifications
-	async sendChatNotification(
-		currentUserId: string,
-		chatId: string
-	): Promise<any> {
+	async sendChatNotification(currentUserId: string, chatId: string): Promise<any> {
 		const user: IUser = await this.userRepo.findById(currentUserId);
 
-		const currentFriend: Friend = this.userRepo.findFriend(
-			user.friends,
-			chatId
-		);
+		const currentFriend: Friend = this.userRepo.findFriend(user.friends, chatId);
 
 		currentFriend.notifications += 1;
 		await user.save();
@@ -202,10 +169,7 @@ export class UserServices {
 		};
 	}
 
-	async removeChatNotificationsForChat(
-		chatId: string,
-		userId: string
-	): Promise<boolean> {
+	async removeChatNotificationsForChat(chatId: string, userId: string): Promise<boolean> {
 		const user: IUser = await this.userRepo.findById(userId);
 		if (!chatId) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
@@ -223,19 +187,12 @@ export class UserServices {
 		const user: IUser = await this.userRepo.findById(id);
 
 		const notifications =
-			user.friends.length === 0
-				? 0
-				: user.friends
-						.map((x: any) => x.notifications)
-						.reduce((a: number, b: number) => a + b);
+			user.friends.length === 0 ? 0 : user.friends.map((x: any) => x.notifications).reduce((a: number, b: number) => a + b);
 
 		return notifications;
 	}
 
-	async changeChatAnonForUserInChat(
-		chatId: string,
-		id: string
-	): Promise<boolean> {
+	async changeChatAnonForUserInChat(chatId: string, id: string): Promise<boolean> {
 		const user: IUser = await this.userRepo.findById(id);
 
 		user.friends.forEach((x: any) => {
@@ -266,11 +223,7 @@ export class UserServices {
 		return result;
 	}
 
-	async allWithTags(
-		tags: string,
-		email: string,
-		userId: string
-	): Promise<UserBaseModel[]> {
+	async allWithTags(tags: string, email: string, userId: string): Promise<UserBaseModel[]> {
 		const users = await this.userRepo.find({
 			$and: [
 				{ tags: { $regex: tags } },
@@ -293,8 +246,7 @@ export class UserServices {
 					tags: x.tags,
 					gender: x.gender,
 					friendRequestSent:
-						x.friendNotifications.some((x: any) => x.friendId === userId) ||
-						x.friends.some((x: Friend) => x.friendId === userId),
+						x.friendNotifications.some((x: any) => x.friendId === userId) || x.friends.some((x: Friend) => x.friendId === userId),
 					imageUrl: await CloudinaryHelper.getAvatar(),
 				};
 				return model;
@@ -311,13 +263,9 @@ export class UserServices {
 			users.friends.map(async (x: any) => {
 				const model: FriendViewModel = {
 					id: x.friendId,
-					name: x.isAnon
-						? x.name
-						: `${x.realData.firstName} ${x.realData.lastName}`,
+					name: x.isAnon ? x.name : `${x.realData.firstName} ${x.realData.lastName}`,
 					gender: x.gender,
-					imageUrl: x.isAnon
-						? await CloudinaryHelper.getAvatar()
-						: x.realData.imageUrl,
+					imageUrl: x.isAnon ? await CloudinaryHelper.getAvatar() : x.realData.imageUrl,
 					notificationCount: x.notifications,
 					chatId: x.chatId,
 				};

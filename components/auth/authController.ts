@@ -1,5 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 import { autoInjectable } from 'tsyringe';
+import { Repository } from '../global/repository';
+import { IUser } from '../user/models/baseModels';
 
 import { AuthServices } from './authServices';
 

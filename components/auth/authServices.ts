@@ -1,13 +1,6 @@
-import {
-	AuthViewModel,
-	JwtVerifyViewModel,
-} from './models/output/outputModels';
+import { AuthViewModel, JwtVerifyViewModel } from './models/output/outputModels';
 
-import {
-	AuthLoginModel,
-	AuthRegisterModel,
-	JwtSignModel,
-} from './models/input/inputModels';
+import { AuthLoginModel, AuthRegisterModel, JwtSignModel } from './models/input/inputModels';
 
 import { User } from '../user/models/User';
 
@@ -22,8 +15,7 @@ import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { IUser } from '../user/models/baseModels';
 import { autoInjectable, injectable } from 'tsyringe';
-import UserRepository from '../user/userRepository';
-import e from 'express';
+import { UserRepository } from '../user/userRepository';
 
 @injectable()
 @autoInjectable()
@@ -34,12 +26,7 @@ export class AuthServices {
 		this.userRepo = userRepo!;
 	}
 
-	async register({
-		name,
-		email,
-		password,
-		compare,
-	}: AuthRegisterModel): Promise<AuthViewModel> {
+	async register({ name, email, password, compare }: AuthRegisterModel): Promise<AuthViewModel> {
 		if (!name || !email || !password || !compare) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
@@ -72,8 +59,7 @@ export class AuthServices {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
 
-		const user: IUser = await this.userRepo.findOne({ email });
-
+		const user: IUser = await this.userRepo.findOne({ email: 'asd' });
 		const passwordsMatch = await this.comparePassword(password, user.password);
 		if (!passwordsMatch) {
 			throw new CustomError(AuthErrorConstants.PasswordMismatch, 400);
@@ -124,10 +110,7 @@ export class AuthServices {
 		});
 	}
 
-	private async comparePassword(
-		password: string,
-		hash: string
-	): Promise<boolean> {
+	private async comparePassword(password: string, hash: string): Promise<boolean> {
 		return await bcrypt.compare(password, hash);
 	}
 }
