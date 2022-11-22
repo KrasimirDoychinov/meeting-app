@@ -1,5 +1,5 @@
 import { RealData } from '../../user/models/baseModels';
-import * as mongoose from 'mongoose';
+import { BaseEntity } from '../../database/baseEntity';
 
 export interface ChatBaseModel {
 	id: string;
@@ -21,7 +21,7 @@ export interface ChatMessage {
 	date?: Date;
 }
 
-export interface IChat extends mongoose.Document {
+export interface IChat extends BaseEntity {
 	personA: ChatPerson;
 	personB: ChatPerson;
 	messages: [ChatMessage];

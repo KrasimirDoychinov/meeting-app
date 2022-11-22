@@ -1,5 +1,5 @@
 import { CustomError } from '../errors/customError';
-import { IPost, Post } from './models/Post';
+import { Post } from './models/Post';
 import { PostStatus } from './models/enums/PostStatusEnums';
 import { PostUpdateModel } from './models/input/PostUpdateModel';
 import { PostReturnModel } from './models/output/PostReturnModel';
@@ -7,6 +7,7 @@ import { GlobalErrorConstants } from '../errors/errorConstants';
 import { CloudinaryHelper } from '../helpers/cloudinaryHelper';
 import { PostRepository } from './postRepository';
 import { autoInjectable, injectable } from 'tsyringe';
+import { IPost } from './models/baseModels';
 
 @injectable()
 @autoInjectable()
@@ -17,7 +18,13 @@ export class PostServices {
 		this.postRepo = postRepo!;
 	}
 
-	async create(creatorId: string, description: string, tags: string[], img?: string, status: PostStatus = 0): Promise<IPost> {
+	async create(
+		creatorId: string,
+		description: string,
+		tags: string[],
+		img?: string,
+		status: PostStatus = 0
+	): Promise<IPost> {
 		if (!creatorId || !description || !tags) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}

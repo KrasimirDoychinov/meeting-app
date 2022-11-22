@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import { BaseEntity } from '../../database/baseEntity';
 import { Gender } from '../enums/genderEnums';
 
 export interface Friend {
@@ -26,7 +26,7 @@ export interface RealData {
 	imageUrl: string;
 }
 
-export interface IUser extends mongoose.Document {
+export interface IUser extends BaseEntity {
 	name: string;
 	email: string;
 	password: string;

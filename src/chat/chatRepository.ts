@@ -1,5 +1,5 @@
 import { injectable } from 'tsyringe';
-import { Repository } from '../global/repository';
+import { Repository } from '../database/repository';
 import { IChat } from './models/baseModels';
 import { ChatSchema } from './models/Chat';
 

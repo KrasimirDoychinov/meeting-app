@@ -1,6 +1,7 @@
 import { injectable } from 'tsyringe';
-import { Repository } from '../global/repository';
-import { IPost, PostSchema } from './models/Post';
+import { Repository } from '../database/repository';
+import { IPost } from './models/baseModels';
+import { PostSchema } from './models/Post';
 
 @injectable()
 export class PostRepository extends Repository<IPost> {

@@ -2,7 +2,7 @@ import 'express-async-errors';
 
 import { injectable } from 'tsyringe';
 import { CustomError } from '../errors/customError';
-import { Repository } from '../global/repository';
+import { Repository } from '../database/repository';
 import { UserErrorConstants } from './errors/errorConstants';
 import { Friend, IUser } from './models/baseModels';
 import { UserSchema } from './models/User';

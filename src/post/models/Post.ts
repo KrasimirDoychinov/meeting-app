@@ -1,13 +1,5 @@
 import mongoose from 'mongoose';
-
-export interface IPost extends mongoose.Document {
-	creatorId: string;
-	description: string;
-	createdOn: Date;
-	likes: string[];
-	tags: string[];
-	imgUrl: string;
-}
+import { IPost } from './baseModels';
 
 export const PostSchema = new mongoose.Schema<IPost>(
 	{
