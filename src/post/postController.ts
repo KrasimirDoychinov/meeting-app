@@ -1,5 +1,5 @@
 import { autoInjectable } from 'tsyringe';
-import { PostUpdateModel } from './models/PostUpdateModel';
+import { PostUpdateModel } from './models/input/PostUpdateModel';
 import { PostServices } from './postServices';
 
 @autoInjectable()

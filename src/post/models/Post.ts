@@ -9,7 +9,7 @@ export interface IPost extends mongoose.Document {
 	imgUrl: string;
 }
 
-const PostSchema = new mongoose.Schema<IPost>(
+export const PostSchema = new mongoose.Schema<IPost>(
 	{
 		creatorId: {
 			type: String,
@@ -25,11 +25,6 @@ const PostSchema = new mongoose.Schema<IPost>(
 			type: Date,
 			default: new Date(),
 		},
-		// status: {
-		// 	type: Number,
-		// 	required: true,
-		// 	enum: [PostStatus.Public, PostStatus.Private, PostStatus.Friends],
-		// },
 		likes: [String],
 		tags: [String],
 		imgUrl: String,

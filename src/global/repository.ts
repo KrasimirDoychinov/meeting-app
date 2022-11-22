@@ -11,16 +11,18 @@ export interface IRepository<TReturn extends Document> {
 
 export class Repository<TReturn extends Document> implements IRepository<TReturn> {
 	private model: string;
-	constructor(model: string) {
+	private schema: any;
+	constructor(model: string, schema) {
 		this.model = model;
+		this.schema = schema;
 	}
 
 	async create(entity: {}): Promise<TReturn extends Document<any, any, any> ? any : any> {
-		return await mongoose.model(this.model).create(entity);
+		return await mongoose.model(this.model, this.schema).create(entity);
 	}
 
 	async findById(id: string): Promise<TReturn extends Document<any, any, any> ? any : any> {
-		const entity: TReturn | null = await mongoose.model(this.model).findById(id);
+		const entity: TReturn | null = await mongoose.model(this.model, this.schema).findById(id);
 		if (!entity) {
 			throw new CustomError(GlobalErrorConstants.NotFound, 400);
 		}
@@ -28,7 +30,7 @@ export class Repository<TReturn extends Document> implements IRepository<TReturn
 	}
 
 	async find(query: {}): Promise<(TReturn extends Document<any, any, any> ? any : any)[]> {
-		const entities: TReturn[] | null = await mongoose.model(this.model).find(query);
+		const entities: TReturn[] | null = await mongoose.model(this.model, this.schema).find(query);
 		if (entities.length <= 0) {
 			throw new CustomError(GlobalErrorConstants.NotFound, 400);
 		}
@@ -36,7 +38,7 @@ export class Repository<TReturn extends Document> implements IRepository<TReturn
 	}
 
 	async findOne(query: {}): Promise<TReturn extends Document<any, any, any> ? any : any> {
-		const entity: TReturn | null = await mongoose.model(this.model).findOne(query);
+		const entity: TReturn | null = await mongoose.model(this.model, this.schema).findOne(query);
 		if (!entity) {
 			throw new CustomError(GlobalErrorConstants.NotFound, 400);
 		}

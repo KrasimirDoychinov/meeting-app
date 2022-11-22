@@ -1,4 +1,4 @@
-import { PostStatus } from './PostStatusEnums';
+import { PostStatus } from '../enums/PostStatusEnums';
 
 export interface PostReturnModel {
 	description: string;

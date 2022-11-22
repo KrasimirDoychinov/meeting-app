@@ -5,11 +5,12 @@ import { CustomError } from '../errors/customError';
 import { Repository } from '../global/repository';
 import { UserErrorConstants } from './errors/errorConstants';
 import { Friend, IUser } from './models/baseModels';
+import { UserSchema } from './models/User';
 
 @injectable()
 export default class UserRepository extends Repository<IUser> {
 	constructor() {
-		super('User');
+		super('User', UserSchema);
 	}
 
 	findFriend(friends: Friend[], chatId: string): Friend {

@@ -45,7 +45,7 @@ const FriendNotification = new mongoose.Schema({
 	},
 });
 
-const UserSchema = new mongoose.Schema<IUser>({
+export const UserSchema = new mongoose.Schema<IUser>({
 	name: {
 		type: String,
 		required: [true, 'Please provide a name'],

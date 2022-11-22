@@ -1,8 +1,8 @@
 import { CustomError } from '../errors/customError';
 import { IPost, Post } from './models/Post';
-import { PostStatus } from './models/PostStatusEnums';
-import { PostUpdateModel } from './models/PostUpdateModel';
-import { PostReturnModel } from './models/PostReturnModel';
+import { PostStatus } from './models/enums/PostStatusEnums';
+import { PostUpdateModel } from './models/input/PostUpdateModel';
+import { PostReturnModel } from './models/output/PostReturnModel';
 import { GlobalErrorConstants } from '../errors/errorConstants';
 import { CloudinaryHelper } from '../helpers/cloudinaryHelper';
 import { PostRepository } from './postRepository';

@@ -39,7 +39,7 @@ const PersonSchema = new mongoose.Schema({
 	},
 });
 
-const ChatSchema = new mongoose.Schema<IChat>(
+export const ChatSchema = new mongoose.Schema<IChat>(
 	{
 		personA: PersonSchema,
 		personB: PersonSchema,
