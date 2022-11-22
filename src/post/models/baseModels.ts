@@ -1,7 +1,11 @@
 import { BaseEntity } from '../../database/baseEntity';
 
 export interface IPost extends BaseEntity {
-	creatorId: string;
+	creator: {
+		id: string;
+		name: string;
+		imageUrl: string;
+	};
 	description: string;
 	createdOn: Date;
 	likes: string[];

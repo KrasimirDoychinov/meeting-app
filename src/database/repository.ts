@@ -19,6 +19,7 @@ export class Repository<TReturn extends Document> {
 		const entity: TReturn | null = await mongoose
 			.model(this.model, this.schema)
 			.findById(id);
+
 		if (!entity) {
 			throw new CustomError(GlobalErrorConstants.NotFound, 400);
 		}
@@ -29,6 +30,7 @@ export class Repository<TReturn extends Document> {
 		const entities: TReturn[] | null = await mongoose
 			.model(this.model, this.schema)
 			.find(query);
+
 		if (entities.length <= 0) {
 			throw new CustomError(GlobalErrorConstants.NotFound, 400);
 		}
@@ -39,6 +41,7 @@ export class Repository<TReturn extends Document> {
 		const entity: TReturn | null = await mongoose
 			.model(this.model, this.schema)
 			.findOne(query);
+
 		if (!entity) {
 			throw new CustomError(GlobalErrorConstants.NotFound, 400);
 		}

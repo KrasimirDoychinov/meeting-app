@@ -1,12 +1,24 @@
 import mongoose from 'mongoose';
 import { IPost } from './baseModels';
 
+const CreatorSchema = new mongoose.Schema({
+	id: {
+		type: String,
+		required: true,
+	},
+	name: {
+		type: String,
+		required: true,
+	},
+	imageUrl: {
+		type: String,
+		required: true,
+	},
+});
+
 export const PostSchema = new mongoose.Schema<IPost>(
 	{
-		creatorId: {
-			type: String,
-			required: true,
-		},
+		creator: CreatorSchema,
 		description: {
 			type: String,
 			required: true,
@@ -19,7 +31,7 @@ export const PostSchema = new mongoose.Schema<IPost>(
 		},
 		likes: [String],
 		tags: [String],
-		imgUrl: String,
+		imageUrl: String,
 	},
 	{ collection: 'post' }
 );

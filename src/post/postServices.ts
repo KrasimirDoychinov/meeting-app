@@ -8,6 +8,7 @@ import { CloudinaryHelper } from '../helpers/cloudinaryHelper';
 import { PostRepository } from './postRepository';
 import { autoInjectable, injectable } from 'tsyringe';
 import { IPost } from './models/baseModels';
+import { IUser } from '../user/models/baseModels';
 
 @injectable()
 @autoInjectable()
@@ -19,18 +20,24 @@ export class PostServices {
 	}
 
 	async create(
-		creatorId: string,
+		user: IUser,
 		description: string,
 		tags: string[],
 		img?: string,
 		status: PostStatus = 0
 	) {
-		if (!creatorId || !description || !tags) {
+		if (!user.id || !description || !tags) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
 
+		const avatarUrl = await CloudinaryHelper.getAvatar();
+		console.log(avatarUrl);
 		const post: IPost = await this.postRepo.create({
-			creatorId,
+			creator: {
+				id: user.id,
+				name: user.name,
+				imageUrl: avatarUrl,
+			},
 			description,
 			tags,
 			status,
@@ -38,9 +45,9 @@ export class PostServices {
 
 		if (img) {
 			const imgName = `${post._id}_p ost`;
-			const imgUrl = await CloudinaryHelper.uploadImage(img, imgName);
+			const imageUrl = await CloudinaryHelper.uploadImage(img, imgName);
 
-			post.imgUrl = imgUrl;
+			post.imageUrl = imageUrl;
 			await post.save();
 		}
 
@@ -48,12 +55,15 @@ export class PostServices {
 	}
 
 	async allByTags(creatorId: string, tags: string) {
-		const posts: IPost[] = await this.postRepo.find({
-			$and: [{ tags: { $regex: tags } }, { creatorId: { $not: { $eq: creatorId } } }],
-		});
+		const posts: IPost[] = await this.postRepo.findAllWithTags(creatorId, tags);
 
 		const result = posts.map((x: IPost) => {
 			const model: PostReturnModel = {
+				creator: {
+					id: x.creator.id,
+					name: x.creator.name,
+					imageUrl: x.creator.imageUrl,
+				},
 				description: x.description,
 				imageUrl: x.imageUrl,
 				likes: x.likes,

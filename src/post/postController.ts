@@ -1,27 +1,30 @@
 import { autoInjectable } from 'tsyringe';
+import UserRepository from '../user/userRepository';
 import { PostUpdateModel } from './models/input/PostUpdateModel';
 import { PostServices } from './postServices';
 
 @autoInjectable()
 export default class PostController {
 	private postService: PostServices;
+	private userRepo: UserRepository;
 
-	constructor(postService?: PostServices) {
+	constructor(postService?: PostServices, userRepo?: UserRepository) {
 		this.postService = postService!;
+		this.userRepo = userRepo!;
 	}
 
 	createPost = async (req: any, res: any) => {
 		const userId = res.user.id;
 		const { tags, description, img } = req.body;
 
-		const post = await this.postService.create(userId, description, tags, img);
+		const user = await this.userRepo.findById(userId);
+		const post = await this.postService.create(user, description, tags, img);
 		res.status(201).json(post);
 	};
 
 	allByTags = async (req: any, res: any) => {
 		const creatorId = res.user.id;
 		const tags = req.query.tags;
-		console.log(creatorId, tags);
 
 		const posts = await this.postService.allByTags(creatorId, tags);
 		res.status(200).json(posts);

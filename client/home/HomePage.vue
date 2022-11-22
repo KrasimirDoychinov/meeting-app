@@ -110,11 +110,27 @@
 				v-for="(post, index) in posts"
 				:key="index"
 			>
-				{{ post.description }}
-				<img
-					src="{{post.imageUrl}}"
-					alt=""
-				/>
+				<div class="creator">
+					<img
+						class="avatar-img"
+						:src="post.creator.imageUrl"
+						alt=""
+					/>
+					<h5>
+						{{ post.creator.name }}
+					</h5>
+				</div>
+				<div class="details">
+					<h5 :class="!post.imageUrl ? 'margin' : ''">
+						{{ post.description }}
+					</h5>
+					<img
+						v-if="post.imageUrl"
+						class="post-img"
+						:src="post.imageUrl"
+						alt=""
+					/>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -248,7 +264,53 @@
 	}
 
 	.posts {
+		margin-top: 2em;
+		width: 90%;
 		height: 100%;
+		gap: 5em;
+
+		.post {
+			border: 1px solid $dark-gray;
+			display: flex;
+			gap: 1em;
+			background: $gray;
+
+			.creator {
+				padding: 1em 0 0 2em;
+				display: flex;
+				flex-flow: row;
+				gap: 1em;
+				justify-content: start;
+
+				h5 {
+					font-size: 1em;
+				}
+
+				.avatar-img {
+					width: 50px;
+					height: 50px;
+				}
+			}
+
+			.details {
+				display: flex;
+				align-items: flex-start;
+
+				h5 {
+					padding: 0.5em 0 0.5em 1em;
+					font-size: 1.3em;
+				}
+
+				.margin {
+					margin-bottom: 1em;
+				}
+				.post-img {
+					position: relative;
+					height: 45vh;
+					width: 100%;
+				}
+			}
+		}
 	}
 
 	.open-input {
