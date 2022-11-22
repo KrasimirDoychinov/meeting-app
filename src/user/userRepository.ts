@@ -7,7 +7,7 @@ import { UserErrorConstants } from './errors/errorConstants';
 import { Friend, IUser } from './models/baseModels';
 
 @injectable()
-export class UserRepository extends Repository<IUser> {
+export default class UserRepository extends Repository<IUser> {
 	constructor() {
 		super('User');
 	}

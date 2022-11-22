@@ -2,8 +2,6 @@ import { AuthViewModel, JwtVerifyViewModel } from './models/output/outputModels'
 
 import { AuthLoginModel, AuthRegisterModel, JwtSignModel } from './models/input/inputModels';
 
-import { User } from '../user/models/User';
-
 import { CustomError } from '../errors/customError';
 
 import { GlobalErrorConstants } from '../errors/errorConstants';
@@ -15,7 +13,7 @@ import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { IUser } from '../user/models/baseModels';
 import { autoInjectable, injectable } from 'tsyringe';
-import { UserRepository } from '../user/userRepository';
+import UserRepository from '../user/userRepository';
 
 @injectable()
 @autoInjectable()
@@ -36,7 +34,7 @@ export class AuthServices {
 		}
 
 		const hash = await this.hashPassword(password);
-		const user = await User.create({
+		const user = await this.userRepo.create({
 			name,
 			email,
 			password: hash,

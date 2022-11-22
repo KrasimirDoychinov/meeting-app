@@ -8,7 +8,7 @@ import { GlobalErrorConstants } from '../errors/errorConstants';
 import { CloudinaryHelper } from '../helpers/cloudinaryHelper';
 import { Friend, FriendNotification, IUser } from './models/baseModels';
 
-import { UserRepository } from './userRepository';
+import UserRepository from './userRepository';
 import { autoInjectable, injectable } from 'tsyringe';
 
 @injectable()
