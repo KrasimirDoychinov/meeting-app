@@ -3,13 +3,13 @@ import 'reflect-metadata';
 require('dotenv').config();
 import 'express-async-errors';
 
-import { authRouter } from './components/auth/authRoutes';
-import { chatRouter } from './components/chat/chatRoutes';
-import { commentRouter } from './components/comment/commentRoutes';
-import { IoHelper } from './components/helpers/socketHelper.io';
-import { postRouter } from './components/post/postRoutes';
-import { tagRouter } from './components/tag/tagRoutes';
-import { userRouter } from './components/user/userRoutes';
+import { authRouter } from './src/auth/authRoutes';
+import { chatRouter } from './src/chat/chatRoutes';
+import { commentRouter } from './src/comment/commentRoutes';
+import { IoHelper } from './src/helpers/socketHelper.io';
+import { postRouter } from './src/post/postRoutes';
+import { tagRouter } from './src/tag/tagRoutes';
+import { userRouter } from './src/user/userRoutes';
 import { connectDB } from './connectDB';
 
 import cors from 'cors';
@@ -23,7 +23,7 @@ const server = http.createServer(app);
 
 import { Server } from 'socket.io';
 import cloudinary from 'cloudinary';
-import { errorHandler } from './components/middlewares/middlewares';
+import { errorHandler } from './src/middlewares/middlewares';
 
 export const io = new Server(server, {
 	cors: {
@@ -63,13 +63,10 @@ const start = async () => {
 	try {
 		const port = process.env.PORT || 3000;
 		const socketPort = process.env.SOCKET_PORT || 3001;
-		const mongoUri =
-			process.env.MONGO_URI || 'mongodb://localhost:27017/facebook-clone';
+		const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/facebook-clone';
 		await connectDB(mongoUri);
 		app.listen(port, () => console.log(`Server listening on port: ${port}`));
-		server.listen(socketPort, () =>
-			console.log(`Web socket server listening on port: ${3001}`)
-		);
+		server.listen(socketPort, () => console.log(`Web socket server listening on port: ${3001}`));
 	} catch (error) {
 		console.log(error);
 	}

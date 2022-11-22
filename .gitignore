@@ -1,4 +1,4 @@
 node_modules
-build
-build/app.js
-build/connectDB.js
+dist
+dist/app.js
+dist/connectDB.js

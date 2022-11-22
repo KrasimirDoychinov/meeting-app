@@ -59,7 +59,7 @@ export class AuthServices {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
 
-		const user: IUser = await this.userRepo.findOne({ email: 'asd' });
+		const user: IUser = await this.userRepo.findOne({ email });
 		const passwordsMatch = await this.comparePassword(password, user.password);
 		if (!passwordsMatch) {
 			throw new CustomError(AuthErrorConstants.PasswordMismatch, 400);

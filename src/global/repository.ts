@@ -1,4 +1,4 @@
-import mongoose, { Document, Model } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import { CustomError } from '../errors/customError';
 import { GlobalErrorConstants } from '../errors/errorConstants';
 

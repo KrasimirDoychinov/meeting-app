@@ -2,7 +2,6 @@ import { CustomError } from '../errors/customError';
 
 import { FriendViewModel, UserBaseModel, UserFullViewModelModel } from './models/output/outputModels';
 
-import { ChatServices } from '../chat/chatServices';
 import { io } from '../../app';
 import { UserErrorConstants } from './errors/errorConstants';
 import { GlobalErrorConstants } from '../errors/errorConstants';

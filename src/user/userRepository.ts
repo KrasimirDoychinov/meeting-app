@@ -1,5 +1,4 @@
 import 'express-async-errors';
-import mongoose from 'mongoose';
 
 import { injectable } from 'tsyringe';
 import { CustomError } from '../errors/customError';
