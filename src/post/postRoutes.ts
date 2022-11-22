@@ -6,8 +6,8 @@ export const postRouter = express.Router();
 
 const controller = new PostController();
 
+postRouter.get('/', authorize, controller.allByTags);
 postRouter.post('/', authorize, controller.createPost);
-postRouter.get('/', authorize, controller.allByCreator);
 postRouter.post('/like/:id', authorize, controller.likePost);
 postRouter.delete('/:id', authorize, controller.deletePost);
 postRouter.put('/:id', authorize, controller.updatePost);

@@ -24,7 +24,7 @@ export class PostServices {
 		tags: string[],
 		img?: string,
 		status: PostStatus = 0
-	): Promise<IPost> {
+	) {
 		if (!creatorId || !description || !tags) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
@@ -47,17 +47,15 @@ export class PostServices {
 		return post;
 	}
 
-	async allByCreator(creatorId: string): Promise<PostReturnModel[]> {
-		if (!creatorId) {
-			throw new CustomError('CreatorId is missing', 400);
-		}
+	async allByTags(creatorId: string, tags: string) {
+		const posts: IPost[] = await this.postRepo.find({
+			$and: [{ tags: { $regex: tags } }, { creatorId: { $not: { $eq: creatorId } } }],
+		});
 
-		const posts: IPost[] = await this.postRepo.find({ creatorId });
-		const result = posts.map((x: any) => {
+		const result = posts.map((x: IPost) => {
 			const model: PostReturnModel = {
 				description: x.description,
-				mediaUrl: x.mediaUrl,
-				status: x.status,
+				imageUrl: x.imageUrl,
 				likes: x.likes,
 			};
 			return model;
@@ -66,11 +64,11 @@ export class PostServices {
 		return result;
 	}
 
-	async byId(id: string): Promise<IPost> {
+	async byId(id: string) {
 		return await this.postRepo.findById(id);
 	}
 
-	async like(postId: string, creatorId: string): Promise<number> {
+	async like(postId: string, creatorId: string) {
 		if (!postId || !creatorId) {
 			throw new CustomError("Id's is missing", 400);
 		}
@@ -87,7 +85,7 @@ export class PostServices {
 		return post.likes.length;
 	}
 
-	async delete(postId: string): Promise<boolean> {
+	async delete(postId: string) {
 		if (!postId) {
 			throw new CustomError('PostId is missing', 400);
 		}
@@ -96,7 +94,7 @@ export class PostServices {
 		return result.acknowledged;
 	}
 
-	async update(postId: string, newPost: PostUpdateModel): Promise<boolean> {
+	async update(postId: string, newPost: PostUpdateModel) {
 		if (!postId) {
 			throw new CustomError('PostId is missing', 400);
 		}

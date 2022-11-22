@@ -1,8 +1,5 @@
-import { PostStatus } from '../enums/PostStatusEnums';
-
 export interface PostReturnModel {
 	description: string;
-	mediaUrl: string;
+	imageUrl: string;
 	likes: string[];
-	status: PostStatus;
 }

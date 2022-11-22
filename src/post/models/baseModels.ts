@@ -6,5 +6,5 @@ export interface IPost extends BaseEntity {
 	createdOn: Date;
 	likes: string[];
 	tags: string[];
-	imgUrl: string;
+	imageUrl: string;
 }

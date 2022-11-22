@@ -18,10 +18,12 @@ export default class PostController {
 		res.status(201).json(post);
 	};
 
-	allByCreator = async (req: any, res: any) => {
+	allByTags = async (req: any, res: any) => {
 		const creatorId = res.user.id;
+		const tags = req.query.tags;
+		console.log(creatorId, tags);
 
-		const posts = await this.postService.allByCreator(creatorId);
+		const posts = await this.postService.allByTags(creatorId, tags);
 		res.status(200).json(posts);
 	};
 

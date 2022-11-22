@@ -103,8 +103,20 @@
 		</div>
 		<div
 			@click="focusCreatePost(false)"
-			class="test"
-		></div>
+			class="posts"
+		>
+			<div
+				class="post"
+				v-for="(post, index) in posts"
+				:key="index"
+			>
+				{{ post.description }}
+				<img
+					src="{{post.imageUrl}}"
+					alt=""
+				/>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -120,6 +132,8 @@
 	const file = ref({});
 	const users = ref([]);
 	const postCreationFocus = ref(false);
+
+	const posts = ref([]);
 
 	const userTags = ref(store.state.tags);
 	const selectedTags = ref([]);
@@ -193,6 +207,8 @@
 		users.value = await store.dispatch('allUsersByTag', {
 			tags: store.state.tags,
 		});
+
+		posts.value = await store.dispatch('allPostsWithTags', { tags: store.state.tags });
 	});
 </script>
 
@@ -231,7 +247,7 @@
 		}
 	}
 
-	.test {
+	.posts {
 		height: 100%;
 	}
 

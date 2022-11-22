@@ -95,12 +95,9 @@ export default createStore({
 			return response.data;
 		},
 		async allUsersByTag({ state, getters }, { tags }) {
-			const response = await axios.get(
-				state.host + `/user/?tags=${tags.join('|')}`,
-				{
-					headers: getters.getHeaders,
-				}
-			);
+			const response = await axios.get(state.host + `/user/?tags=${tags.join('|')}`, {
+				headers: getters.getHeaders,
+			});
 			return response.data;
 		},
 		async friendRequestsByUser({ state, getters, commit }) {
@@ -169,19 +166,13 @@ export default createStore({
 			return response.data;
 		},
 		async chatNotificationsByUser({ state, getters }) {
-			const response = await axios.get(
-				state.host + '/user/notifications/chat',
-				{
-					headers: getters.getHeaders,
-				}
-			);
+			const response = await axios.get(state.host + '/user/notifications/chat', {
+				headers: getters.getHeaders,
+			});
 
 			return response.data;
 		},
-		async removeChatNotificationsByChatId(
-			{ state, getters, commit },
-			{ count, chatId }
-		) {
+		async removeChatNotificationsByChatId({ state, getters, commit }, { count, chatId }) {
 			const response = await axios.delete(
 				state.host + `/user/notifications/chat/${chatId}`,
 				{
@@ -216,6 +207,14 @@ export default createStore({
 				}
 			);
 
+			return response.data;
+		},
+		async allPostsWithTags({ state, getters }, { tags }) {
+			const response = await axios.get(state.host + `/post?tags=${tags.join('|')}`, {
+				headers: getters.getHeaders,
+			});
+
+			console.log(response.data);
 			return response.data;
 		},
 	},
