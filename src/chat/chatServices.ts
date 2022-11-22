@@ -26,16 +26,11 @@ export class ChatServices {
 		const personA = await this.userService.byId(personAId);
 		const personB = await this.userService.byId(personBId);
 
-		const chat: IChat = await Chat.create({ personA, personB });
+		const chat: IChat = await this.chatRepo.create({ personA, personB });
 		return chat;
 	}
 
-	async createMessage({
-		chatId,
-		senderId,
-		receiverId,
-		content,
-	}: ChatMessageModel): Promise<ChatMessage> {
+	async createMessage({ chatId, senderId, receiverId, content }: ChatMessageModel): Promise<ChatMessage> {
 		const chat: IChat | null = await this.chatRepo.findById(chatId);
 		if (!chat) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
@@ -59,11 +54,7 @@ export class ChatServices {
 	}
 
 	// Retrieve
-	async byId({
-		chatId,
-		currentUserId,
-		friendUserId,
-	}: ChatInput): Promise<ChatViewModel> {
+	async byId({ chatId, currentUserId, friendUserId }: ChatInput): Promise<ChatViewModel> {
 		if (currentUserId === friendUserId) {
 			throw new CustomError(GlobalErrorConstants.FieldsAreEqual, 400);
 		}
@@ -73,10 +64,8 @@ export class ChatServices {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
 
-		const currentUser =
-			chat.personA.id === currentUserId ? chat.personA : chat.personB;
-		const friendUser =
-			chat.personA.id === friendUserId ? chat.personA : chat.personB;
+		const currentUser = chat.personA.id === currentUserId ? chat.personA : chat.personB;
+		const friendUser = chat.personA.id === friendUserId ? chat.personA : chat.personB;
 
 		return this.buildChatModel(chat, currentUser, friendUser);
 	}
@@ -94,12 +83,7 @@ export class ChatServices {
 
 		this.changeCorrectPersonAnonStatus(chat, userId);
 
-		if (
-			this.arePeopleAgreed(
-				chat.personA.changeAnonAgree,
-				chat.personB.changeAnonAgree
-			)
-		) {
+		if (this.arePeopleAgreed(chat.personA.changeAnonAgree, chat.personB.changeAnonAgree)) {
 			await this.changeAnon(chat);
 		}
 
@@ -108,16 +92,8 @@ export class ChatServices {
 	}
 
 	async changeAnon(chat: IChat): Promise<boolean> {
-		if (
-			!this.arePeopleAgreed(
-				chat.personA.changeAnonAgree,
-				chat.personB.changeAnonAgree
-			)
-		) {
-			throw new CustomError(
-				"Both parties haven't agreed to change the chat",
-				400
-			);
+		if (!this.arePeopleAgreed(chat.personA.changeAnonAgree, chat.personB.changeAnonAgree)) {
+			throw new CustomError("Both parties haven't agreed to change the chat", 400);
 		}
 
 		chat.isAnon = false;
@@ -125,14 +101,8 @@ export class ChatServices {
 
 		await this.userService.sendChatNotification(chat.personA.id, chat.id);
 		await this.userService.sendChatNotification(chat.personB.id, chat.id);
-		await this.userService.changeChatAnonForUserInChat(
-			chat.id,
-			chat.personA.id
-		);
-		await this.userService.changeChatAnonForUserInChat(
-			chat.id,
-			chat.personB.id
-		);
+		await this.userService.changeChatAnonForUserInChat(chat.id, chat.personA.id);
+		await this.userService.changeChatAnonForUserInChat(chat.id, chat.personB.id);
 		return true;
 	}
 
@@ -176,10 +146,7 @@ export class ChatServices {
 		return model;
 	}
 
-	private arePeopleAgreed(
-		personAAgree: boolean,
-		personBAgree: boolean
-	): boolean {
+	private arePeopleAgreed(personAAgree: boolean, personBAgree: boolean): boolean {
 		return personAAgree && personBAgree;
 	}
 

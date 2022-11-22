@@ -1,40 +1,50 @@
+import { autoInjectable } from 'tsyringe';
 import { PostUpdateModel } from './models/PostUpdateModel';
 import { PostServices } from './postServices';
 
-export const createPost = async (req: any, res: any) => {
-	const userId = res.user.id;
-	const { tags, description, img } = req.body;
+@autoInjectable()
+export default class PostController {
+	private postService: PostServices;
 
-	const post = await PostServices.create(userId, description, tags, img);
-	res.status(201).json(post);
-};
+	constructor(postService?: PostServices) {
+		this.postService = postService!;
+	}
 
-export const allByCreator = async (req: any, res: any) => {
-	const creatorId = res.user.id;
+	createPost = async (req: any, res: any) => {
+		const userId = res.user.id;
+		const { tags, description, img } = req.body;
 
-	const posts = await PostServices.allByCreator(creatorId);
-	res.status(200).json(posts);
-};
+		const post = await this.postService.create(userId, description, tags, img);
+		res.status(201).json(post);
+	};
 
-export const likePost = async (req: any, res: any) => {
-	const creatorId = res.user.id;
-	const postId = req.params.id;
+	allByCreator = async (req: any, res: any) => {
+		const creatorId = res.user.id;
 
-	const likes = await PostServices.like(postId, creatorId);
-	res.status(200).json({ likes });
-};
+		const posts = await this.postService.allByCreator(creatorId);
+		res.status(200).json(posts);
+	};
 
-export const deletePost = async (req: any, res: any) => {
-	const postId = req.params.id;
+	likePost = async (req: any, res: any) => {
+		const creatorId = res.user.id;
+		const postId = req.params.id;
 
-	const deleted = await PostServices.delete(postId);
-	res.status(202).json({ deleted });
-};
+		const likes = await this.postService.like(postId, creatorId);
+		res.status(200).json({ likes });
+	};
 
-export const updatePost = async (req: any, res: any) => {
-	const postId = req.params.id;
-	const newPost: PostUpdateModel = req.body;
+	deletePost = async (req: any, res: any) => {
+		const postId = req.params.id;
 
-	const updated = await PostServices.update(postId, newPost);
-	res.status(202).json({ updated });
-};
+		const deleted = await this.postService.delete(postId);
+		res.status(202).json({ deleted });
+	};
+
+	updatePost = async (req: any, res: any) => {
+		const postId = req.params.id;
+		const newPost: PostUpdateModel = req.body;
+
+		const updated = await this.postService.update(postId, newPost);
+		res.status(202).json({ updated });
+	};
+}

@@ -215,6 +215,7 @@
 	.people-might-know {
 		border-bottom: 2px solid $purple;
 		padding-bottom: 1em;
+		margin-bottom: 1em;
 
 		.users {
 			display: flex;

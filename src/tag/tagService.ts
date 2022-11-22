@@ -1,6 +1,6 @@
 import { autoInjectable, injectable } from 'tsyringe';
 import { IUser } from '../user/models/baseModels';
-import { UserRepository } from '../user/userRepository';
+import UserRepository from '../user/userRepository';
 
 @injectable()
 @autoInjectable()

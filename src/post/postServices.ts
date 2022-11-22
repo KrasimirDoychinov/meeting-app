@@ -6,20 +6,23 @@ import { PostReturnModel } from './models/PostReturnModel';
 import { GlobalErrorConstants } from '../errors/errorConstants';
 import { CloudinaryHelper } from '../helpers/cloudinaryHelper';
 import { PostRepository } from './postRepository';
+import { autoInjectable, injectable } from 'tsyringe';
 
+@injectable()
+@autoInjectable()
 export class PostServices {
-	static async create(
-		creatorId: string,
-		description: string,
-		tags: string[],
-		img?: string,
-		status: PostStatus = 0
-	): Promise<IPost> {
+	private postRepo: PostRepository;
+
+	constructor(postRepo?: PostRepository) {
+		this.postRepo = postRepo!;
+	}
+
+	async create(creatorId: string, description: string, tags: string[], img?: string, status: PostStatus = 0): Promise<IPost> {
 		if (!creatorId || !description || !tags) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
 
-		const post: IPost = await Post.create({
+		const post: IPost = await this.postRepo.create({
 			creatorId,
 			description,
 			tags,
@@ -27,7 +30,7 @@ export class PostServices {
 		});
 
 		if (img) {
-			const imgName = `${post._id}_post`;
+			const imgName = `${post._id}_p ost`;
 			const imgUrl = await CloudinaryHelper.uploadImage(img, imgName);
 
 			post.imgUrl = imgUrl;
@@ -37,12 +40,12 @@ export class PostServices {
 		return post;
 	}
 
-	static async allByCreator(creatorId: string): Promise<PostReturnModel[]> {
+	async allByCreator(creatorId: string): Promise<PostReturnModel[]> {
 		if (!creatorId) {
 			throw new CustomError('CreatorId is missing', 400);
 		}
 
-		const posts: IPost[] = await PostRepository.find({ creatorId });
+		const posts: IPost[] = await this.postRepo.find({ creatorId });
 		const result = posts.map((x: any) => {
 			const model: PostReturnModel = {
 				description: x.description,
@@ -56,16 +59,16 @@ export class PostServices {
 		return result;
 	}
 
-	static async byId(id: string): Promise<IPost> {
-		return await PostRepository.findById(id);
+	async byId(id: string): Promise<IPost> {
+		return await this.postRepo.findById(id);
 	}
 
-	static async like(postId: string, creatorId: string): Promise<number> {
+	async like(postId: string, creatorId: string): Promise<number> {
 		if (!postId || !creatorId) {
 			throw new CustomError("Id's is missing", 400);
 		}
 
-		const post: IPost = await PostRepository.findById(postId);
+		const post: IPost = await this.postRepo.findById(postId);
 
 		if (post.likes.includes(creatorId)) {
 			post.likes = post.likes.filter((x: string) => x !== creatorId);
@@ -77,7 +80,7 @@ export class PostServices {
 		return post.likes.length;
 	}
 
-	static async delete(postId: string): Promise<boolean> {
+	async delete(postId: string): Promise<boolean> {
 		if (!postId) {
 			throw new CustomError('PostId is missing', 400);
 		}
@@ -86,10 +89,7 @@ export class PostServices {
 		return result.acknowledged;
 	}
 
-	static async update(
-		postId: string,
-		newPost: PostUpdateModel
-	): Promise<boolean> {
+	async update(postId: string, newPost: PostUpdateModel): Promise<boolean> {
 		if (!postId) {
 			throw new CustomError('PostId is missing', 400);
 		}
