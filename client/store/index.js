@@ -214,12 +214,22 @@ export default createStore({
 				headers: getters.getHeaders,
 			});
 
+			return response.data;
+		},
+		async createComment({ state, getters }, { id, content }) {
+			const response = await axios.post(
+				state.host + `/post/comment/${id}`,
+				{
+					content,
+				},
+				{
+					headers: getters.getHeaders,
+				}
+			);
+
 			console.log(response.data);
 			return response.data;
 		},
-		async createComment({state, getters}, {id, comment}) {
-			const response = await axios.post(state.host + '/')
-		}
 	},
 	plugins: [createPersistedState()],
 });

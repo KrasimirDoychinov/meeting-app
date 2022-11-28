@@ -224,7 +224,12 @@
 	};
 
 	const createComment = async (id) => {
-		const comment = document.querySelector(`.comment${id}`);
+		const content = document.querySelector(`.comment${id}`).value;
+		if (!id || !content) {
+			alert('Cannot comment nothing');
+		} else {
+			const response = await store.dispatch('createComment', { id, content });
+		}
 	};
 
 	const focusCreatePost = (value) => {
@@ -287,7 +292,6 @@
 		margin-top: 2em;
 		width: 90%;
 		gap: 5em;
-		z-index: -11;
 		padding-bottom: 1em;
 
 		.post {

@@ -17,7 +17,7 @@ const CreatorSchema = new mongoose.Schema({
 });
 
 const CommentSchema = new mongoose.Schema({
-	comment: {
+	content: {
 		type: String,
 		required: true,
 	},
