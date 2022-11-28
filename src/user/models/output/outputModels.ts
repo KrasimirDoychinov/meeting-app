@@ -1,4 +1,4 @@
-import { Gender } from '../../enums/genderEnums';
+import { IPost } from '../../../post/models/baseModels';
 import { RealData } from '../baseModels';
 
 export interface UserBaseModel {
@@ -17,4 +17,8 @@ export interface FriendViewModel extends UserBaseModel {
 
 export interface UserFullViewModelModel extends UserBaseModel {
 	realData: RealData;
+}
+
+export interface UserForeignUserModel extends UserBaseModel {
+	posts: IPost[];
 }

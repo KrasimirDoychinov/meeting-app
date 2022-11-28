@@ -22,4 +22,12 @@ export class PostRepository extends Repository<IPost> {
 
 		return posts;
 	}
+
+	async findAllForUser(creatorId: string) {
+		const posts: IPost[] = await Post.find({ 'creator.id': creatorId }).sort({
+			createdOn: -1,
+		});
+
+		return posts;
+	}
 }

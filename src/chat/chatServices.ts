@@ -30,7 +30,12 @@ export class ChatServices {
 		return chat;
 	}
 
-	async createMessage({ chatId, senderId, receiverId, content }: ChatMessageModel): Promise<ChatMessage> {
+	async createMessage({
+		chatId,
+		senderId,
+		receiverId,
+		content,
+	}: ChatMessageModel): Promise<ChatMessage> {
 		const chat: IChat | null = await this.chatRepo.findById(chatId);
 		if (!chat) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
@@ -83,7 +88,9 @@ export class ChatServices {
 
 		this.changeCorrectPersonAnonStatus(chat, userId);
 
-		if (this.arePeopleAgreed(chat.personA.changeAnonAgree, chat.personB.changeAnonAgree)) {
+		if (
+			this.arePeopleAgreed(chat.personA.changeAnonAgree, chat.personB.changeAnonAgree)
+		) {
 			await this.changeAnon(chat);
 		}
 
@@ -92,7 +99,9 @@ export class ChatServices {
 	}
 
 	async changeAnon(chat: IChat): Promise<boolean> {
-		if (!this.arePeopleAgreed(chat.personA.changeAnonAgree, chat.personB.changeAnonAgree)) {
+		if (
+			!this.arePeopleAgreed(chat.personA.changeAnonAgree, chat.personB.changeAnonAgree)
+		) {
 			throw new CustomError("Both parties haven't agreed to change the chat", 400);
 		}
 
@@ -119,26 +128,22 @@ export class ChatServices {
 			model.currentUser = {
 				id: currentUser.id,
 				name: currentUser.name,
-				gender: currentUser.gender,
 				changeAnonAgree: currentUser.changeAnonAgree,
 			};
 			model.friendUser = {
 				id: friendUser.id,
 				name: friendUser.name,
-				gender: friendUser.gender,
 				changeAnonAgree: friendUser.changeAnonAgree,
 			};
 		} else {
 			model.currentUser = {
 				id: currentUser.id,
 				name: `${currentUser.realData.firstName} ${currentUser.realData.lastName}`,
-				gender: currentUser.gender,
 				changeAnonAgree: currentUser.changeAnonAgree,
 			};
 			model.friendUser = {
 				id: friendUser.id,
 				name: `${friendUser.realData.firstName} ${friendUser.realData.lastName}`,
-				gender: friendUser.gender,
 				changeAnonAgree: friendUser.changeAnonAgree,
 			};
 		}

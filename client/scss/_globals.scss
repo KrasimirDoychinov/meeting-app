@@ -107,3 +107,21 @@
 	color: $white !important;
 	background: $background-pill-selected;
 }
+
+.tags {
+	display: flex;
+	flex-flow: row;
+	overflow-y: hidden;
+	overflow-x: auto;
+	justify-content: flex-start;
+	gap: 1em;
+	margin-top: 2em;
+	padding-bottom: 1em;
+
+	h2 {
+		color: $purple;
+		padding: 0.5em 1em;
+		border-radius: 200px;
+		background: $background-pill-unselected;
+	}
+}

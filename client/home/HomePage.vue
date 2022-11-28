@@ -116,9 +116,11 @@
 						:src="post.creator.imageUrl"
 						alt=""
 					/>
-					<h5>
-						{{ post.creator.name }}
-					</h5>
+					<router-link :to="{ name: 'Foreign Account', query: { id: post.creator.id } }">
+						<h5>
+							{{ post.creator.name }}
+						</h5>
+					</router-link>
 				</div>
 				<div class="details">
 					<h5 :class="!post.imageUrl ? 'margin' : ''">
@@ -343,6 +345,7 @@
 
 				h5 {
 					font-size: 1em;
+					color: black;
 				}
 
 				.avatar-img {
@@ -437,22 +440,6 @@
 			border: 1px solid $purple;
 			height: 5em;
 			padding-top: 0.5em;
-		}
-
-		.tags {
-			display: flex;
-			flex-flow: row;
-			overflow-y: hidden;
-			overflow-x: auto;
-			justify-content: flex-start;
-			gap: 1em;
-
-			h2 {
-				color: $purple;
-				padding: 0.5em 1em;
-				border-radius: 200px;
-				background: $background-pill-unselected;
-			}
 		}
 
 		.post-preview {

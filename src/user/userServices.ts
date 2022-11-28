@@ -3,6 +3,7 @@ import { CustomError } from '../errors/customError';
 import {
 	FriendViewModel,
 	UserBaseModel,
+	UserForeignUserModel,
 	UserFullViewModelModel,
 } from './models/output/outputModels';
 
@@ -14,14 +15,17 @@ import { Friend, FriendNotification, IUser } from './models/baseModels';
 
 import UserRepository from './userRepository';
 import { autoInjectable, injectable } from 'tsyringe';
+import { PostRepository } from '../post/postRepository';
 
 @injectable()
 @autoInjectable()
 export class UserServices {
 	private userRepo: UserRepository;
+	private postRepo: PostRepository;
 
-	constructor(userRepo?: UserRepository) {
+	constructor(userRepo?: UserRepository, postRepo?: PostRepository) {
 		this.userRepo = userRepo!;
+		this.postRepo = postRepo!;
 	}
 
 	async setRealData(
@@ -67,7 +71,7 @@ export class UserServices {
 		const currentUser: IUser = await this.userRepo.findById(currentUserId);
 		const foreignUser: IUser = await this.userRepo.findById(foreignUserId);
 
-		const model: UserBaseModel = await Promise.resolve({
+		const model: UserForeignUserModel = await Promise.resolve({
 			id: foreignUser._id,
 			name: this.areFriends(currentUser, foreignUser)
 				? `${foreignUser.realData.firstName} ${foreignUser.realData.lastName}`
@@ -75,6 +79,8 @@ export class UserServices {
 			imageUrl: this.areFriends(currentUser, foreignUser)
 				? foreignUser.realData.imageUrl
 				: await CloudinaryHelper.getAvatar(),
+			tags: foreignUser.tags,
+			posts: await this.postRepo.findAllForUser(foreignUserId),
 		});
 
 		return model;
@@ -254,8 +260,7 @@ export class UserServices {
 			const model: UserBaseModel = {
 				id: x.id,
 				name: x.name,
-				gender: x.gender,
-				imageUrl: x.realData.imageUrl, //`${HelperConstants.imagesPath}${x.realData.imageName}`,
+				imageUrl: x.realData.imageUrl,
 			};
 
 			return model;
@@ -289,7 +294,6 @@ export class UserServices {
 					id: x.id,
 					name: x.name,
 					tags: x.tags,
-					gender: x.gender,
 					friendRequestSent:
 						x.friendNotifications.some((x: any) => x.friendId === userId) ||
 						x.friends.some((x: Friend) => x.friendId === userId),
@@ -310,7 +314,6 @@ export class UserServices {
 				const model: FriendViewModel = {
 					id: x.friendId,
 					name: x.isAnon ? x.name : `${x.realData.firstName} ${x.realData.lastName}`,
-					gender: x.gender,
 					imageUrl: x.isAnon ? await CloudinaryHelper.getAvatar() : x.realData.imageUrl,
 					notificationCount: x.notifications,
 					chatId: x.chatId,
