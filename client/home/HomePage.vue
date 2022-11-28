@@ -132,11 +132,20 @@
 					/>
 				</div>
 				<div class="comment-section">
-					<div class="comments">
+					<button
+						class="btn show-btn"
+						@click="toggleComments(post)"
+					>
+						{{ post.showComments ? 'Hide' : 'Show' }}
+					</button>
+					<div
+						class="comments"
+						v-if="post.showComments"
+					>
 						<div
-							class="comment"
 							v-for="(comment, index) in post.comments"
 							:key="index"
+							class="comment"
 						>
 							<p>
 								<span>{{ comment.creator.name }}</span
@@ -148,14 +157,15 @@
 						<textarea
 							type="text"
 							placeholder="Comment..."
+							v-model="post.commentContent"
 							class="input"
 							:class="`comment${post.id}`"
 						></textarea>
 						<button
-							@click="createComment(post.id)"
+							@click="createComment(post)"
 							class="btn accept-btn"
 						>
-							Post!
+							Post
 						</button>
 					</div>
 				</div>
@@ -212,36 +222,40 @@
 
 	const createPost = async () => {
 		try {
+			if (!img.value || !description.value || selectedTags.value.length === 0) {
+				alert('All fields are required');
+				throw new Error('All fields are required');
+			}
 			let response;
-			if (img.value) {
-				const reader = new FileReader();
-				reader.readAsDataURL(file.value);
-				reader.onload = async () => {
-					response = await store.dispatch('createPost', {
-						tags: selectedTags.value,
-						description: description.value,
-						img: reader.result,
-					});
-				};
-			} else {
-				console.log('NO IMAGE');
+			const reader = new FileReader();
+			reader.readAsDataURL(file.value);
+			reader.onload = async () => {
 				response = await store.dispatch('createPost', {
 					tags: selectedTags.value,
 					description: description.value,
+					img: reader.result,
 				});
-			}
+			};
 		} catch (err) {
 			error.value = err;
 		}
 	};
 
-	const createComment = async (id) => {
-		const content = document.querySelector(`.comment${id}`).value;
-		if (!id || !content) {
+	const createComment = async (post) => {
+		if (!post.id || !post.commentContent) {
 			alert('Cannot comment nothing');
 		} else {
-			const response = await store.dispatch('createComment', { id, content });
+			const response = await store.dispatch('createComment', {
+				id: post.id,
+				content: post.commentContent,
+			});
+			post.comments.push(response);
 		}
+		post.commentContent = '';
+	};
+
+	const toggleComments = async (post) => {
+		post.showComments = post.showComments ? false : true;
 	};
 
 	const focusCreatePost = (value) => {
@@ -262,6 +276,10 @@
 		});
 
 		posts.value = await store.dispatch('allPostsWithTags', { tags: store.state.tags });
+		posts.value.forEach((x) => {
+			x.showComments = false;
+			x.commentContent = '';
+		});
 	});
 </script>
 
@@ -353,21 +371,34 @@
 	.comment-section {
 		padding-bottom: 0.5em;
 
+		.show-btn {
+			background: $background-gradient-purple;
+			color: $white;
+		}
+
 		.comments {
-			padding-left: 1em;
+			border-top: 1px solid $border-gray;
+			height: 20vh;
+			overflow-x: hidden;
+			justify-content: start;
+			padding-top: 0.5em;
 			display: flex;
 			gap: 0.5em;
 			margin: 1em 0 1em 0;
 
 			.comment {
+				padding-left: 0.5em;
 				display: flex;
 				flex-flow: row;
 				justify-content: flex-start;
+				margin-bottom: 0.1em;
 
 				p {
 					width: 96%;
 					word-break: break-all;
+
 					span {
+						margin-right: 1em;
 						font-weight: bold;
 					}
 				}
@@ -375,9 +406,11 @@
 		}
 
 		.create-comment {
+			border-top: 1px solid $border-gray;
+			padding-top: 0.5em;
 			display: flex;
 			flex-flow: row;
-			justify-content: space-between;
+			justify-content: space-around;
 
 			.input {
 				height: 3em;
