@@ -8,4 +8,11 @@ export interface PostReturnModel {
 	description: string;
 	imageUrl: string;
 	likes: string[];
+	comments: {
+		creator: {
+			id: string;
+			name: string;
+		};
+		content: string;
+	}[];
 }

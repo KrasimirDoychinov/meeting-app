@@ -1,4 +1,4 @@
-import mongoose, { trusted } from 'mongoose';
+import mongoose from 'mongoose';
 import { IPost } from './baseModels';
 
 const CreatorSchema = new mongoose.Schema({
@@ -21,7 +21,16 @@ const CommentSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	creator: CreatorSchema,
+	creator: {
+		id: {
+			type: String,
+			required: true,
+		},
+		name: {
+			type: String,
+			required: true,
+		},
+	},
 });
 
 export const PostSchema = new mongoose.Schema<IPost>(

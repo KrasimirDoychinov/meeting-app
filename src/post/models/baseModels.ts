@@ -15,7 +15,6 @@ export interface IPost extends BaseEntity {
 		creator: {
 			id: string;
 			name: string;
-			imageUrl: string;
 		};
 		content: string;
 	}[];

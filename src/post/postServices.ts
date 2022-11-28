@@ -90,6 +90,7 @@ export class PostServices {
 				description: x.description,
 				imageUrl: x.imageUrl,
 				likes: x.likes,
+				comments: x.comments,
 			};
 			return model;
 		});

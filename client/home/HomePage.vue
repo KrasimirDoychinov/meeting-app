@@ -131,7 +131,19 @@
 						alt=""
 					/>
 				</div>
-				<div class="comments">
+				<div class="comment-section">
+					<div class="comments">
+						<div
+							class="comment"
+							v-for="(comment, index) in post.comments"
+							:key="index"
+						>
+							<p>
+								<span>{{ comment.creator.name }}</span
+								>{{ comment.content }}
+							</p>
+						</div>
+					</div>
 					<div class="create-comment">
 						<textarea
 							type="text"
@@ -338,8 +350,29 @@
 		}
 	}
 
-	.comments {
+	.comment-section {
 		padding-bottom: 0.5em;
+
+		.comments {
+			padding-left: 1em;
+			display: flex;
+			gap: 0.5em;
+			margin: 1em 0 1em 0;
+
+			.comment {
+				display: flex;
+				flex-flow: row;
+				justify-content: flex-start;
+
+				p {
+					width: 96%;
+					word-break: break-all;
+					span {
+						font-weight: bold;
+					}
+				}
+			}
+		}
 
 		.create-comment {
 			display: flex;
