@@ -1,3 +1,4 @@
+import { AnyMxRecord } from 'dns';
 import { autoInjectable } from 'tsyringe';
 import UserRepository from '../user/userRepository';
 import { PostUpdateModel } from './models/input/PostUpdateModel';
@@ -20,6 +21,17 @@ export default class PostController {
 		const user = await this.userRepo.findById(userId);
 		const post = await this.postService.create(user, description, tags, img);
 		res.status(201).json(post);
+	};
+
+	createComment = async (req: any, res: any) => {
+		const userId = res.user.id;
+		const postId = res.params.id;
+		const { content } = req.body;
+
+		const user = await this.userRepo.findById(userId);
+		const comment = await this.postService.createComment(user, content, postId);
+
+		res.status(201).json(comment);
 	};
 
 	allByTags = async (req: any, res: any) => {

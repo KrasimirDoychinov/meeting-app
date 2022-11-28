@@ -31,7 +31,6 @@ export class PostServices {
 		}
 
 		const avatarUrl = await CloudinaryHelper.getAvatar();
-		console.log(avatarUrl);
 		const post: IPost = await this.postRepo.create({
 			creator: {
 				id: user.id,
@@ -52,6 +51,29 @@ export class PostServices {
 		}
 
 		return post;
+	}
+
+	async createComment(user: IUser, content: string, postId: string) {
+		if (!user.id || !content || !postId) {
+			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
+		}
+
+		const avatarUrl = await CloudinaryHelper.getAvatar();
+		const post: IPost = await this.postRepo.findById(postId);
+
+		const comment = {
+			creator: {
+				id: user.id,
+				name: user.name,
+				imageUrl: avatarUrl,
+			},
+			content,
+		};
+		post.comments.push(comment);
+
+		await post.save();
+
+		return comment;
 	}
 
 	async allByTags(creatorId: string, tags: string) {

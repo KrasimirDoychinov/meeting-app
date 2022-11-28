@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { trusted } from 'mongoose';
 import { IPost } from './baseModels';
 
 const CreatorSchema = new mongoose.Schema({
@@ -16,6 +16,14 @@ const CreatorSchema = new mongoose.Schema({
 	},
 });
 
+const CommentSchema = new mongoose.Schema({
+	comment: {
+		type: String,
+		required: true,
+	},
+	creator: CreatorSchema,
+});
+
 export const PostSchema = new mongoose.Schema<IPost>(
 	{
 		creator: CreatorSchema,
@@ -29,6 +37,7 @@ export const PostSchema = new mongoose.Schema<IPost>(
 			type: Date,
 			default: new Date(),
 		},
+		comments: [CommentSchema],
 		likes: [String],
 		tags: [String],
 		imageUrl: String,
