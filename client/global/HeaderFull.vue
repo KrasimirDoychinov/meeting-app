@@ -7,14 +7,6 @@
 			<router-link to="/">
 				<i class="logo fa-brands fa-js"></i>
 			</router-link>
-			<div class="search">
-				<i class="fa-solid fa-magnifying-glass"></i>
-				<input
-					type="text"
-					v-model="search"
-					placeholder="Search"
-				/>
-			</div>
 			<ul>
 				<li v-if="friendNotificationCount">
 					<router-link to="/requests/friend">
@@ -78,14 +70,12 @@
 			}
 		});
 
-		socket
-			.off('create notification')
-			.on('create notification', async (result) => {
-				if (store.state.userId === result.userId) {
-					chatNotificationCount.value = result.count;
-					await store.commit('setChatNotifications', result.count);
-				}
-			});
+		socket.off('create notification').on('create notification', async (result) => {
+			if (store.state.userId === result.userId) {
+				chatNotificationCount.value = result.count;
+				await store.commit('setChatNotifications', result.count);
+			}
+		});
 
 		socket.off('receive friend request').on('receive friend request', (id) => {
 			if (store.state.userId === id) {
@@ -113,6 +103,8 @@
 	}
 
 	header {
+		z-index: 100;
+
 		position: fixed;
 		top: 0;
 		font-size: 1.6em;
@@ -130,18 +122,6 @@
 
 		.logo {
 			font-size: 2em;
-		}
-
-		.search {
-			display: flex;
-			gap: 0.5em;
-
-			input {
-				padding-left: 1em;
-				height: 1.5em;
-				border-radius: 10px;
-				border: 0px solid;
-			}
 		}
 
 		.notifications {

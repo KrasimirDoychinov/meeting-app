@@ -148,8 +148,11 @@
 							class="comment"
 						>
 							<p>
-								<span>{{ comment.creator.name }}</span
-								>{{ comment.content }}
+								<router-link
+									:to="{ name: 'Foreign Account', query: { id: comment.creator.id } }"
+									><span>{{ comment.creator.name }}</span></router-link
+								>
+								{{ comment.content }}
 							</p>
 						</div>
 					</div>
@@ -325,6 +328,7 @@
 		padding-bottom: 1em;
 
 		.post {
+			border-radius: 2%;
 			border: 1px solid $dark-gray;
 			display: flex;
 			gap: 1em;
@@ -400,6 +404,7 @@
 					span {
 						margin-right: 1em;
 						font-weight: bold;
+						color: black;
 					}
 				}
 			}

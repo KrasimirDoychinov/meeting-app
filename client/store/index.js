@@ -132,6 +132,13 @@ export default createStore({
 			});
 			return response.data;
 		},
+		async getUserById({ state, getters }, { id }) {
+			const response = await axios.get(state.host + `/user/byId/${id}`, {
+				headers: getters.getHeaders,
+			});
+
+			return response.data;
+		},
 		// tag
 		async setTags({ state, getters, commit }, { tags }) {
 			const response = await axios.post(
@@ -227,7 +234,6 @@ export default createStore({
 				}
 			);
 
-			console.log(response.data);
 			return response.data;
 		},
 	},

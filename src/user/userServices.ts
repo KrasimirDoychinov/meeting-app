@@ -1,6 +1,10 @@
 import { CustomError } from '../errors/customError';
 
-import { FriendViewModel, UserBaseModel, UserFullViewModelModel } from './models/output/outputModels';
+import {
+	FriendViewModel,
+	UserBaseModel,
+	UserFullViewModelModel,
+} from './models/output/outputModels';
 
 import { io } from '../../app';
 import { UserErrorConstants } from './errors/errorConstants';
@@ -20,7 +24,12 @@ export class UserServices {
 		this.userRepo = userRepo!;
 	}
 
-	async setRealData(id: string, firstName: string, lastName: string, img: string): Promise<boolean> {
+	async setRealData(
+		id: string,
+		firstName: string,
+		lastName: string,
+		img: string
+	): Promise<boolean> {
 		const user = await this.userRepo.findById(id);
 
 		if (!firstName || !lastName || !img) {
@@ -42,11 +51,9 @@ export class UserServices {
 
 	async byId(id: string): Promise<UserFullViewModelModel> {
 		const user: IUser = await this.userRepo.findById(id);
-
 		const model: UserFullViewModelModel = {
 			id: user._id,
 			name: user.name,
-			gender: user.gender,
 			realData: {
 				firstName: user.realData.firstName,
 				lastName: user.realData.lastName,
@@ -56,9 +63,29 @@ export class UserServices {
 		return model;
 	}
 
+	async getForeignUser(currentUserId: string, foreignUserId: string) {
+		const currentUser: IUser = await this.userRepo.findById(currentUserId);
+		const foreignUser: IUser = await this.userRepo.findById(foreignUserId);
+
+		const model: UserBaseModel = await Promise.resolve({
+			id: foreignUser._id,
+			name: this.areFriends(currentUser, foreignUser)
+				? `${foreignUser.realData.firstName} ${foreignUser.realData.lastName}`
+				: foreignUser.name,
+			imageUrl: this.areFriends(currentUser, foreignUser)
+				? foreignUser.realData.imageUrl
+				: await CloudinaryHelper.getAvatar(),
+		});
+
+		return model;
+	}
+
 	// Friend requests
 	// currentUser sends request to userToFriend
-	async sendFriendRequest(userToFriendId: string, currentUserId: string): Promise<boolean> {
+	async sendFriendRequest(
+		userToFriendId: string,
+		currentUserId: string
+	): Promise<boolean> {
 		if (userToFriendId === currentUserId) {
 			throw new CustomError(UserErrorConstants.CannotFriendSelf, 400);
 		}
@@ -66,7 +93,9 @@ export class UserServices {
 		const currentUser: IUser = await this.userRepo.findById(currentUserId);
 		const friendUser: IUser = await this.userRepo.findById(userToFriendId);
 
-		const friendRequestSend = friendUser.friendNotifications.some((x: any) => x.friendId === currentUserId);
+		const friendRequestSend = friendUser.friendNotifications.some(
+			(x: any) => x.friendId === currentUserId
+		);
 		if (friendRequestSend) {
 			throw new CustomError(UserErrorConstants.FriendRequestAlreadySent, 400);
 		}
@@ -86,7 +115,10 @@ export class UserServices {
 	}
 
 	// currentUser accepts userToFriend and they become friends
-	async acceptFriendRequest(userToFriendId: string, currentUserId: string): Promise<{ currentUser: IUser; friendUser: IUser }> {
+	async acceptFriendRequest(
+		userToFriendId: string,
+		currentUserId: string
+	): Promise<{ currentUser: IUser; friendUser: IUser }> {
 		if (userToFriendId === currentUserId) {
 			throw new CustomError(UserErrorConstants.CannotFriendSelf, 400);
 		}
@@ -94,7 +126,9 @@ export class UserServices {
 		const currentUser: IUser = await this.userRepo.findById(currentUserId);
 		const friendUser: IUser = await this.userRepo.findById(userToFriendId);
 
-		const friendRequestSend = currentUser.friendNotifications.some((x: any) => x.friendId === userToFriendId);
+		const friendRequestSend = currentUser.friendNotifications.some(
+			(x: any) => x.friendId === userToFriendId
+		);
 
 		if (!friendRequestSend) {
 			throw new CustomError(UserErrorConstants.FriendRequestNotSent, 400);
@@ -104,8 +138,12 @@ export class UserServices {
 			throw new CustomError(UserErrorConstants.AlreadyFriends, 400);
 		}
 
-		currentUser.friendNotifications = currentUser.friendNotifications.filter((x: any) => x.friendId !== userToFriendId);
-		friendUser.friendNotifications = friendUser.friendNotifications.filter((x: any) => x.friendId !== currentUserId);
+		currentUser.friendNotifications = currentUser.friendNotifications.filter(
+			(x: any) => x.friendId !== userToFriendId
+		);
+		friendUser.friendNotifications = friendUser.friendNotifications.filter(
+			(x: any) => x.friendId !== currentUserId
+		);
 
 		await currentUser.save();
 		return {
@@ -186,7 +224,11 @@ export class UserServices {
 		const user: IUser = await this.userRepo.findById(id);
 
 		const notifications =
-			user.friends.length === 0 ? 0 : user.friends.map((x: any) => x.notifications).reduce((a: number, b: number) => a + b);
+			user.friends.length === 0
+				? 0
+				: user.friends
+						.map((x: any) => x.notifications)
+						.reduce((a: number, b: number) => a + b);
 
 		return notifications;
 	}
@@ -222,7 +264,11 @@ export class UserServices {
 		return result;
 	}
 
-	async allWithTags(tags: string, email: string, userId: string): Promise<UserBaseModel[]> {
+	async allWithTags(
+		tags: string,
+		email: string,
+		userId: string
+	): Promise<UserBaseModel[]> {
 		const users = await this.userRepo.find({
 			$and: [
 				{ tags: { $regex: tags } },
@@ -245,7 +291,8 @@ export class UserServices {
 					tags: x.tags,
 					gender: x.gender,
 					friendRequestSent:
-						x.friendNotifications.some((x: any) => x.friendId === userId) || x.friends.some((x: Friend) => x.friendId === userId),
+						x.friendNotifications.some((x: any) => x.friendId === userId) ||
+						x.friends.some((x: Friend) => x.friendId === userId),
 					imageUrl: await CloudinaryHelper.getAvatar(),
 				};
 				return model;
@@ -277,7 +324,6 @@ export class UserServices {
 
 	// private methods
 	private areFriends(currentUser: IUser, userToFriend: IUser): boolean {
-		console.log('test');
 		const usersAreFriends =
 			userToFriend.friends.some((x: Friend) => x.friendId === currentUser.id) &&
 			currentUser.friends.some((x: Friend) => x.friendId === userToFriend.id);

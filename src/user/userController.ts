@@ -22,6 +22,15 @@ export default class UserController {
 		res.status(200).json(result);
 	};
 
+	getForeignUser = async (req: any, res: any) => {
+		const currentUserId = res.user.id;
+		const userId = req.params.id;
+
+		const user = await this.userService.getForeignUser(currentUserId, userId);
+
+		res.status(200).json(user);
+	};
+
 	allFriends = async (req: any, res: any) => {
 		const userId = res.user.id;
 
@@ -79,22 +88,14 @@ export default class UserController {
 		const chatId = req.params.chatId;
 		const userId = res.user.id;
 
-		const result = await this.userService.removeChatNotificationsForChat(
-			chatId,
-			userId
-		);
+		const result = await this.userService.removeChatNotificationsForChat(chatId, userId);
 		res.status(200).json({ success: result });
 	};
 
 	initialRealData = async (req: any, res: any) => {
 		const id = res.user.id;
 		const { firstName, lastName, img } = req.body;
-		const response = await this.userService.setRealData(
-			id,
-			firstName,
-			lastName,
-			img
-		);
+		const response = await this.userService.setRealData(id, firstName, lastName, img);
 
 		res.status(200).json({ success: response });
 	};

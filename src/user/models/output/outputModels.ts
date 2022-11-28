@@ -4,7 +4,6 @@ import { RealData } from '../baseModels';
 export interface UserBaseModel {
 	id: string;
 	name: string;
-	gender: Gender;
 	tags?: string[];
 	imageUrl?: string;
 	friendRequestSent?: boolean;

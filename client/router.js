@@ -7,6 +7,7 @@ import ChatsPage from './chat/ChatsPage.vue';
 import TagsInitialPage from './tags/TagsInitialPage.vue';
 import FriendRequestPage from './requests/FriendRequestPage.vue';
 import RealDataPage from './auth/RealDataPage.vue';
+import ForeignUserPage from './user/ForeignUserPage.vue';
 
 import store from './store';
 
@@ -45,13 +46,13 @@ export default createRouter({
 			components: {
 				default: RealDataPage,
 			},
-			// beforeEnter: async (to, from, next) => {
-			// 	if (store.getters.hasTags) {
-			// 		isAuthorized(store.state.token, store.state.exp, next, '/');
-			// 	} else {
-			// 		isAuthorized(store.state.token, store.state.exp, next);
-			// 	}
-			// },
+			beforeEnter: async (to, from, next) => {
+				if (store.getters.hasTags) {
+					isAuthorized(store.state.token, store.state.exp, next, '/');
+				} else {
+					isAuthorized(store.state.token, store.state.exp, next);
+				}
+			},
 		},
 		{
 			path: '/tags/initial',
@@ -72,6 +73,17 @@ export default createRouter({
 			name: 'Home',
 			components: {
 				default: HomePage,
+				header: HeaderFull,
+			},
+			beforeEnter: (to, from, next) => {
+				isAuthorized(store.state.token, store.state.exp, next);
+			},
+		},
+		{
+			path: '/account/foreign',
+			name: 'Foreign Account',
+			components: {
+				default: ForeignUserPage,
 				header: HeaderFull,
 			},
 			beforeEnter: (to, from, next) => {

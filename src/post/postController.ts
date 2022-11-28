@@ -26,7 +26,6 @@ export default class PostController {
 	createComment = async (req: any, res: any) => {
 		const userId = res.user.id;
 		const postId = req.params.id;
-		console.log(userId, postId);
 		const { content } = req.body;
 
 		const user = await this.userRepo.findById(userId);
