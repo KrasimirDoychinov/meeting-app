@@ -217,6 +217,9 @@ export default createStore({
 			console.log(response.data);
 			return response.data;
 		},
+		async createComment({state, getters}, {id, comment}) {
+			const response = await axios.post(state.host + '/')
+		}
 	},
 	plugins: [createPersistedState()],
 });

@@ -1,4 +1,5 @@
 export interface PostReturnModel {
+	id: string;
 	creator: {
 		id: string;
 		name: string;

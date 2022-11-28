@@ -131,6 +131,22 @@
 						alt=""
 					/>
 				</div>
+				<div class="comments">
+					<div class="create-comment">
+						<textarea
+							type="text"
+							placeholder="Comment..."
+							class="input"
+							:class="`comment${post.id}`"
+						></textarea>
+						<button
+							@click="createComment(post.id)"
+							class="btn accept-btn"
+						>
+							Post!
+						</button>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -207,6 +223,10 @@
 		}
 	};
 
+	const createComment = async (id) => {
+		const comment = document.querySelector(`.comment${id}`);
+	};
+
 	const focusCreatePost = (value) => {
 		postCreationFocus.value = value;
 	};
@@ -266,8 +286,9 @@
 	.posts {
 		margin-top: 2em;
 		width: 90%;
-		height: 100%;
 		gap: 5em;
+		z-index: -11;
+		padding-bottom: 1em;
 
 		.post {
 			border: 1px solid $dark-gray;
@@ -309,6 +330,21 @@
 					height: 45vh;
 					width: 100%;
 				}
+			}
+		}
+	}
+
+	.comments {
+		padding-bottom: 0.5em;
+
+		.create-comment {
+			display: flex;
+			flex-flow: row;
+			justify-content: space-between;
+
+			.input {
+				height: 3em;
+				width: 60%;
 			}
 		}
 	}

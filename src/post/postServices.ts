@@ -59,6 +59,7 @@ export class PostServices {
 
 		const result = posts.map((x: IPost) => {
 			const model: PostReturnModel = {
+				id: x.id,
 				creator: {
 					id: x.creator.id,
 					name: x.creator.name,
