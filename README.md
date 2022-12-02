@@ -23,24 +23,24 @@ comfortable sharing your personal information with this person, then the next st
 
 ## Clone repo
 
-### 'git clone https://github.com/KrasimirDoychinov/meeting-app.git'
+### `git clone https://github.com/KrasimirDoychinov/meeting-app.git`
 
 ## Navigate to
 
-### 'cd facebook-clone'
+### `cd facebook-clone`
 
 ## Download dependencies
 
-### 'npm i'
+### `npm i`
 
 ## Start server
 
-### 'npm start'
+### `npm start`
 
 ## Start client
 
-### 'npm run dev'
+### `npm run dev`
 
 ## Start typescript watch
 
-### 'tsc'
+### `tsc`
