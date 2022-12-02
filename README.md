@@ -2,13 +2,21 @@
 
 ### Technologies:
 TypeScript/JavaScript
+
 NodeJS (with Express)
+
 VueJS (HTML, CSS, SCSS)
+
 MongoDB (with mongoose)
+
 JWT authentication
+
 Socket.io
+
 Cloudinary
+
 Tsyringe for dependency injection
+
 Rest API
 
 ### Idea
