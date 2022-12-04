@@ -53,6 +53,15 @@ export class PostServices {
 		return post;
 	}
 
+	async edit(postId: string, description: string) {
+		const post = await this.postRepo.findById(postId);
+
+		post.description = description;
+
+		await post.save();
+		return post;
+	}
+
 	async createComment(user: IUser, content: string, postId: string) {
 		if (!user.id || !content || !postId) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
@@ -125,28 +134,6 @@ export class PostServices {
 		}
 
 		const result = await Post.deleteOne({ _id: postId });
-		return result.acknowledged;
-	}
-
-	async update(postId: string, newPost: PostUpdateModel) {
-		if (!postId) {
-			throw new CustomError('PostId is missing', 400);
-		}
-
-		if (Object.keys(newPost).length === 0) {
-			throw new CustomError('New post details is missing', 400);
-		}
-
-		const result = await Post.updateOne(
-			{ _id: postId },
-			{
-				description: newPost.description,
-				mediaUrl: newPost.mediaUrl,
-				status: newPost.status,
-			},
-			{ upsert: false }
-		);
-
 		return result.acknowledged;
 	}
 }

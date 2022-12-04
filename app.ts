@@ -66,7 +66,9 @@ const start = async () => {
 		const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/facebook-clone';
 		await connectDB(mongoUri);
 		app.listen(port, () => console.log(`Server listening on port: ${port}`));
-		server.listen(socketPort, () => console.log(`Web socket server listening on port: ${3001}`));
+		server.listen(socketPort, () =>
+			console.log(`Web socket server listening on port: ${3001}`)
+		);
 	} catch (error) {
 		console.log(error);
 	}

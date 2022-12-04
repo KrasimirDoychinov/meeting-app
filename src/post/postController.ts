@@ -23,6 +23,23 @@ export default class PostController {
 		res.status(201).json(post);
 	};
 
+	editPost = async (req: any, res: any) => {
+		const postId = req.params.id;
+		const { description } = req.body;
+
+		const post = await this.postService.edit(postId, description);
+
+		res.status(200).json(post);
+	};
+
+	deletePost = async (req: any, res: any) => {
+		const postId = req.params.id;
+
+		const result = await this.postService.delete(postId);
+
+		res.status(200).json(result);
+	};
+
 	createComment = async (req: any, res: any) => {
 		const userId = res.user.id;
 		const postId = req.params.id;
@@ -48,20 +65,5 @@ export default class PostController {
 
 		const likes = await this.postService.like(postId, creatorId);
 		res.status(200).json({ likes });
-	};
-
-	deletePost = async (req: any, res: any) => {
-		const postId = req.params.id;
-
-		const deleted = await this.postService.delete(postId);
-		res.status(202).json({ deleted });
-	};
-
-	updatePost = async (req: any, res: any) => {
-		const postId = req.params.id;
-		const newPost: PostUpdateModel = req.body;
-
-		const updated = await this.postService.update(postId, newPost);
-		res.status(202).json({ updated });
 	};
 }
