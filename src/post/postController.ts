@@ -1,7 +1,6 @@
 import { AnyMxRecord } from 'dns';
 import { autoInjectable } from 'tsyringe';
 import UserRepository from '../user/userRepository';
-import { PostUpdateModel } from './models/input/PostUpdateModel';
 import { PostServices } from './postServices';
 
 @autoInjectable()

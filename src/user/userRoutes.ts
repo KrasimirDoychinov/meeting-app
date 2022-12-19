@@ -1,10 +1,11 @@
 import { authorize } from '../middlewares/middlewares';
 import UserController from './userController';
+import { container } from 'tsyringe';
 
 import express from 'express';
 export const userRouter = express.Router();
 
-const controller = new UserController();
+const controller = container.resolve(UserController);
 
 userRouter.get('/', authorize, controller.allWithTags);
 userRouter.get('/friends', authorize, controller.allFriends);

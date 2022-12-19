@@ -2,9 +2,10 @@ import { authorize } from '../middlewares/middlewares';
 import PostController from './postController';
 
 import express from 'express';
+import { container } from 'tsyringe';
 export const postRouter = express.Router();
 
-const controller = new PostController();
+const controller = container.resolve(PostController);
 
 postRouter.get('/', authorize, controller.allByTags);
 postRouter.post('/', authorize, controller.createPost);
