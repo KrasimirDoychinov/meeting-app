@@ -1,6 +1,10 @@
 import { AuthViewModel, JwtVerifyViewModel } from './models/output/outputModels';
 
-import { AuthLoginModel, AuthRegisterModel, JwtSignModel } from './models/input/inputModels';
+import {
+	AuthLoginModel,
+	AuthRegisterModel,
+	JwtSignModel,
+} from './models/input/inputModels';
 
 import { CustomError } from '../errors/customError';
 
@@ -11,7 +15,6 @@ import { EnvHelper } from '../helpers/envHelper';
 
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import { IUser } from '../user/models/baseModels';
 import { autoInjectable, injectable } from 'tsyringe';
 import UserRepository from '../user/userRepository';
 
@@ -24,7 +27,12 @@ export class AuthServices {
 		this.userRepo = userRepo!;
 	}
 
-	async register({ name, email, password, compare }: AuthRegisterModel): Promise<AuthViewModel> {
+	async register({
+		name,
+		email,
+		password,
+		compare,
+	}: AuthRegisterModel): Promise<AuthViewModel> {
 		if (!name || !email || !password || !compare) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
@@ -57,7 +65,7 @@ export class AuthServices {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
 
-		const user: IUser = await this.userRepo.findOne({ email });
+		const user = await this.userRepo.findOne({ email });
 		const passwordsMatch = await this.comparePassword(password, user.password);
 		if (!passwordsMatch) {
 			throw new CustomError(AuthErrorConstants.PasswordMismatch, 400);

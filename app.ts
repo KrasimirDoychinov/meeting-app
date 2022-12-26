@@ -24,6 +24,7 @@ const server = http.createServer(app);
 import { Server } from 'socket.io';
 import cloudinary from 'cloudinary';
 import { errorHandler } from './src/middlewares/middlewares';
+import { RedisClient } from './src/database/redisClient';
 
 export const io = new Server(server, {
 	cors: {
@@ -61,6 +62,9 @@ app.use(errorHandler);
 // app start
 const start = async () => {
 	try {
+		const redisClient = new RedisClient();
+		await redisClient.connect();
+
 		const port = process.env.PORT || 3000;
 		const socketPort = process.env.SOCKET_PORT || 3001;
 		const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/facebook-clone';
@@ -75,3 +79,9 @@ const start = async () => {
 };
 
 start();
+
+class Test {
+	get name() {
+		return 'Qkoto';
+	}
+}

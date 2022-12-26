@@ -12,7 +12,7 @@ export class TagService {
 	}
 
 	async setTags(userId: string, tags: [string]): Promise<boolean> {
-		const user: IUser = await this.userRepo.findById(userId);
+		const user = await this.userRepo.findById(userId);
 
 		user.tags = tags;
 		await user.save();

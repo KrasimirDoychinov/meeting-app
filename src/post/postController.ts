@@ -1,4 +1,3 @@
-import { AnyMxRecord } from 'dns';
 import { autoInjectable } from 'tsyringe';
 import UserRepository from '../user/userRepository';
 import { PostServices } from './postServices';

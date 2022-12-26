@@ -67,7 +67,7 @@ export class PostServices {
 		}
 
 		const avatarUrl = await CloudinaryHelper.getAvatar();
-		const post: IPost = await this.postRepo.findById(postId);
+		const post = await this.postRepo.findById(postId);
 
 		const comment = {
 			creator: {
@@ -85,7 +85,7 @@ export class PostServices {
 	}
 
 	async allByTags(creatorId: string, tags: string) {
-		const posts: IPost[] = await this.postRepo.findAllWithTags(creatorId, tags);
+		const posts = await this.postRepo.findAllWithTags(creatorId, tags);
 
 		const result = posts.map((x: IPost) => {
 			const model: PostReturnModel = {
@@ -115,7 +115,7 @@ export class PostServices {
 			throw new CustomError("Id's is missing", 400);
 		}
 
-		const post: IPost = await this.postRepo.findById(postId);
+		const post = await this.postRepo.findById(postId);
 
 		if (post.likes.includes(creatorId)) {
 			post.likes = post.likes.filter((x: string) => x !== creatorId);

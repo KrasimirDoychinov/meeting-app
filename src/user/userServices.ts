@@ -54,7 +54,7 @@ export class UserServices {
 	}
 
 	async byId(id: string): Promise<UserFullViewModelModel> {
-		const user: IUser = await this.userRepo.findById(id);
+		const user = await this.userRepo.findById(id);
 		const model: UserFullViewModelModel = {
 			id: user._id,
 			name: user.name,
@@ -68,9 +68,10 @@ export class UserServices {
 	}
 
 	async getForeignUser(currentUserId: string, foreignUserId: string) {
-		const currentUser: IUser = await this.userRepo.findById(currentUserId);
-		const foreignUser: IUser = await this.userRepo.findById(foreignUserId);
+		const currentUser = await this.userRepo.findById(currentUserId);
+		const foreignUser = await this.userRepo.findById(foreignUserId);
 
+		await currentUser.save();
 		const model: UserForeignUserModel = await Promise.resolve({
 			id: foreignUser._id,
 			name: this.areFriends(currentUser, foreignUser)
@@ -96,8 +97,8 @@ export class UserServices {
 			throw new CustomError(UserErrorConstants.CannotFriendSelf, 400);
 		}
 
-		const currentUser: IUser = await this.userRepo.findById(currentUserId);
-		const friendUser: IUser = await this.userRepo.findById(userToFriendId);
+		const currentUser = await this.userRepo.findById(currentUserId);
+		const friendUser = await this.userRepo.findById(userToFriendId);
 
 		const friendRequestSend = friendUser.friendNotifications.some(
 			(x: any) => x.friendId === currentUserId
@@ -129,8 +130,8 @@ export class UserServices {
 			throw new CustomError(UserErrorConstants.CannotFriendSelf, 400);
 		}
 
-		const currentUser: IUser = await this.userRepo.findById(currentUserId);
-		const friendUser: IUser = await this.userRepo.findById(userToFriendId);
+		const currentUser = await this.userRepo.findById(currentUserId);
+		const friendUser = await this.userRepo.findById(userToFriendId);
 
 		const friendRequestSend = currentUser.friendNotifications.some(
 			(x: any) => x.friendId === userToFriendId
@@ -191,14 +192,14 @@ export class UserServices {
 	}
 
 	async allFriendRequests(id: string): Promise<FriendNotification[]> {
-		const user: IUser = await this.userRepo.findById(id);
+		const user = await this.userRepo.findById(id);
 
 		return user.friendNotifications;
 	}
 
 	// Chat Notifications
 	async sendChatNotification(currentUserId: string, chatId: string): Promise<any> {
-		const user: IUser = await this.userRepo.findById(currentUserId);
+		const user = await this.userRepo.findById(currentUserId);
 
 		const currentFriend: Friend = this.userRepo.findFriend(user.friends, chatId);
 
@@ -213,7 +214,7 @@ export class UserServices {
 	}
 
 	async removeChatNotificationsForChat(chatId: string, userId: string): Promise<boolean> {
-		const user: IUser = await this.userRepo.findById(userId);
+		const user = await this.userRepo.findById(userId);
 		if (!chatId) {
 			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
 		}
@@ -227,7 +228,7 @@ export class UserServices {
 	}
 
 	async allChatNotifications(id: string): Promise<number> {
-		const user: IUser = await this.userRepo.findById(id);
+		const user = await this.userRepo.findById(id);
 
 		const notifications =
 			user.friends.length === 0
@@ -240,7 +241,7 @@ export class UserServices {
 	}
 
 	async changeChatAnonForUserInChat(chatId: string, id: string): Promise<boolean> {
-		const user: IUser = await this.userRepo.findById(id);
+		const user = await this.userRepo.findById(id);
 
 		user.friends.forEach((x: any) => {
 			x.isAnon = false;

@@ -2,7 +2,6 @@ import { ChatInput, ChatMessageModel } from './models/input/inputModels';
 
 import { CustomError } from '../errors/customError';
 import { UserServices } from '../user/userServices';
-import { Chat } from './models/Chat';
 import { io } from '../../app';
 import { GlobalErrorConstants } from '../errors/errorConstants';
 import { ChatMessage, IChat } from './models/baseModels';
@@ -22,11 +21,11 @@ export class ChatServices {
 	}
 
 	// Create
-	async create(personAId: string, personBId: string): Promise<IChat> {
+	async create(personAId: string, personBId: string) {
 		const personA = await this.userService.byId(personAId);
 		const personB = await this.userService.byId(personBId);
 
-		const chat: IChat = await this.chatRepo.create({ personA, personB });
+		const chat = await this.chatRepo.create({ personA, personB });
 		return chat;
 	}
 
@@ -36,10 +35,7 @@ export class ChatServices {
 		receiverId,
 		content,
 	}: ChatMessageModel): Promise<ChatMessage> {
-		const chat: IChat | null = await this.chatRepo.findById(chatId);
-		if (!chat) {
-			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
-		}
+		const chat = await this.chatRepo.findById(chatId);
 
 		if (!this.isPersonInChat(chat, senderId)) {
 			throw new CustomError("This user  doesn't belong to this chat", 400);
@@ -77,10 +73,7 @@ export class ChatServices {
 
 	// Anon status
 	async changeAnonAgree(chatId: string, userId: string): Promise<boolean> {
-		const chat: IChat | null = await this.chatRepo.findById(chatId);
-		if (!chat) {
-			throw new CustomError(GlobalErrorConstants.AllFieldsRequired, 400);
-		}
+		const chat = await this.chatRepo.findById(chatId);
 
 		if (!this.isPersonInChat(chat, userId)) {
 			throw new CustomError("This user doesn't belong to this chat", 400);
